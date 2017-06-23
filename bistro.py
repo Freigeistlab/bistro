@@ -2,18 +2,30 @@
 
 import asyncio
 import websockets
-from recipe_handler import RecipeHandler
+from input_handler import InputHandler
 
-async def bistro(websocket, path):
-	while True:
-		ingredient = input("Bitte Zutat eingeben: ")
-		if ingredient in recipeHandler.currentRecipe():
-			await websocket.send(ingredient)
+class Bistro:
+	# Bistro class handles web sockets and holds input handler
+
+	def __init__(self):
+		# Input handler is a separate thread, needs to be started
+		self.inputHandler = InputHandler()
+		self.inputHandler.start()
+
+		# setup the websocket server - port is 5678 on our local machine
+		server = websockets.serve(self.bistro, 'localhost', 5678)
+
+		# tell the server to run forever
+		asyncio.get_event_loop().run_until_complete(server)
+		asyncio.get_event_loop().run_forever()
+
+	async def bistro(self, websocket, path):
+		# in case there's a new message coming from the input handler
+		# we want to send it via web sockets to the browser
+		while True:
+			if self.inputHandler.newMessage:
+				await websocket.send(self.inputHandler.getMessage())
 
 if __name__ == "__main__":
-	recipeHandler = RecipeHandler()
-
-	server = websockets.serve(bistro, 'localhost', 5678)
-
-	asyncio.get_event_loop().run_until_complete(server)
-	asyncio.get_event_loop().run_forever()
+	# Create the Bistro object that does all the magic
+	bistro = Bistro()
