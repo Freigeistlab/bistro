@@ -27,6 +27,10 @@ td {
 	background-image: url("grey.gif");
 }
 
+td.neutral {
+	background-image: url("grey.gif");
+}
+
 td.success {
 	background-image: url("green.gif");
 }

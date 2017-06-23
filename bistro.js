@@ -10,6 +10,7 @@ ws.onmessage = function (event) {
 	for (var ingredient in json) {
 		// each cell in the table of our HTML page gets its respective CSS class
 		// that will cause it to show the right color (see bistro.css)
+		// json[ingredient] contains one of the following: "success", "neutral", "blink", or "error"
 		document.getElementById(ingredient).className = json[ingredient];
 	}
 };

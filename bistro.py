@@ -25,12 +25,13 @@ class Bistro:
 		asyncio.get_event_loop().run_until_complete(server)
 		asyncio.get_event_loop().run_forever()
 
-	async def bistro(self, websocket, path):
+	@asyncio.coroutine
+	def bistro(self, websocket, path):
 		# in case there's a new message coming from the input handler
 		# we want to send it via web sockets to the browser
 		while True:
 			if self.inputHandler.newMessage:
-				await websocket.send(self.inputHandler.getMessage())
+				yield from websocket.send(self.inputHandler.getMessage())
 
 			# waiting a bit to save resources
 			time.sleep(.1)
