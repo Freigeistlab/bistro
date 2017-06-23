@@ -2,19 +2,23 @@
 <html>
 	<head>
 		<title>WebSocket Bistro</title>
+		<link rel="stylesheet" href="bistro.css">
+		<script src="bistro.js"></script>
 	</head>
 	<body>
-		<script>
-			var ws = new WebSocket("ws://localhost:5678/"),
-				messages = document.createElement('ul');
-			ws.onmessage = function (event) {
-				var messages = document.getElementsByTagName('ul')[0],
-					message = document.createElement('li'),
-					content = document.createTextNode(event.data);
-				message.appendChild(content);
-				messages.appendChild(message);
-			};
-			document.body.appendChild(messages);
-		</script>
+		<table>
+			<tr>
+				<td id="tomato">Tomate</td>
+				<td id="orange">Orange</td>
+				<td id="kiwi">Kiwi</td>
+				<td id="pasta">Pasta</td>
+			</tr>
+			<tr>
+				<td id="lemon">Zitrone</td>
+				<td id="banana">Banane</td>
+				<td id="pasta2">Pasta2</td>
+				<td id="basil">Basilikum</td>	
+			</tr>
+		</table>
 	</body>
 </html>

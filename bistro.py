@@ -2,6 +2,7 @@
 
 import asyncio
 import websockets
+import time
 from input_handler import InputHandler
 
 class Bistro:
@@ -23,6 +24,7 @@ class Bistro:
 		# in case there's a new message coming from the input handler
 		# we want to send it via web sockets to the browser
 		while True:
+			time.sleep(.1)
 			if self.inputHandler.newMessage:
 				await websocket.send(self.inputHandler.getMessage())
 

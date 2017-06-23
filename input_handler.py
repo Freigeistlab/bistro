@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import threading
+import time
 from recipe_handler import RecipeHandler
 
 class InputHandler(threading.Thread):
@@ -31,6 +32,7 @@ class InputHandler(threading.Thread):
 				print("Unbekannte Eingabe: " + userInput)
 
 			print("")
+			time.sleep(.1)
 
 	def assembleMessage(self):
 		self.message = {}
@@ -38,20 +40,19 @@ class InputHandler(threading.Thread):
 		for i in self.recipeHandler.ingredients():
 			if i in self.recipeHandler.currentRecipe():
 				if self.recipeHandler.usedIngredients().count(i) == 1 :
-					self.message[i] = "grey"
+					self.message[i] = "neutral"
 				elif self.recipeHandler.usedIngredients().count(i) > 1:
-					self.message[i] = "red"
+					self.message[i] = "error"
 				else:
-					self.message[i] = "green"
+					self.message[i] = "success"
 			else:
 				if i in self.recipeHandler.usedIngredients():
-					self.message[i] = "red"
+					self.message[i] = "error"
 				else:
-					self.message[i] = "grey"
+					self.message[i] = "neutral"
 
 		self.newMessage = True
 
 	def getMessage(self):
 		self.newMessage = False
-		print(self.message)
-		return str(self.message)
+		return str(self.message).replace("'",'"')
