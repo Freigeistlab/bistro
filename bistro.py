@@ -2,11 +2,12 @@
 
 import asyncio
 import websockets
+from recipe_handler import RecipeHandler
 
 async def bistro(websocket, path):
 	while True:
 		ingredient = input("Bitte Zutat eingeben: ")
-		if ingredient in recipeHandler.currentRecipe()
+		if ingredient in recipeHandler.currentRecipe():
 			await websocket.send(ingredient)
 
 if __name__ == "__main__":
