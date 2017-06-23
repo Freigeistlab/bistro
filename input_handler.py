@@ -12,8 +12,8 @@ class InputHandler(threading.Thread):
 		# create our recipe handler object
 		self.recipeHandler = RecipeHandler()
 
-		# create a first message without anything selected
-		self.assembleMessage()
+		# nothing to send yet
+		self.newMessage = False
 
 	def run(self):
 		# check user inputs and evaluate which action to take
@@ -65,6 +65,14 @@ class InputHandler(threading.Thread):
 		# }
 
 		self.message = {}
+
+		# if the recipe is finished, blink for a bit and reset
+		if self.recipeHandler.isReady():
+			for i in self.recipeHandler.ingredients():
+				self.message[i] = "blink" #blinking
+			self.recipeHandler.selectRecipe(-1)
+			self.newMessage = True
+			return
 
 		# iterating through all our available ingredients
 		for i in self.recipeHandler.ingredients():

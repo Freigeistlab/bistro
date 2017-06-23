@@ -16,8 +16,7 @@ class RecipeHandler:
 	# The class that handles our recipes and ingredients
 
 	def __init__(self):
-		self.__selectedRecipe = -1
-		self.__usedIngredients = []
+		self.selectRecipe(-1)
 
 	def selectRecipe(self, which):
 		# use another recipe (that e.g. someone ordered)
@@ -49,3 +48,9 @@ class RecipeHandler:
 	def useIngredient(self, ingredient):
 		# append an ingredient to the list of used ingredients
 		self.__usedIngredients.append(ingredient)
+
+	def isReady(self):
+		# returns if recipe is finished or not to the outer world
+		if self.__selectedRecipe == -1:
+			return False
+		return set(self.currentRecipe()).issubset(set(self.__usedIngredients))

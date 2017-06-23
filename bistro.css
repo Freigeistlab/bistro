@@ -24,9 +24,6 @@ td {
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: 75%;
-}
-
-td.neutral {
 	background-image: url("grey.gif");
 }
 
@@ -35,7 +32,7 @@ td.success {
 }
 
 td.error {
-	background-image: url("red.gif");
+ 	background-image: url("red.gif");
 }
 
 td.blink {
