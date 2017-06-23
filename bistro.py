@@ -2,6 +2,8 @@
 
 import asyncio
 import websockets
+import webbrowser
+import os
 import time
 from input_handler import InputHandler
 
@@ -12,6 +14,9 @@ class Bistro:
 		# Input handler is a separate thread, needs to be started
 		self.inputHandler = InputHandler()
 		self.inputHandler.start()
+
+		# open the website in our default browser
+		webbrowser.open_new_tab("file://" + os.path.realpath("bistro.html"))
 
 		# setup the websocket server - port is 5678 on our local machine
 		server = websockets.serve(self.bistro, 'localhost', 5678)
@@ -24,9 +29,11 @@ class Bistro:
 		# in case there's a new message coming from the input handler
 		# we want to send it via web sockets to the browser
 		while True:
-			time.sleep(.1)
 			if self.inputHandler.newMessage:
 				await websocket.send(self.inputHandler.getMessage())
+
+			# waiting a bit to save resources
+			time.sleep(.1)
 
 if __name__ == "__main__":
 	# Create the Bistro object that does all the magic

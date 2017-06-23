@@ -1,8 +1,15 @@
+// connect to the websocket of our app
 var ws = new WebSocket("ws://localhost:5678/");
+
+// wait for messages incoming
 ws.onmessage = function (event) {
-	console.log(event.data);
+	// convert the string we get into a JSON object
 	var json = JSON.parse(event.data)
+
+	// iterate through all our ingredients
 	for (var ingredient in json) {
+		// each cell in the table of our HTML page gets its respective CSS class
+		// that will cause it to show the right color (see bistro.css)
 		document.getElementById(ingredient).className = json[ingredient];
 	}
 };
