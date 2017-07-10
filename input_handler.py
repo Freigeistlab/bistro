@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 
-import threading
-import time
+import threading, time
 from recipe_handler import RecipeHandler
+from bluetooth_handler import BluetoothHandler
 
 class InputHandler(threading.Thread):
 	def __init__(self):
 		# let python do the threading magic
-		threading.Thread.__init__(self)
+		super().__init__()
 
-		# create our recipe handler object
+		# create our recipe handler and tag manager objects
 		self.recipeHandler = RecipeHandler()
+		self.bluetoothHandler = BluetoothHandler()
 
 		# nothing to send yet
 		self.newMessage = False
@@ -21,7 +22,8 @@ class InputHandler(threading.Thread):
 
 		while True:
 			print("Aktuelles Rezept: " + str(self.recipeHandler.currentRecipe()))
-			userInput = input("Bitte Zutat eingeben oder [0.." + str(self.recipeHandler.length()-1) + "] um ein Rezept auszuwählen: ")
+			userInput = self.bluetoothHandler.selection()
+			print(userInput)
 
 			# try to convert the input into a number
 			userInt = -1
