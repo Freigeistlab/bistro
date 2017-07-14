@@ -24,35 +24,19 @@ class InputHandler(threading.Thread):
 		# will run infinetly and wait for inputs
 
 		while True:
+			if not self.recipeHandler.currentRecipe():
+				self.recipeHandler.selectRecipe(self.orderHandler.nextDish())
+				print("Aktuelles Rezept: " + str(self.recipeHandler.currentRecipe()))
 			if self.bluetoothHandler.receivedNewInput():
-				self.handleInput()
+				self.handleBluetoothInput()
 
-	def handleInput(self):
-		print("Aktuelles Rezept: " + str(self.recipeHandler.currentRecipe()))
+	def handleBluetoothInput(self):
 		userInput = self.bluetoothHandler.selection()
 		print(userInput)
 
-		# try to convert the input into a number
-		userInt = -1
-		try:
-			userInt = int(userInput)
-		except:
-			pass
-
-		if userInt in range(self.recipeHandler.length()):
-			# we got a number in the range of our recipes - selecting a new one
-			self.recipeHandler.selectRecipe(userInt)
-			self.assembleMessage()
-
-		elif userInput in self.recipeHandler.ingredients():
+		if userInput in self.recipeHandler.ingredients():
 			# entered a valid ingredient
 			self.recipeHandler.useIngredient(userInput)
-			self.assembleMessage()
-
-		elif userInput == "reset":
-			# go back to zero
-			print("Resetting program...")
-			self.recipeHandler.selectRecipe(-1)
 			self.assembleMessage()
 
 		else:
@@ -79,7 +63,7 @@ class InputHandler(threading.Thread):
 		if self.recipeHandler.isReady():
 			for i in self.recipeHandler.ingredients():
 				self.message[i] = "blink" #blinking
-			self.recipeHandler.selectRecipe(-1)
+			self.recipeHandler.selectRecipe("")
 			self.newMessage = True
 			return
 

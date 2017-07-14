@@ -5,18 +5,18 @@
 # If new ingredients are added here, it will not affect the output in the webbrowser
 # To add new ingredients there, see bistro.html file
 
-RECIPES = [
-	["banana", "kiwi", "orange"],
-	["pasta", "tomato", "basil"],
-	["lemon", "orange", "kiwi", "banana"],
-	["pasta2", "tomato", "basil", "lemon"],
-]
+RECIPES = {
+	"Antipasti":["bruschetta"],
+	"Kürbissuppe":["pasta", "tomato", "basil"],
+	"Tomatensuppe":["lemon", "orange", "kiwi", "banana"],
+	"Fingerfood Platte":["pasta2", "tomato", "basil", "lemon"],
+}
 
 class RecipeHandler:
 	# The class that handles our recipes and ingredients
 
 	def __init__(self):
-		self.selectRecipe(-1)
+		self.selectRecipe("")
 
 	def selectRecipe(self, which):
 		# use another recipe (that e.g. someone ordered)
@@ -26,12 +26,12 @@ class RecipeHandler:
 	def currentRecipe(self):
 		# returns the currently selected recipe
 		# if there is none selected, return an empty list
-		if self.__selectedRecipe == -1:
+		if self.__selectedRecipe == "":
 			return []
 		return RECIPES[self.__selectedRecipe]
 
 	def length(self):
-		# returns the number of recipes do we have
+		# returns the number of recipes we have
 		return len(RECIPES)
 
 	def ingredients(self):
@@ -39,7 +39,7 @@ class RecipeHandler:
 		# - add all recipes in one flat list
 		# - convert it into a set (only distinct elements)
 		# - convert it back into a list
-		return list(set(sum(RECIPES, [])))
+		return list(set(sum(RECIPES.values(), [])))
 
 	def usedIngredients(self):
 		# returns the list of used ingredients to access from outside
@@ -51,6 +51,6 @@ class RecipeHandler:
 
 	def isReady(self):
 		# returns if recipe is finished or not to the outer world
-		if self.__selectedRecipe == -1:
+		if self.__selectedRecipe == "":
 			return False
 		return set(self.currentRecipe()).issubset(set(self.__usedIngredients))

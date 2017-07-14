@@ -10,7 +10,8 @@ TAGS = {
 	"a0:e6:f8:29:21:dd":"basil",
 	"a0:e6:f8:47:66:83":"kiwi",
 	"a0:e6:f8:47:63:f6":"pasta",
-	"a0:e6:f8:47:63:f5":"pasta2"
+	"a0:e6:f8:47:63:f5":"pasta2",
+	"c8:5f:72:65:45:13":"bruschetta",
 }
 
 class TagManager(gatt.DeviceManager):
@@ -25,6 +26,8 @@ class TagManager(gatt.DeviceManager):
 		if device.mac_address in TAGS:
 			self.selection = TAGS[device.mac_address]
 			self.newInput = True
+		else:
+			print(device.mac_address)
 
 	def getSelection(self):
 		self.newInput = False

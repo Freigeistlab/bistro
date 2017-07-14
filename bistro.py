@@ -15,7 +15,7 @@ class Bistro:
 		webbrowser.open_new_tab("file://" + os.path.realpath("bistro.html"))
 
 		# setup the websocket server - port is 5678 on our local machine
-		server = websockets.serve(self.bistro, 'localhost', 5678)
+		server = websockets.serve(self.bistro, '', 5678)
 
 		# tell the server to run forever
 		asyncio.get_event_loop().run_until_complete(server)
