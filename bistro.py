@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 
-import asyncio
-import websockets
-import webbrowser
-import os
-import time
+import asyncio, websockets, webbrowser, os, time
 from input_handler import InputHandler
 
 class Bistro:

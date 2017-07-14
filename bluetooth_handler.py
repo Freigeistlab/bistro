@@ -18,13 +18,16 @@ class TagManager(gatt.DeviceManager):
 	def __init__(self):
 		super().__init__(adapter_name='hci0')
 		self.start_discovery()
+		self.newInput = False
 		self.selection = ""
 
 	def device_discovered(self, device):
 		if device.mac_address in TAGS:
 			self.selection = TAGS[device.mac_address]
+			self.newInput = True
 
 	def getSelection(self):
+		self.newInput = False
 		return self.selection
 
 class BluetoothHandler():
@@ -33,6 +36,9 @@ class BluetoothHandler():
 		self.tagManager = TagManager()
 		btThread = threading.Thread(name='Bluetooththread', target=self.tagManager.run)
 		btThread.start()
+
+	def receivedNewInput(self):
+		return self.tagManager.newInput
 
 	def selection(self):
 		return self.tagManager.getSelection()

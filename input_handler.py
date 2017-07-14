@@ -3,6 +3,7 @@
 import threading, time
 from recipe_handler import RecipeHandler
 from bluetooth_handler import BluetoothHandler
+from order_handler import OrderHandler
 
 class InputHandler(threading.Thread):
 	def __init__(self):
@@ -12,6 +13,8 @@ class InputHandler(threading.Thread):
 		# create our recipe handler and tag manager objects
 		self.recipeHandler = RecipeHandler()
 		self.bluetoothHandler = BluetoothHandler()
+		self.orderHandler = OrderHandler()
+		self.orderHandler.start()
 
 		# nothing to send yet
 		self.newMessage = False
@@ -21,40 +24,44 @@ class InputHandler(threading.Thread):
 		# will run infinetly and wait for inputs
 
 		while True:
-			print("Aktuelles Rezept: " + str(self.recipeHandler.currentRecipe()))
-			userInput = self.bluetoothHandler.selection()
-			print(userInput)
+			if self.bluetoothHandler.receivedNewInput():
+				self.handleInput()
 
-			# try to convert the input into a number
-			userInt = -1
-			try:
-				userInt = int(userInput)
-			except:
-				pass
+	def handleInput(self):
+		print("Aktuelles Rezept: " + str(self.recipeHandler.currentRecipe()))
+		userInput = self.bluetoothHandler.selection()
+		print(userInput)
 
-			if userInt in range(self.recipeHandler.length()):
-				# we got a number in the range of our recipes - selecting a new one
-				self.recipeHandler.selectRecipe(userInt)
-				self.assembleMessage()
+		# try to convert the input into a number
+		userInt = -1
+		try:
+			userInt = int(userInput)
+		except:
+			pass
 
-			elif userInput in self.recipeHandler.ingredients():
-				# entered a valid ingredient
-				self.recipeHandler.useIngredient(userInput)
-				self.assembleMessage()
+		if userInt in range(self.recipeHandler.length()):
+			# we got a number in the range of our recipes - selecting a new one
+			self.recipeHandler.selectRecipe(userInt)
+			self.assembleMessage()
 
-			elif userInput == "reset":
-				# go back to zero
-				print("Resetting program...")
-				self.recipeHandler.selectRecipe(-1)
-				self.assembleMessage()
+		elif userInput in self.recipeHandler.ingredients():
+			# entered a valid ingredient
+			self.recipeHandler.useIngredient(userInput)
+			self.assembleMessage()
 
-			else:
-				# everything else
-				print("Unbekannte Eingabe: " + userInput)
+		elif userInput == "reset":
+			# go back to zero
+			print("Resetting program...")
+			self.recipeHandler.selectRecipe(-1)
+			self.assembleMessage()
 
-			print("")
-			# wait for 100ms to save resources
-			time.sleep(.1)
+		else:
+			# everything else
+			print("Unbekannte Eingabe: " + userInput)
+
+		print("")
+		# wait for 100ms to save resources
+		time.sleep(.1)
 
 	def assembleMessage(self):
 		# assemble the message to be sent to the web browser
