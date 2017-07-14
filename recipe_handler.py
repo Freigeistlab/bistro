@@ -6,7 +6,7 @@
 # To add new ingredients there, see bistro.html file
 
 RECIPES = {
-	"Antipasti":["bruschetta"],
+	"Antipasti":["bruschetta","caprese","olive"],
 	"Kürbissuppe":["pasta", "tomato", "basil"],
 	"Tomatensuppe":["lemon", "orange", "kiwi", "banana"],
 	"Fingerfood Platte":["pasta2", "tomato", "basil", "lemon"],
