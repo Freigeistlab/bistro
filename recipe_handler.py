@@ -37,6 +37,8 @@ class RecipeHandler:
 	def currentRecipe(self):
 		return self.__selectedRecipe
 
+	def reset(self):
+		self.selectRecipe("")
 
 	def length(self):
 		# returns the number of recipes we have

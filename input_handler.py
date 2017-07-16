@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
-import threading, time
+import threading, time, os
 from recipe_handler import RecipeHandler
 from bluetooth_handler import BluetoothHandler
 from order_handler import OrderHandler
+from keyboard_handler import KeyboardHandler
 
 class InputHandler(threading.Thread):
 	def __init__(self):
@@ -14,6 +15,8 @@ class InputHandler(threading.Thread):
 		self.bluetoothHandler = BluetoothHandler()
 		self.orderHandler = OrderHandler()
 		self.orderHandler.start()
+		self.keyboardHandler = KeyboardHandler()
+		self.keyboardHandler.start()
 
 		# nothing to send yet
 		self.newMessage = False
@@ -24,25 +27,61 @@ class InputHandler(threading.Thread):
 
 		while True:
 			if not self.recipeHandler.currentRecipe():
-				if self.recipeHandler.selectRecipe(self.orderHandler.nextDish()):
-					self.printStatus()
-					self.assembleMessage()
+				self.nextRecipe()
 
 			if self.bluetoothHandler.receivedNewInput():
 				self.handleBluetoothInput()
 
-	def handleBluetoothInput(self):
-		userInput = self.bluetoothHandler.selection()
-		print("- ", userInput)
+			if self.keyboardHandler.receivedNewInput():
+				self.handleKeyboardInput()
+
+	def nextRecipe(self):
+		if self.recipeHandler.selectRecipe(self.orderHandler.nextDish()):
+			self.printStatus()
+			self.assembleMessage()
+
+	def handleKeyboardInput(self):
+		userInput = self.keyboardHandler.getInput()
 
 		if userInput in self.recipeHandler.ingredients():
 			# entered a valid ingredient
+			print("- ", userInput)
 			self.recipeHandler.useIngredient(userInput)
+			self.assembleMessage()
+
+		elif userInput == "+":
+			# go to next recipe
+			self.nextRecipe()
+
+		elif userInput == "status":
+			self.printStatus()
+
+		elif userInput == "reset":
+			# go back to zero
+			print("Resetting program...")
+			self.recipeHandler.reset()
+			self.orderHandler.reset()
+			self.assembleMessage()
+
+		elif userInput == "exit":
+			os._exit(1)
+
+		else:
+			print("Unbekannte Eingabe: " + userInput)
+
+
+	def handleBluetoothInput(self):
+		selected = self.bluetoothHandler.selection()
+
+		if selected in self.recipeHandler.ingredients():
+			# entered a valid ingredient
+			print("- ", selected)
+			self.recipeHandler.useIngredient(selected)
 			self.assembleMessage()
 
 		else:
 			# everything else
-			print("Unbekannte Eingabe: " + userInput)
+			print("Unbekannte Eingabe: " + selected)
 
 		print("")
 		# wait for 100ms to save resources

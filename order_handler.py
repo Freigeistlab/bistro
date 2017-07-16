@@ -40,6 +40,9 @@ class OrderHandler(threading.Thread):
 		s.connect(("8.8.8.8", 80))
 		return s.getsockname()[0]
 
+	def reset(self):
+		self.waitinglist = []
+
 	def run(self):
 		print("Set up your orderbird printer to IP", self.getIpAddress())
 		print("Waiting for orders...")
@@ -65,7 +68,7 @@ class OrderHandler(threading.Thread):
 						conn.send(bytes(liste))
 
 						print("  New order:")
-						# print(data)
+						#print(data)
 
 						totals = re.compile("(?<=Total)\s+€\s\d+,\d{2}").findall(data)
 
