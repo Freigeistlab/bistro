@@ -7,16 +7,20 @@ from order_handler import OrderHandler
 from keyboard_handler import KeyboardHandler
 
 class InputHandler(threading.Thread):
-	def __init__(self):
+
+	def __init__(self, verbose, bluetooth):
 		# let python do the threading magic
 		super().__init__()
 
 		self.recipeHandler = RecipeHandler()
-		self.bluetoothHandler = BluetoothHandler()
-		self.orderHandler = OrderHandler()
+		self.orderHandler = OrderHandler(verbose)
 		self.orderHandler.start()
 		self.keyboardHandler = KeyboardHandler()
 		self.keyboardHandler.start()
+
+		self.bluetoothHandler = False
+		if bluetooth:
+			self.bluetoothHandler = BluetoothHandler()
 
 		# nothing to send yet
 		self.newMessage = False
@@ -29,7 +33,7 @@ class InputHandler(threading.Thread):
 			if not self.recipeHandler.currentRecipe():
 				self.nextRecipe()
 
-			if self.bluetoothHandler.receivedNewInput():
+			if self.bluetoothHandler and self.bluetoothHandler.receivedNewInput():
 				self.handleBluetoothInput()
 
 			if self.keyboardHandler.receivedNewInput():

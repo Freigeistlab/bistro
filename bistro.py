@@ -1,18 +1,27 @@
 #!/usr/bin/env python3
 
-import asyncio, websockets, webbrowser, os, time
+import asyncio, websockets, webbrowser, os, time, sys
 from input_handler import InputHandler
 
 class Bistro:
 	# Bistro class handles web sockets and holds input handler
 
 	def __init__(self):
+		verbose = False
+		bluetooth = True
+
+		for arg in sys.argv:
+			if arg == "--verbose":
+				verbose = True
+			if arg == "--no-bluetooth":
+				bluetooth = False
+
 		# Input handler is a separate thread, needs to be started
-		self.inputHandler = InputHandler()
+		self.inputHandler = InputHandler(verbose, bluetooth)
 		self.inputHandler.start()
 
 		# open the website in our default browser
-		webbrowser.open_new_tab("file://" + os.path.realpath("bistro.html"))
+		# webbrowser.open_new_tab("file://" + os.path.realpath("bistro.html"))
 
 		# setup the websocket server - port is 5678 on our local machine
 		server = websockets.serve(self.bistro, '', 5678)

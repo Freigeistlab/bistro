@@ -4,11 +4,12 @@ import re, socket, threading, sys
 
 class OrderHandler(threading.Thread):
 
-	def __init__(self):
+	def __init__(self, verbose):
 		# let python do the threading magic
 		super(OrderHandler, self).__init__()
 
 		self.waitinglist = []
+		self.verbose = verbose
 		self.setupSocket()
 
 	def setupSocket(self):
@@ -68,7 +69,8 @@ class OrderHandler(threading.Thread):
 						conn.send(bytes(liste))
 
 						print("  New order:")
-						#print(data)
+						if self.verbose:
+							print(data)
 
 						totals = re.compile("(?<=Total)\s+€\s\d+,\d{2}").findall(data)
 
