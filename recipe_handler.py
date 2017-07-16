@@ -9,7 +9,7 @@ RECIPES = {
 	"Antipasti":["bruschetta","caprese","olive"],
 	"Kürbissuppe":["pasta", "tomato", "basil"],
 	"Tomatensuppe":["lemon", "orange", "kiwi", "banana"],
-	"Fingerfood Platte":["pasta2", "tomato", "basil", "lemon"],
+	"Fingerfood Platte":["pasta", "tomato", "basil", "lemon"],
 }
 
 class RecipeHandler:
@@ -22,13 +22,21 @@ class RecipeHandler:
 		# use another recipe (that e.g. someone ordered)
 		self.__usedIngredients = []
 		self.__selectedRecipe = which
+		if which:
+			return True
+		else:
+			return False
 
-	def currentRecipe(self):
-		# returns the currently selected recipe
+	def currentIngredients(self):
+		# returns the ingredient list for the currently selected recipe
 		# if there is none selected, return an empty list
 		if self.__selectedRecipe == "":
 			return []
 		return RECIPES[self.__selectedRecipe]
+
+	def currentRecipe(self):
+		return self.__selectedRecipe
+
 
 	def length(self):
 		# returns the number of recipes we have
@@ -53,4 +61,4 @@ class RecipeHandler:
 		# returns if recipe is finished or not to the outer world
 		if self.__selectedRecipe == "":
 			return False
-		return set(self.currentRecipe()).issubset(set(self.__usedIngredients))
+		return set(self.currentIngredients()).issubset(set(self.__usedIngredients))

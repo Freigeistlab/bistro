@@ -10,7 +10,6 @@ class InputHandler(threading.Thread):
 		# let python do the threading magic
 		super().__init__()
 
-		# create our recipe handler and tag manager objects
 		self.recipeHandler = RecipeHandler()
 		self.bluetoothHandler = BluetoothHandler()
 		self.orderHandler = OrderHandler()
@@ -25,14 +24,16 @@ class InputHandler(threading.Thread):
 
 		while True:
 			if not self.recipeHandler.currentRecipe():
-				self.recipeHandler.selectRecipe(self.orderHandler.nextDish())
-				print("Aktuelles Rezept: " + str(self.recipeHandler.currentRecipe()))
+				if self.recipeHandler.selectRecipe(self.orderHandler.nextDish()):
+					self.printStatus()
+					self.assembleMessage()
+
 			if self.bluetoothHandler.receivedNewInput():
 				self.handleBluetoothInput()
 
 	def handleBluetoothInput(self):
 		userInput = self.bluetoothHandler.selection()
-		print(userInput)
+		print("- ", userInput)
 
 		if userInput in self.recipeHandler.ingredients():
 			# entered a valid ingredient
@@ -46,6 +47,13 @@ class InputHandler(threading.Thread):
 		print("")
 		# wait for 100ms to save resources
 		time.sleep(.1)
+
+	def printStatus(self):
+		print("\n> Current Recipe: ",
+			self.recipeHandler.currentRecipe(),
+			self.recipeHandler.currentIngredients(),
+			"///", self.orderHandler.waiting(),
+			"in waiting list\n")
 
 	def assembleMessage(self):
 		# assemble the message to be sent to the web browser
@@ -69,7 +77,7 @@ class InputHandler(threading.Thread):
 
 		# iterating through all our available ingredients
 		for i in self.recipeHandler.ingredients():
-			if i in self.recipeHandler.currentRecipe():
+			if i in self.recipeHandler.currentIngredients():
 				if self.recipeHandler.usedIngredients().count(i) == 1:
 					# we used a required ingredient exactly once
 					self.message[i] = "neutral" #grey

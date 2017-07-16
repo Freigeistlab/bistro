@@ -9,6 +9,10 @@ class OrderHandler(threading.Thread):
 		super(OrderHandler, self).__init__()
 
 		self.waitinglist = []
+		self.setupSocket()
+
+	def setupSocket(self):
+		# sets up the socket to establish the connection to orderbird
 
 		host = '' # meaning all available interfaces on our machine
 		port = 9100 # as used by orderbird
@@ -18,6 +22,9 @@ class OrderHandler(threading.Thread):
 		self.socket.listen(1)
 
 	def nextDish(self):
+		# returns the next dish in the waitinglist
+		# and removes it from there
+
 		if not self.waitinglist:
 			return ""
 
@@ -25,14 +32,25 @@ class OrderHandler(threading.Thread):
 		self.waitinglist = self.waitinglist[1:]
 		return nextDish
 
+	def waiting(self):
+		return len(self.waitinglist)
+
+	def getIpAddress(self):
+		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+		s.connect(("8.8.8.8", 80))
+		return s.getsockname()[0]
+
 	def run(self):
+		print("Set up your orderbird printer to IP", self.getIpAddress())
+		print("Waiting for orders...")
+
 		while True:
 			try:
+				# accept connections (probably from orderbird)
 				conn, addr = self.socket.accept()
-				print("Connection from: " + str(addr))
+				print("\n  Connection from: " + str(addr))
 
 				while True:
-					print("Receiving data...")
 					data = conn.recv(8192).decode("cp1252")
 
 					if not data:
@@ -40,15 +58,14 @@ class OrderHandler(threading.Thread):
 
 					elif data == bytes([16, 4, 1, 16, 4, 2, 16, 4, 3, 16, 4, 4]).decode("cp1252"):
 						conn.send(bytes([22, 18, 18, 18]))
-						print("send check")
 
 					else:
-						print("Processing data...")
+						print("  Processing data...")
 						liste = [55, 34] + [ord(i) for i in data[-8:-4:]] + [0]
 						conn.send(bytes(liste))
 
-						print("=== New order ===")
-						print(data)
+						print("  New order:")
+						# print(data)
 
 						totals = re.compile("(?<=Total)\s+€\s\d+,\d{2}").findall(data)
 
@@ -64,12 +81,12 @@ class OrderHandler(threading.Thread):
 						regex_item = re.compile("\d+x\s+[\w\s\']*\s+(?=€\s\d+,\d{2})")
 						items = regex_item.findall(data)
 
-						# for now using only items, but rest is extracted properly already
-						print("Totals: ", totals)
-						print("Bill ID: ", ids)
-						print("Date: ", dates)
-						print("Time: ", times)
-						print("Items: ", items)
+						# for now using only items, but the rest should already be extracted properly
+						print("    Totals: ", [i.strip() for i in totals])
+						print("    Bill ID: ", ids)
+						print("    Date: ", dates)
+						print("    Time: ", times)
+						print("    Items: ", [i.strip() for i in items])
 
 						for item in items:
 							# remove unnecessary whitespaces
@@ -81,8 +98,6 @@ class OrderHandler(threading.Thread):
 
 							for i in range(0,amount):
 								self.waitinglist.append(dish)
-
-						print(self.waitinglist)
 
 			except:
 				print("exception: ", sys.exc_info()[0])

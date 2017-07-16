@@ -2,6 +2,10 @@
 
 import threading, gatt
 
+# Static list of tags
+# insert mac adress of bluetooth tags
+# and matching ingredient here
+
 TAGS = {
 	"b0:b4:48:da:b9:e4":"banana",
 	"a0:e6:f8:29:21:d9":"lemon",
@@ -12,6 +16,8 @@ TAGS = {
 	"a0:e6:f8:47:63:f6":"pasta",
 	"a0:e6:f8:47:63:f5":"pasta2",
 	"c8:5f:72:65:45:13":"bruschetta",
+	"e3:f6:8c:d3:be:37":"caprese",
+	"f0:71:a3:2e:b0:72":"olive",
 }
 
 class TagManager(gatt.DeviceManager):
@@ -26,8 +32,6 @@ class TagManager(gatt.DeviceManager):
 		if device.mac_address in TAGS:
 			self.selection = TAGS[device.mac_address]
 			self.newInput = True
-		else:
-			print(device.mac_address)
 
 	def getSelection(self):
 		self.newInput = False
