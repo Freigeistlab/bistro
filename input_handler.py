@@ -53,6 +53,11 @@ class InputHandler(threading.Thread):
 			self.recipeHandler.useIngredient(userInput)
 			self.assembleMessage()
 
+		elif userInput in self.recipeHandler.dishes():
+			# entered a valid dish
+			self.recipeHandler.selectRecipe(userInput)
+			self.assembleMessage()
+
 		elif userInput == "+":
 			# go to next recipe
 			self.nextRecipe()

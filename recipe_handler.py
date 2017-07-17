@@ -51,6 +51,9 @@ class RecipeHandler:
 		# - convert it back into a list
 		return list(set(sum(RECIPES.values(), [])))
 
+	def dishes(self):
+		return RECIPES.keys()
+
 	def usedIngredients(self):
 		# returns the list of used ingredients to access from outside
 		return self.__usedIngredients

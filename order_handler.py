@@ -61,6 +61,7 @@ class OrderHandler(threading.Thread):
 						break
 
 					elif data == bytes([16, 4, 1, 16, 4, 2, 16, 4, 3, 16, 4, 4]).decode("cp1252"):
+						#send check
 						conn.send(bytes([22, 18, 18, 18]))
 
 					else:
@@ -72,19 +73,11 @@ class OrderHandler(threading.Thread):
 						if self.verbose:
 							print(data)
 
-						totals = re.compile("(?<=Total)\s+€\s\d+,\d{2}").findall(data)
-
-						regex_id = re.compile("(?<=Bill no\.)\d+-\d+")
-						ids = regex_id.findall(data)
-
-						regex_date = re.compile("\d{2}\.\d{2}\.\d{4}")
-						dates = regex_date.findall(data)
-
-						regex_time = re.compile("\d{2}\:\d{2}\:\d{2}")
-						times = regex_time.findall(data)
-
-						regex_item = re.compile("\d+x\s+[\w\s\']*\s+(?=€\s\d+,\d{2})")
-						items = regex_item.findall(data)
+						totals = re.compile("(?<=Total)\s+€\s\d+,\d{2}|(?<=Total)\s+\d+,\d{2}\s€").findall(data)
+						ids = re.compile("(?<=Bill no\.)\d+-\d+|(?<=Rechnung Nr\.)\d+-\d+").findall(data)
+						dates = re.compile("\d{2}\.\d{2}\.\d{4}").findall(data)
+						times = re.compile("\d{2}\:\d{2}\:\d{2}").findall(data)
+						items = re.compile("\d+x\s+[\w\s\']+\s+(?=€\s\d+,\d{2})|\d+x\s+[\w\s\']+\s+(?=\d+,\d{2}\s€)").findall(data)
 
 						# for now using only items, but the rest should already be extracted properly
 						print("    Totals: ", [i.strip() for i in totals])
