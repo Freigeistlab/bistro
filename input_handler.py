@@ -113,12 +113,15 @@ class InputHandler(threading.Thread):
 		#	...
 		# }
 
-		self.message = {}
+		self.message = {
+			"recipe": self.recipeHandler.currentRecipe(),
+			"ingredients": {}
+		}
 
 		# if the recipe is finished, blink for a bit and reset
 		if self.recipeHandler.isReady():
 			for i in self.recipeHandler.ingredients():
-				self.message[i] = "blink" #blinking
+				self.message["ingredients"][i] = "blink" #blinking
 			self.recipeHandler.selectRecipe("")
 			self.newMessage = True
 			return
@@ -128,24 +131,24 @@ class InputHandler(threading.Thread):
 			if i in self.recipeHandler.currentIngredients():
 				if self.recipeHandler.usedIngredients().count(i) == 1:
 					# we used a required ingredient exactly once
-					self.message[i] = "neutral" #grey
+					self.message["ingredients"][i] = "neutral" #grey
 
 				elif self.recipeHandler.usedIngredients().count(i) > 1:
 					# we tried using a required ingredients multiple times
-					self.message[i] = "error" #red
+					self.message["ingredients"][i] = "error" #red
 
 				else:
 					# we still need to use an ingredient
-					self.message[i] = "success" #green
+					self.message["ingredients"][i] = "success" #green
 
 			else:
 				if i in self.recipeHandler.usedIngredients():
 					# not required but tried to use it
-					self.message[i] = "error" #red
+					self.message["ingredients"][i] = "error" #red
 
 				else:
 					# not required and not used
-					self.message[i] = "neutral" #grey
+					self.message["ingredients"][i] = "neutral" #grey
 
 		self.newMessage = True
 

@@ -3,8 +3,9 @@ body {
 	padding: 0;
 	width: 100vw;
 	height: 100vh;
-	font-size: 16px;
-	font-family: sans-serif;
+	font-size: 2vh;
+	font-family: "Roboto", sans-serif;
+	font-weight: 200;
 	background: black;
 	color: white;
 }
@@ -13,33 +14,39 @@ table {
 	margin: 0;
 	padding: 0;
 	width: 100vw;
-	height: 100vh;
+	height: 90vh;
 }
 
 td {
-	width: 20%;
+	width: 20vw;
 	text-align: center;
-	vertical-align: bottom;
-	padding-bottom: 2em;
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: 75%;
-	background-image: url("grey.gif");
+	vertical-align: middle;
 }
 
-td.neutral {
-	background-image: url("grey.gif");
+td .background {
+	text-align: center;
+	vertical-align: middle;
+	position: relative;
+	display: inline-block;
+	width: 14vw;
+	height: 14vw;
+	border-radius: 100%;
+	background: #111;
 }
 
-td.success {
-	background-image: url("green.gif");
+td.neutral .background {
+	background-color: gray;
 }
 
-td.error {
- 	background-image: url("red.gif");
+td.success .background {
+	background-color: green;
 }
 
-td.blink {
+td.error .background {
+ 	background-color: red;
+}
+
+td.blink .background {
 	animation-name: blink-animation;
 	animation-duration: .8s;
 	animation-iteration-count: 3;
@@ -49,4 +56,53 @@ td.blink {
 	0%   {opacity: 1;}
 	50%  {opacity: 0;}
 	100% {opacity: 1;}
+}
+
+#waiting,
+#current {
+	position: absolute;
+	width: 49vw;
+	height: 10vh;
+	bottom: 0;
+	font-size: 2.8vh;
+	font-weight: 400;
+	margin: 0;
+	padding: 0;
+}
+
+#waiting p,
+#current p {
+	margin: 0;
+	padding: 0;
+	margin-top: 1.2vh;
+}
+
+#waiting p.heading,
+#current p.heading {
+	text-transform: uppercase;
+	font-weight: 100;
+	letter-spacing: .2vw;
+	font-size: 1.6vh;
+	margin: 0;
+	padding: 0;
+}
+
+#waiting {
+	padding-right: 1vw;
+	left: 0;
+	text-align: right;
+}
+
+#current {
+	padding-left: 1vw;
+	right: 0;
+}
+
+#waiting .item {
+	display: inline-block;
+	background: #fff;
+	height: .8vh;
+	width: .8vh;
+	border-radius: .4vh;
+	margin: .4vh;
 }
