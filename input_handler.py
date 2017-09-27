@@ -120,10 +120,14 @@ class InputHandler(threading.Thread):
 		# assemble the message to be sent to the web browser
 		# it takes the form of a JSON object looking something like this:
 		# {
-		#	banana: "neutral",
-		#	tomato: "success",
-		#	basil: "error",
-		#	...
+		#	recipe: "Antipasti"
+		#	waiting: 4
+		#	ingredients: {
+		#		banana: "neutral",
+		#		tomato: "success",
+		#		basil: "error",
+		#		...
+		#	}
 		# }
 
 		self.message = {

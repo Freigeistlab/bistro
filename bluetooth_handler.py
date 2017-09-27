@@ -29,7 +29,7 @@ class TagManager(gatt.DeviceManager):
 		self.selection = ""
 
 	def device_discovered(self, device):
-		if device.mac_address in TAGS:
+		if device.mac_address in TAGS and TAGS[device.mac_address] != self.selection:
 			self.selection = TAGS[device.mac_address]
 			self.newInput = True
 
