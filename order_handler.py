@@ -10,6 +10,7 @@ class OrderHandler(threading.Thread):
 
 		self.waitinglist = []
 		self.verbose = verbose
+		self.newInput = False
 		self.setupSocket()
 
 	def setupSocket(self):
@@ -43,6 +44,11 @@ class OrderHandler(threading.Thread):
 
 	def reset(self):
 		self.waitinglist = []
+
+	def receivedNewInput(self):
+		res = self.newInput
+		self.newInput = False
+		return res
 
 	def run(self):
 		print("Set up your orderbird printer to IP", self.getIpAddress())
@@ -96,6 +102,8 @@ class OrderHandler(threading.Thread):
 
 							for i in range(0,amount):
 								self.waitinglist.append(dish)
+
+						self.newInput = True
 
 			except:
 				print("exception: ", sys.exc_info()[0])

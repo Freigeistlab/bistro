@@ -39,10 +39,23 @@ class InputHandler(threading.Thread):
 			if self.keyboardHandler.receivedNewInput():
 				self.handleKeyboardInput()
 
+			if self.orderHandler.receivedNewInput():
+				self.handleOrderInput()
+
+			time.sleep(.1)
+
 	def nextRecipe(self):
-		if self.recipeHandler.selectRecipe(self.orderHandler.nextDish()):
+		if (self.orderHandler.waiting()):
+			self.recipeHandler.selectRecipe(self.orderHandler.nextDish())
 			self.printStatus()
 			self.assembleMessage()
+		elif (self.recipeHandler.currentRecipe()):
+			self.recipeHandler.selectRecipe("")
+			self.printStatus()
+			self.assembleMessage()
+
+	def handleOrderInput(self):
+		self.assembleMessage()
 
 	def handleKeyboardInput(self):
 		userInput = self.keyboardHandler.getInput()
@@ -55,7 +68,7 @@ class InputHandler(threading.Thread):
 
 		elif userInput in self.recipeHandler.dishes():
 			# entered a valid dish
-			self.recipeHandler.selectRecipe(userInput)
+			self.orderHandler.waitinglist.append(userInput)
 			self.assembleMessage()
 
 		elif userInput == "+":
@@ -115,11 +128,13 @@ class InputHandler(threading.Thread):
 
 		self.message = {
 			"recipe": self.recipeHandler.currentRecipe(),
+			"waiting": self.orderHandler.waiting(),
 			"ingredients": {}
 		}
 
 		# if the recipe is finished, blink for a bit and reset
 		if self.recipeHandler.isReady():
+			self.message["recipe"] = ""
 			for i in self.recipeHandler.ingredients():
 				self.message["ingredients"][i] = "blink" #blinking
 			self.recipeHandler.selectRecipe("")

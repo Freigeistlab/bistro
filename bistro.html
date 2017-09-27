@@ -3,6 +3,7 @@
 	<head>
 		<title>WebSocket Bistro</title>
 		<link rel="stylesheet" href="bistro.css">
+		<script src="jquery-3.2.1.min.js"></script>
 		<script src="bistro.js"></script>
 	</head>
 	<body>
@@ -54,33 +55,11 @@
 		</table>
 		<div id="waiting">
 			<p class="heading">Warteliste</p>
-			<p>
-				<span class="item"></span>
-				<span class="item"></span>
-				<span class="item"></span>
-				<span class="item"></span>
-				<span class="item"></span>
-				<span class="item"></span>
-				<span class="item"></span>
-				<span class="item"></span>
-				<span class="item"></span>
-				<span class="item"></span>
-				<span class="item"></span>
-				<span class="item"></span>
-				<span class="item"></span>
-				<span class="item"></span>
-				<span class="item"></span>
-				<span class="item"></span>
-				<span class="item"></span>
-				<span class="item"></span>
-				<span class="item"></span>
-				<span class="item"></span>
-				<span class="item"></span>
-			</p>
+			<p id="waitingList"></p>
 		</div>
 		<div id=current>
 			<p class="heading">Aktuell</p>
-			<p id="currentRecipe">Antipasti</p>
+			<p id="currentRecipe"></p>
 		</div>
 	</body>
 </html>

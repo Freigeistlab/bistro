@@ -8,6 +8,7 @@ body {
 	font-weight: 200;
 	background: black;
 	color: white;
+	overflow: hidden;
 }
 
 table {
@@ -61,7 +62,7 @@ td.blink .background {
 #waiting,
 #current {
 	position: absolute;
-	width: 49vw;
+	width: 100vw;
 	height: 10vh;
 	bottom: 0;
 	font-size: 2.8vh;
@@ -89,13 +90,13 @@ td.blink .background {
 
 #waiting {
 	padding-right: 1vw;
-	left: 0;
+	left: -51vw;
 	text-align: right;
 }
 
 #current {
 	padding-left: 1vw;
-	right: 0;
+	right: -51vw;
 }
 
 #waiting .item {
@@ -105,4 +106,21 @@ td.blink .background {
 	width: .8vh;
 	border-radius: .4vh;
 	margin: .4vh;
+	margin-right: .4vh;
+	left: 0;
+	top: 0;
+	transition: all 500ms;
+}
+
+#waiting .item.new {
+	margin-right: 50vw;
+} 
+
+#waiting .item.old {
+	position: relative;
+	left: 2.6vw;
+	top: -.8vh;
+	height: 0;
+	width: 0;
+	margin: 0;
 }
