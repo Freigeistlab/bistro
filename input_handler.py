@@ -140,9 +140,10 @@ class InputHandler(threading.Thread):
 		if self.recipeHandler.isReady():
 			self.message["recipe"] = ""
 			for i in self.recipeHandler.ingredients():
-				self.message["ingredients"][i] = "blink" #blinking
+				self.message["ingredients"][i] = "ready" #blinking
 			self.recipeHandler.selectRecipe("")
 			self.newMessage = True
+			time.sleep(5)
 			return
 
 		# iterating through all our available ingredients

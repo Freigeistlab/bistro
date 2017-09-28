@@ -1,5 +1,5 @@
 // connect to the websocket of our app
-var ws = new WebSocket("ws://192.168.0.119:5678/");
+var ws = new WebSocket("ws://192.168.0.101:5678/");
 
 // wait for messages incoming
 ws.onmessage = function (event) {
@@ -38,6 +38,11 @@ ws.onmessage = function (event) {
 			// that will cause it to show the right color (see bistro.css)
 			// json[ingredient] contains one of the following: "success", "neutral", "blink", or "error"
 			document.getElementById(ingredient).className = json.ingredients[ingredient];
+			if (json.ingredients[ingredient] == "ready") {
+				$("#countdown").addClass("active");
+			} else {
+				$("#countdown").removeClass("active")
+			}
 		}
 	}, timeout);
 
