@@ -146,29 +146,9 @@ class InputHandler(threading.Thread):
 			time.sleep(5)
 			return
 
-		# iterating through all our available ingredients
-		for i in self.recipeHandler.ingredients():
-			if i in self.recipeHandler.currentIngredients():
-				if self.recipeHandler.usedIngredients().count(i) == 1:
-					# we used a required ingredient exactly once
-					self.message["ingredients"][i] = "neutral" #grey
+		self.message["ingredients"] = self.recipeHandler.getIngredientStatus()
+		self.message["error"] = self.recipeHandler.getError()
 
-				elif self.recipeHandler.usedIngredients().count(i) > 1:
-					# we tried using a required ingredients multiple times
-					self.message["ingredients"][i] = "error" #red
-
-				else:
-					# we still need to use an ingredient
-					self.message["ingredients"][i] = "success" #green
-
-			else:
-				if i in self.recipeHandler.usedIngredients():
-					# not required but tried to use it
-					self.message["ingredients"][i] = "error" #red
-
-				else:
-					# not required and not used
-					self.message["ingredients"][i] = "neutral" #grey
 
 		self.newMessage = True
 

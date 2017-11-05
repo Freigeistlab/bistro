@@ -6,33 +6,81 @@
 # To add new ingredients there, see bistro.html file
 
 RECIPES = {
-	"Antipasti":["bruschetta","caprese","olive"],
-	"Kürbissuppe":["pasta", "tomato", "basil"],
+	"Antipasti":[{"pasta","lemon"},"bruschetta",{"caprese","olive"},"banana",{"kiwi"}],
+	"Kürbissuppe":[{"pasta", "tomato", "basil"}],
 	"Tomatensuppe":["lemon", "orange", "kiwi", "banana"],
-	"Fingerfood Platte":["pasta", "tomato", "basil", "lemon"],
+	"Fingerfood Platte":["pasta", "tomato", "basil", "lemon"]
 }
 
 class RecipeHandler:
 	# The class that handles our recipes and ingredients
 
 	def __init__(self):
+		# a little magic happening here:
+		# - add all recipes in one flat list
+		# - convert it into a set (only distinct elements)
+		# - convert it back into a list
+		self.__ingredients = dict.fromkeys(list(set(sum(self.flatRecipes(), []))))
 		self.selectRecipe("")
 
 	def selectRecipe(self, which):
 		# use another recipe (that e.g. someone ordered)
-		self.__usedIngredients = []
+		self.__current = 0
 		self.__selectedRecipe = which
+		self.__error = ""
+		for i in self.__ingredients:
+			self.__ingredients[i] = "neutral"
+
 		if which:
+			for i in self.__ingredients:
+				if i in self.currentIngredients():
+					self.__ingredients[i] = "use"
+				elif i in self.ingredientsOfRecipe():
+					self.__ingredients[i] = "waiting"
+				else:
+					self.__ingredients[i] = "neutral"
 			return True
 		else:
 			return False
 
-	def currentIngredients(self):
-		# returns the ingredient list for the currently selected recipe
+	def flatIngredientList(self, recipe):
+		l = []
+		for i in recipe:
+			if type(i) is set:
+				for ing in i:
+					l.append(ing)
+			else:
+				l.append(i)
+		return l
+
+	def flatRecipes(self):
+		l = []
+		for r in RECIPES.values():
+			l.append(self.flatIngredientList(r))
+		return l
+
+	def ingredientsOfRecipe(self):
+		# returns all ingredients required for the currently selected recipe
 		# if there is none selected, return an empty list
 		if self.__selectedRecipe == "":
 			return []
-		return RECIPES[self.__selectedRecipe]
+		return self.flatIngredientList(RECIPES[self.__selectedRecipe])
+
+	def currentIngredients(self):
+		# returns the ingredient or the ingredients that are to be used right now
+		# if there is no recipe selected, return an empty list
+		if self.__selectedRecipe == "":
+			return []
+
+		try:
+			result = RECIPES[self.__selectedRecipe][self.__current]
+		except:
+			return []
+		
+		if type(result) is str:
+			return {result}
+		
+		return result
 
 	def currentRecipe(self):
 		return self.__selectedRecipe
@@ -45,25 +93,34 @@ class RecipeHandler:
 		return len(RECIPES)
 
 	def ingredients(self):
-		# a little magic happening here:
-		# - add all recipes in one flat list
-		# - convert it into a set (only distinct elements)
-		# - convert it back into a list
-		return list(set(sum(RECIPES.values(), [])))
+		return self.__ingredients.keys()
 
 	def dishes(self):
 		return RECIPES.keys()
 
-	def usedIngredients(self):
-		# returns the list of used ingredients to access from outside
-		return self.__usedIngredients
+	def useIngredient(self, i):
+		if self.__ingredients[i] == "use":
+			self.__ingredients[i] = "finished"
 
-	def useIngredient(self, ingredient):
-		# append an ingredient to the list of used ingredients
-		self.__usedIngredients.append(ingredient)
+			if "use" not in self.__ingredients.values():
+				self.__current += 1
+				for i in self.currentIngredients():
+					self.__ingredients[i] = "use"
+
+		else:
+			self.__error = i
+
+	def getIngredientStatus(self):
+		return self.__ingredients
+
+	def getError(self):
+		error = self.__error
+		self.__error = ""
+		return error
 
 	def isReady(self):
 		# returns if recipe is finished or not to the outer world
 		if self.__selectedRecipe == "":
 			return False
-		return set(self.currentIngredients()).issubset(set(self.__usedIngredients))
+
+		return "use" not in self.__ingredients.values() and "waiting" not in self.__ingredients.values()

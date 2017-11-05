@@ -1,5 +1,5 @@
 // connect to the websocket of our app
-var ws = new WebSocket("ws://192.168.0.101:5678/");
+var ws = new WebSocket("ws://192.168.0.111:5678/");
 
 // wait for messages incoming
 ws.onmessage = function (event) {
@@ -43,6 +43,14 @@ ws.onmessage = function (event) {
 			} else {
 				$("#countdown").removeClass("active")
 			}
+		}
+
+		
+		if (json["error"]) {
+			$("#"+json["error"]).addClass("error");
+			setTimeout(function() {
+				$("#"+json["error"]).removeClass("error");
+			}, 3600);
 		}
 	}, timeout);
 

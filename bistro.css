@@ -39,7 +39,8 @@ td {
 	vertical-align: middle;
 }
 
-td .background {
+td .background,
+td .error_bg {
 	text-align: center;
 	vertical-align: middle;
 	position: relative;
@@ -55,16 +56,16 @@ td p {
 	transition: 300ms;
 }
 
-td.neutral .background {
-	background-color: gray;
-}
-
-td.success .background {
+td.use .background {
 	background-color: green;
 }
 
-td.error .background {
- 	background-color: red;
+td.waiting .background {
+	background-color: gray;
+}
+
+td.finished .background {
+	background-color: yellow;
 }
 
 td.ready .background {
@@ -75,16 +76,24 @@ td.ready p {
 	opacity: 0;
 }
 
-td.blink .background {
-	animation-name: blink-animation;
-	animation-duration: .8s;
-	animation-iteration-count: 3;
+td .error_bg {
+	opacity: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
 }
 
 @keyframes blink-animation {
-	0%   {opacity: 1;}
-	50%  {opacity: 0;}
-	100% {opacity: 1;}
+	0%   {opacity: 0;}
+	40%  {opacity: 1;}
+	100% {opacity: 0;}
+}
+
+td.error .error_bg {
+ 	background-color: red;
+ 	animation-name: blink-animation;
+ 	animation-duration: 1.2s;
+	animation-iteration-count: 3;
 }
 
 #waiting,
