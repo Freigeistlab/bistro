@@ -1,5 +1,5 @@
 // connect to the websocket of our app
-var ws = new WebSocket("ws://192.168.0.111:5678/");
+var ws = new WebSocket("ws://10.0.1.2:5678/");
 
 // wait for messages incoming
 ws.onmessage = function (event) {
@@ -31,6 +31,21 @@ ws.onmessage = function (event) {
 	setTimeout(function() {
 		// show name of current recipe
 		document.getElementById("currentRecipe").innerText = json["recipe"];
+
+		if (json["setup"] == 1) {
+			$("#setup").css("display","block");
+			$("#waiting").css("display","none");
+			$("#current").css("display","none");
+		} else {
+			$("#setup").css("display","none");
+			$("#waiting").css("display","block");
+			$("#current").css("display","block");
+		}
+
+		if (json["recipe"] == "") {
+			$("td").removeClass("use").addClass("ready");
+			$("#countdown").addClass("active");
+		}
 
 		// iterate through all our ingredients
 		for (var ingredient in json.ingredients) {

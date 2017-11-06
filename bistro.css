@@ -96,8 +96,22 @@ td.error .error_bg {
 	animation-iteration-count: 3;
 }
 
+#setup {
+	display: block;
+	position: absolute;
+	height: 10vh;
+	bottom: 0;
+	left: 5vw;
+	right: 5vw;
+}
+
+#setup p {
+	font-family: "Roboto-Thin";
+}
+
 #waiting,
 #current {
+	display: none;
 	position: absolute;
 	width: 100vw;
 	height: 10vh;

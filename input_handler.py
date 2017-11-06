@@ -18,14 +18,47 @@ class InputHandler(threading.Thread):
 		self.keyboardHandler = KeyboardHandler()
 		self.keyboardHandler.start()
 
+		# nothing to send yet
+		self.newMessage = False
+
 		self.bluetoothHandler = False
 		if bluetooth:
 			self.bluetoothHandler = BluetoothHandler()
 
-		# nothing to send yet
-		self.newMessage = False
+	def setupBluetooth(self):
+		for i in self.recipeHandler.ingredients():
+			print("setup",i)
+			self.message = {
+				"setup": 1,
+				"recipe": "",
+				"waiting": 0,
+				"ingredients": {
+					i: "use"
+				}
+			}
+			self.newMessage = True
+			waitForTag = True
+			while waitForTag:
+				if self.bluetoothHandler.receivedNewInput():
+					mac_address = self.bluetoothHandler.selection()
+					self.bluetoothHandler.setupTag(i, mac_address)
+					waitForTag = False
+
+				time.sleep(.1)
+
+		# Setup ready
+		self.bluetoothHandler.setupReady()
+		self.message = {
+			"recipe": "",
+			"waiting": 0,
+			"ingredients": {}
+		}
+		self.newMessage = True
 
 	def run(self):
+		if self.bluetoothHandler:
+			self.setupBluetooth()
+
 		# check user inputs and evaluate which action to take
 		# will run infinetly and wait for inputs
 
