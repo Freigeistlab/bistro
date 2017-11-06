@@ -48,7 +48,7 @@ td .error_bg {
 	width: 14vw;
 	height: 14vw;
 	border-radius: 100%;
-	background: #111;
+	background: #131f16;
 	transition: 300ms;
 }
 
@@ -57,19 +57,19 @@ td p {
 }
 
 td.use .background {
-	background-color: green;
+	background-color: #06c234;
 }
 
 td.waiting .background {
-	background-color: gray;
+	background-color: #606862;
 }
 
 td.finished .background {
-	background-color: yellow;
+	background-color: #1a4a26;
 }
 
 td.ready .background {
-	background-color: black;
+	background-color: #000;
 }
 
 td.ready p {
@@ -90,7 +90,7 @@ td .error_bg {
 }
 
 td.error .error_bg {
- 	background-color: red;
+ 	background-color: #c20d06;
  	animation-name: blink-animation;
  	animation-duration: 1.2s;
 	animation-iteration-count: 3;
