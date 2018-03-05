@@ -11,10 +11,12 @@
 # To add new ingredients there, see bistro.html file
 
 RECIPES = {
-	"Antipasti":[{"pasta","lemon"},"bruschetta",{"caprese","olive"},"banana","kiwi"],
-	"Kürbissuppe":[{"pasta", "tomato", "basil"}],
-	"Tomatensuppe":["lemon", "orange", "kiwi", "banana"],
-	"Fingerfood Platte":["pasta", "tomato", "basil", "lemon"]
+	#"Antipasti":[{"pasta","lemon"},"bruschetta",{"caprese","olive"},"banana","kiwi"],
+	#"Kürbissuppe":[{"pasta", "tomato", "basil"}],
+	#"Tomatensuppe":["lemon", "orange", "kiwi", "banana"],
+	#"Fingerfood Platte":["pasta", "tomato", "basil", "lemon"]
+	"h": [{"penne","lemon"}],
+	"j": ["tomato", "caprese"]
 }
 
 class RecipeHandler:

@@ -1,5 +1,5 @@
 // connect to the websocket of our app
-var ws = new WebSocket("ws://192.168.1.55:5678/");
+var ws = new WebSocket("ws://192.168.0.111:5678/");
 
 // wait for messages incoming
 ws.onmessage = function (event) {
@@ -40,6 +40,16 @@ ws.onmessage = function (event) {
 			$("#setup").css("display","none");
 			$("#waiting").css("display","block");
 			$("#current").css("display","block");
+		}
+
+		$("#scales .circles span").removeClass("red").removeClass("yellow").removeClass("green");
+		for (var i = 0; i < 13; i++){
+			if (json["weight"] / 6.0 > i / 13.0) {
+				var classToAdd = "green";
+				if (i > 6) classToAdd = "yellow";
+				if (i > 9) classToAdd = "red";
+				$($("#scales .circles span")[12-i]).addClass(classToAdd);
+			};
 		}
 
 		if (json["recipe"] == "") {
