@@ -5,6 +5,7 @@ from recipe_handler import RecipeHandler
 from bluetooth_handler import BluetoothHandler
 from order_handler import OrderHandler
 from keyboard_handler import KeyboardHandler
+from serial_handler import SerialHandler
 
 class InputHandler(threading.Thread):
 
@@ -17,6 +18,8 @@ class InputHandler(threading.Thread):
 		self.orderHandler.start()
 		self.keyboardHandler = KeyboardHandler()
 		self.keyboardHandler.start()
+		self.serialHandler = SerialHandler()
+		self.serialHandler.start()
 
 		# nothing to send yet
 		self.newMessage = False
@@ -76,6 +79,9 @@ class InputHandler(threading.Thread):
 			if self.keyboardHandler.receivedNewInput():
 				self.handleKeyboardInput()
 
+			if self.serialHandler.receivedNewInput():
+				self.handleSerialInput()
+
 			if self.orderHandler.receivedNewInput():
 				self.handleOrderInput()
 
@@ -92,6 +98,9 @@ class InputHandler(threading.Thread):
 			self.assembleMessage()
 
 	def handleOrderInput(self):
+		self.assembleMessage()
+
+	def handleSerialInput(self):
 		self.assembleMessage()
 
 	def handleKeyboardInput(self):
@@ -170,7 +179,8 @@ class InputHandler(threading.Thread):
 		self.message = {
 			"recipe": self.recipeHandler.currentRecipe(),
 			"waiting": self.orderHandler.waiting(),
-			"ingredients": {}
+			"ingredients": {},
+			"weight": self.serialHandler.getValue()
 		}
 
 		# if the recipe is finished, blink for a bit and reset
