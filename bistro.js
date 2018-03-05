@@ -1,5 +1,5 @@
 // connect to the websocket of our app
-var ws = new WebSocket("ws://10.0.1.2:5678/");
+var ws = new WebSocket("ws://192.168.1.55:5678/");
 
 // wait for messages incoming
 ws.onmessage = function (event) {

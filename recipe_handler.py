@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
 
-# Static list of recipes. Can be extended.
+# Static set of recipes. Can be extended.
+# Ingredients appearing in sets (such as {"pasta","tomato"}) do not affect
+# Note: The basic structure MUST be a set, not a list
+# (e.g. the entry "Pasta": {"pasta", "tomato"} is not allowed
+# instead use "Pasta": [{"pasta", "tomato"}])
+
 # The list of ingredients is dynamically created from the recipes
 # If new ingredients are added here, it will not affect the output in the webbrowser
 # To add new ingredients there, see bistro.html file
 
 RECIPES = {
-	"Antipasti":[{"pasta","lemon"},"bruschetta",{"caprese","olive"},"banana",{"kiwi"}],
+	"Antipasti":[{"pasta","lemon"},"bruschetta",{"caprese","olive"},"banana","kiwi"],
 	"Kürbissuppe":[{"pasta", "tomato", "basil"}],
 	"Tomatensuppe":["lemon", "orange", "kiwi", "banana"],
 	"Fingerfood Platte":["pasta", "tomato", "basil", "lemon"]
@@ -44,6 +49,9 @@ class RecipeHandler:
 			return False
 
 	def flatIngredientList(self, recipe):
+		# return a flat list of the given recipe
+		# used to remove the set / list structure
+		# necessary for ordered recipes
 		l = []
 		for i in recipe:
 			if type(i) is set:
@@ -54,6 +62,7 @@ class RecipeHandler:
 		return l
 
 	def flatRecipes(self):
+		# return a flat list of all ingredients of all recipes
 		l = []
 		for r in RECIPES.values():
 			l.append(self.flatIngredientList(r))

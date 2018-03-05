@@ -26,6 +26,10 @@ class InputHandler(threading.Thread):
 			self.bluetoothHandler = BluetoothHandler()
 
 	def setupBluetooth(self):
+
+		# Walk through all our ingredients
+		# and wait until there is a tag being moved.
+		# This tag will be assigned to the ingredient.
 		for i in self.recipeHandler.ingredients():
 			print("setup",i)
 			self.message = {

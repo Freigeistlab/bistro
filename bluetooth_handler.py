@@ -2,6 +2,9 @@
 
 import threading, gatt
 
+# Static list of all possible tags to be used
+# Tags are assigned to their ingredients in a setup routine
+# but need to appear in this list in order to be selectable
 TAG_POOL = [
 	"b0:b4:48:da:b9:e4",
 	"a0:e6:f8:29:21:d9",
@@ -29,10 +32,14 @@ class TagManager(gatt.DeviceManager):
 		self.start_discovery()
 
 	def device_discovered(self, device):
+		# if we're still setting up,
+		# check if the mac address is in our tag pool
+		# and in case it's a new tag, add to our used tags
 		if self.setup:
 			if device.mac_address in TAG_POOL and device.mac_address not in self.tags:
 				self.selection = device.mac_address
 				self.newInput = True 
+
 		elif device.mac_address in self.tags and self.tags[device.mac_address] != self.selection:
 			self.selection = self.tags[device.mac_address]
 			self.newInput = True
@@ -45,6 +52,7 @@ class TagManager(gatt.DeviceManager):
 		self.setup = False
 
 	def setupTag(self, ingredient, macAddress):
+		# assign a tag to its ingredient
 		print("setup",ingredient,"to mac address", macAddress)
 		self.tags[macAddress] = ingredient;
 		print(self.tags)
