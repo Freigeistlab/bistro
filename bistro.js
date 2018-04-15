@@ -62,7 +62,12 @@ ws.onmessage = function (event) {
 			// each cell in the table of our HTML page gets its respective CSS class
 			// that will cause it to show the right color (see bistro.css)
 			// json[ingredient] contains one of the following: "success", "neutral", "blink", or "error"
-			document.getElementById(ingredient).className = json.ingredients[ingredient];
+			if ($("#"+ingredient).hasClass("error")) {
+				document.getElementById(ingredient).className = json.ingredients[ingredient] + " error";
+			} else {
+				document.getElementById(ingredient).className = json.ingredients[ingredient];	
+			}
+			
 			if (json.ingredients[ingredient] == "ready") {
 				$("#countdown").addClass("active");
 			} else {
@@ -72,10 +77,14 @@ ws.onmessage = function (event) {
 
 		
 		if (json["error"]) {
+			$("#"+json["error"]).removeClass("error");
+			clearTimeout($("#"+json["error"]).data("errorTimeout"));
+
 			$("#"+json["error"]).addClass("error");
-			setTimeout(function() {
+			var t = setTimeout(function() {
 				$("#"+json["error"]).removeClass("error");
 			}, 3600);
+			$("#"+json["error"]).data("errorTimeout", t);
 		}
 	}, timeout);
 

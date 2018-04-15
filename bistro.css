@@ -185,7 +185,7 @@ td.error .error_bg {
  	background-color: #c20d06;
  	animation-name: blink-animation;
  	animation-duration: 1.2s;
-	animation-iteration-count: 3;
+	animation-iteration-count: infinite;
 }
 
 #setup {
