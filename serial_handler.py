@@ -22,10 +22,10 @@ class SerialHandler(threading.Thread):
 				self.scaleValue = float(line[3:8].replace(",","."))
 				self.newInput = True
 			except:
-				#self.newInput = False
-				self.scaleValue = random.random() * 6
-				self.newInput = True
-				time.sleep(.5)
+				self.newInput = False
+				#self.scaleValue = random.random() * 6
+				#self.newInput = True
+				#time.sleep(.5)
 			time.sleep(.1)
 				
 
