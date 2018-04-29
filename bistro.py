@@ -15,9 +15,11 @@ class Bistro:
 				verbose = True
 			if arg == "--no-bluetooth":
 				bluetooth = False
+			if arg == "--fake-data":
+				fakeData = True
 
 		# Input handler is a separate thread, needs to be started
-		self.inputHandler = InputHandler(verbose, bluetooth)
+		self.inputHandler = InputHandler(verbose, bluetooth, fakeData)
 		self.inputHandler.start()
 
 		# open the website in our default browser

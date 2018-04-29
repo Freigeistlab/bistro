@@ -4,13 +4,15 @@ import re, socket, threading, sys
 
 class OrderHandler(threading.Thread):
 
-	def __init__(self, verbose):
+	def __init__(self, recipeHandler, verbose, fakeData):
 		# let python do the threading magic
 		super(OrderHandler, self).__init__()
 
+		self.recipeHandler = recipeHandler
 		self.waitinglist = []
 		self.verbose = verbose
 		self.newInput = False
+		self.fakeData = fakeData
 		self.setupSocket()
 
 	def setupSocket(self):
@@ -75,30 +77,113 @@ class OrderHandler(threading.Thread):
 						liste = [55, 34] + [ord(i) for i in data[-8:-4:]] + [0]
 						conn.send(bytes(liste))
 
+						if self.fakeData:
+							data = """Bon            26 Tischbon
+Datum          14:12 31.03.18
+Bedient von    Armin Admin 1234
+Terminal       iPhone von Michael
+Tisch          Theke
+
+------------------------------------------
+Penne
+   Bolognese
+   Mais
+   Hackfleisch
+   Ohne Tomaten
+   Ohne Parmesan
+   Coca-Cola
+                            (20,90) 20,90
+------------------------------------------
+Farfalle
+    Arrabiata
+                            (20,90) 20,90
+------------------------------------------
+Penne
+    Bolognese
+                            (20,90) 20,90
+------------------------------------------
+3x Tagliatelle
+   Bolognese
+   Mais
+   Ohne Hackfleisch
+   Ohne Tomaten
+   Ohne Parmesan
+                            (20,90) 20,90
+------------------------------------------
+2x Penne
+   Arrabiata
+   Parmesan
+   Salzkartoffeln
+   Ohne Chili
+   Fanta
+                            (23,50) 23,50
+------------------------------------------
+"""
+
 						print("  New order:")
 						if self.verbose:
 							print(data)
 
-						totals = re.compile("(?<=Total)\s+€\s\d+,\d{2}|(?<=Total)\s+\d+,\d{2}\s€").findall(data)
-						ids = re.compile("(?<=Bill no\.)\d+-\d+|(?<=Rechnung Nr\.)\d+-\d+").findall(data)
-						dates = re.compile("\d{2}\.\d{2}\.\d{4}").findall(data)
-						times = re.compile("\d{2}\:\d{2}\:\d{2}").findall(data)
-						items = re.compile("\d+x\s+[\w\s\']+\s+(?=€\s\d+,\d{2})|\d+x\s+[\w\s\']+\s+(?=\d+,\d{2}\s€)").findall(data)
+						orders = re.compile("(?<=-{42}\s)[\w\s-]+").findall(data)
 
-						# for now using only items, but the rest should already be extracted properly
-						print("    Totals: ", [i.strip() for i in totals])
-						print("    Bill ID: ", ids)
-						print("    Date: ", dates)
-						print("    Time: ", times)
-						print("    Items: ", [i.strip() for i in items])
+						print("    Orders: ", [o.strip() for o in orders])
 
-						for item in items:
+						for order in orders:
 							# remove unnecessary whitespaces
-							item = item.strip()
+							order = order.strip()
+
 							# figure out how many times an item has been ordered
-							amount = int(re.match("\d+(?=x)", item).group(0))
-							# find out which dish has been ordered
-							dish = item[len(str(amount))+2:]
+							amount = re.compile("\d+(?=x)").findall(order)
+							
+							if amount:
+								amount = int(amount[0])
+								order = order[len(str(amount))+2:]
+							else:
+								amount = 1
+
+							items = re.split('\n', order)
+
+							for index, item in enumerate(items):
+								# remove unnecessary whitespaces
+								items[index] = item.strip()
+
+							dishName = items[0] + " " + items[1]
+							extras = ""
+							
+							if not self.recipeHandler.isPasta(items[0]):
+								print("Error: Ich kenne keine Pasta namens", pasta, ". Vielleicht in der recipe_handler.py eintragen?")
+							else: 
+								pasta = items[0]
+
+							if not self.recipeHandler.isSauce(items[1]):
+								print("Error: Ich kenne keine Sauce namens", items[1], ". Vielleicht in der recipe_handler.py eintragen?")
+							else:
+								sauce = self.recipeHandler.getRecipe(items[1])
+
+							items = items[2:]
+							toppings = []
+
+							for item in items:
+								if item.startswith("Ohne "):
+									if item[5:] in sauce:
+										sauce.remove(item[5:])
+										extras += " – " + item[5:]
+									for ingredient in sauce:
+										if item[5:] in ingredient:
+											ingredient.remove(item[5:])
+											extras += " – " + item[5:]
+								elif not self.recipeHandler.isTopping(item):
+									print(item,"ist kein Topping. Vielleicht ein Getränk. Ansonsten vielleicht in der recipe_handler.py eintragen?")
+								else:
+									toppings.append(item)
+									extras += " + " + item
+
+							# put together the ordered dish
+							dish = {
+								"name": dishName,
+								"extras": extras.strip(),
+								"recipe": [pasta] + sauce + toppings
+							}
 
 							for i in range(0,amount):
 								self.waitinglist.append(dish)

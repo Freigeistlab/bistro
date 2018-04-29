@@ -50,10 +50,10 @@ header a {
 
 table {
 	margin: 0;
-	margin-top: 15vh;
+	margin-top: 23vh;
 	padding: 0;
-	width: 50vw;
-	margin-left: 25vw;
+	width: 80vw;
+	margin-left: 5vw;
 	height: 70vh;
 	display: inline-block;
 	text-align: center;
@@ -66,8 +66,8 @@ table {
 	padding: 0;
 	display: inline-block;
 	position: fixed;
-	top: 15vh;
-	right: 20vw;
+	top: 20vh;
+	right: 5vw;
 }
 
 #scales .circles span {
@@ -118,8 +118,8 @@ td {
 	display: inline-block;
 	padding: 3vh;
 	margin: 1.5vh;
-	width: 24vh;
-	height: 24vh;
+	width: 16vh;
+	height: 16vh;
 	text-align: center;
 	vertical-align: middle;
 	border: 1px solid #fff;
@@ -132,15 +132,17 @@ td .error_bg {
 	vertical-align: middle;
 	position: relative;
 	display: inline-block;
-	width: 24vh;
-	height: 24vh;
+	width: 16vh;
+	height: 16vh;
 	border-radius: 10%;
 	background: #131f16;
 	transition: 300ms;
 }
 
 td p {
-	display: none;
+	position: relative;
+	top: -10vh;
+	font-size: .6em;
 	transition: 300ms;
 }
 
@@ -240,6 +242,12 @@ td.error .error_bg {
 #current {
 	padding-left: 1vw;
 	right: -51vw;
+}
+
+#extras {
+	font-size: .4em;
+	position: relative;
+	top: -1em;
 }
 
 #waiting .item {

@@ -31,6 +31,7 @@ ws.onmessage = function (event) {
 	setTimeout(function() {
 		// show name of current recipe
 		document.getElementById("currentRecipe").innerText = json["recipe"];
+		document.getElementById("extras").innerText = json["extras"];
 
 		if (json["setup"] == 1) {
 			$("#setup").css("display","block");
@@ -55,6 +56,8 @@ ws.onmessage = function (event) {
 		if (json["recipe"] == "") {
 			$("td").removeClass("use").addClass("ready");
 			$("#countdown").addClass("active");
+			clearTimeout($(".error").data("errorTimeout"));
+			$(".error").removeClass("error");
 		}
 
 		// iterate through all our ingredients

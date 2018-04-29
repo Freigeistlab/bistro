@@ -9,12 +9,12 @@ from serial_handler import SerialHandler
 
 class InputHandler(threading.Thread):
 
-	def __init__(self, verbose, bluetooth):
+	def __init__(self, verbose, bluetooth, fakeData):
 		# let python do the threading magic
 		super().__init__()
 
 		self.recipeHandler = RecipeHandler()
-		self.orderHandler = OrderHandler(verbose)
+		self.orderHandler = OrderHandler(self.recipeHandler, verbose, fakeData)
 		self.orderHandler.start()
 		self.keyboardHandler = KeyboardHandler()
 		self.keyboardHandler.start()
@@ -114,7 +114,11 @@ class InputHandler(threading.Thread):
 
 		elif userInput in self.recipeHandler.dishes():
 			# entered a valid dish
-			self.orderHandler.waitinglist.append(userInput)
+			self.orderHandler.waitinglist.append({
+				"name": userInput,
+				"extras": "",
+				"recipe": self.recipeHandler.getRecipe(userInput)
+			})
 			self.assembleMessage()
 
 		elif userInput == "+":
@@ -178,6 +182,7 @@ class InputHandler(threading.Thread):
 
 		self.message = {
 			"recipe": self.recipeHandler.currentRecipe(),
+			"extras": self.recipeHandler.currentExtras(),
 			"waiting": self.orderHandler.waiting(),
 			"ingredients": {},
 			"weight": self.serialHandler.getValue()
@@ -186,6 +191,7 @@ class InputHandler(threading.Thread):
 		# if the recipe is finished, blink for a bit and reset
 		if self.recipeHandler.isReady():
 			self.message["recipe"] = ""
+			self.message["extras"] = ""
 			for i in self.recipeHandler.ingredients():
 				self.message["ingredients"][i] = "ready" #blinking
 			self.recipeHandler.selectRecipe("")
@@ -195,7 +201,6 @@ class InputHandler(threading.Thread):
 
 		self.message["ingredients"] = self.recipeHandler.getIngredientStatus()
 		self.message["error"] = self.recipeHandler.getError()
-
 
 		self.newMessage = True
 

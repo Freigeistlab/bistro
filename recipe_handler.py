@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
-# Static set of recipes. Can be extended.
+import copy
+
+# Static set of sauce recipes. Can be extended.
 # Ingredients appearing in sets (such as {"pasta","tomato"}) do not affect
-# Note: The basic structure MUST be a set, not a list
+# Note: The basic structure MUST be a list, not a set
 # (e.g. the entry "Pasta": {"pasta", "tomato"} is not allowed
 # instead use "Pasta": [{"pasta", "tomato"}])
 
@@ -11,13 +13,20 @@
 # To add new ingredients there, see bistro.html file
 
 RECIPES = {
-	#"Antipasti":[{"pasta","lemon"},"bruschetta",{"caprese","olive"},"banana","kiwi"],
-	#"Kürbissuppe":[{"pasta", "tomato", "basil"}],
-	#"Tomatensuppe":["lemon", "orange", "kiwi", "banana"],
-	#"Fingerfood Platte":["pasta", "tomato", "basil", "lemon"]
-	"h": [{"penne","lemon"}],
-	"j": ["tomato", "caprese"]
+	"Bolognese": [{"Tomaten","Hackfleisch"},"Parmesan"],
+	"Arrabiata": ["Chili", "Knoblauch", "Tomaten"]
 }
+
+PASTA = [
+	"Penne", "Farfalle", "Tagliatelle"
+]
+
+TOPPINGS = [
+	"Mais", "Hackfleisch", "Parmesan", "Salzkartoffeln"
+]
+
+
+	
 
 class RecipeHandler:
 	# The class that handles our recipes and ingredients
@@ -27,13 +36,20 @@ class RecipeHandler:
 		# - add all recipes in one flat list
 		# - convert it into a set (only distinct elements)
 		# - convert it back into a list
-		self.__ingredients = dict.fromkeys(list(set(sum(self.flatRecipes(), []))))
+		self.__ingredients = dict.fromkeys(list(set(sum(self.flatRecipes(), []) + PASTA + TOPPINGS)))
 		self.selectRecipe("")
 
 	def selectRecipe(self, which):
 		# use another recipe (that e.g. someone ordered)
 		self.__current = 0
-		self.__selectedRecipe = which
+		if which:
+			self.__recipeName = which["name"]
+			self.__extras = which["extras"]
+			self.__selectedRecipe = which["recipe"]
+		else:
+			self.__recipeName = ""
+			self.__extras = ""
+			self.__selectedRecipe = ""
 		self.__error = ""
 		for i in self.__ingredients:
 			self.__ingredients[i] = "neutral"
@@ -75,7 +91,7 @@ class RecipeHandler:
 		# if there is none selected, return an empty list
 		if self.__selectedRecipe == "":
 			return []
-		return self.flatIngredientList(RECIPES[self.__selectedRecipe])
+		return self.flatIngredientList(self.__selectedRecipe)
 
 	def currentIngredients(self):
 		# returns the ingredient or the ingredients that are to be used right now
@@ -84,17 +100,24 @@ class RecipeHandler:
 			return []
 
 		try:
-			result = RECIPES[self.__selectedRecipe][self.__current]
+			result = self.__selectedRecipe[self.__current]
 		except:
 			return []
+
+		if not result:
+			self.__current += 1
+			return self.currentIngredients()
 		
-		if type(result) is str:
+		elif type(result) is str:
 			return {result}
 		
 		return result
 
 	def currentRecipe(self):
-		return self.__selectedRecipe
+		return self.__recipeName
+
+	def currentExtras(self):
+		return self.__extras
 
 	def reset(self):
 		self.selectRecipe("")
@@ -109,6 +132,18 @@ class RecipeHandler:
 	def dishes(self):
 		return RECIPES.keys()
 
+	def isPasta(self, pasta):
+		return pasta in PASTA
+
+	def isTopping(self, topping):
+		return topping in TOPPINGS
+
+	def isSauce(self, sauce):
+		return sauce in RECIPES
+
+	def isIngredient(self, ingredient):
+		return ingredient in self.ingredients()
+
 	def useIngredient(self, i):
 		if self.__ingredients[i] == "use":
 			self.__ingredients[i] = "finished"
@@ -120,6 +155,9 @@ class RecipeHandler:
 
 		else:
 			self.__error = i
+
+	def getRecipe(self, name):
+		return copy.deepcopy(RECIPES[name])
 
 	def getIngredientStatus(self):
 		return self.__ingredients
