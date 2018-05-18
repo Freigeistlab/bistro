@@ -9,6 +9,7 @@ class Bistro:
 	def __init__(self):
 		verbose = False
 		bluetooth = True
+		fakeData = False
 
 		for arg in sys.argv:
 			if arg == "--verbose":
