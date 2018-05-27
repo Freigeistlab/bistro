@@ -52,6 +52,9 @@ class TagManager(gatt.DeviceManager):
 		self.newInput = False
 		return self.selection
 
+	def resetSelection(self):
+		self.selection = ""
+
 	def setupReady(self):
 		self.setup = False
 
@@ -80,3 +83,6 @@ class BluetoothHandler():
 
 	def selection(self):
 		return self.tagManager.getSelection()
+
+	def resetSelection(self):
+		return self.tagManager.resetSelection()

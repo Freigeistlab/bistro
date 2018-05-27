@@ -195,6 +195,8 @@ class InputHandler(threading.Thread):
 			for i in self.recipeHandler.ingredients():
 				self.message["ingredients"][i] = "ready" #blinking
 			self.recipeHandler.selectRecipe("")
+			if self.bluetoothHandler:
+				self.bluetoothHandler.resetSelection()
 			self.newMessage = True
 			time.sleep(5)
 			return
