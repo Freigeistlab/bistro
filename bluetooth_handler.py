@@ -45,7 +45,7 @@ class TagManager(gatt.DeviceManager):
 
 		elif device.mac_address in self.tags and (self.tags[device.mac_address] != self.selection or time.time() - self.selectionTime > 5):
 			self.selection = self.tags[device.mac_address]
-			self selectionTime = time.time()
+			self.selectionTime = time.time()
 			self.newInput = True
 
 	def getSelection(self):
