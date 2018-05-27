@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import threading, gatt
+import threading, gatt, time
 
 # Static list of all possible tags to be used
 # Tags are assigned to their ingredients in a setup routine
@@ -24,10 +24,13 @@ class TagManager(gatt.DeviceManager):
 	def __init__(self):
 		super().__init__(adapter_name='hci0')
 
+		self.startupTime = time.time()
 		self.newInput = False
 		self.selection = ""
+		self.selectionTime = time.time()
 		self.setup = True
 		self.tags = {}
+		
 
 		self.start_discovery()
 
@@ -40,8 +43,9 @@ class TagManager(gatt.DeviceManager):
 				self.selection = device.mac_address
 				self.newInput = True 
 
-		elif device.mac_address in self.tags and self.tags[device.mac_address] != self.selection:
+		elif device.mac_address in self.tags and (self.tags[device.mac_address] != self.selection or time.time() - self.selectionTime > 5):
 			self.selection = self.tags[device.mac_address]
+			self selectionTime = time.time()
 			self.newInput = True
 
 	def getSelection(self):
@@ -63,6 +67,7 @@ class BluetoothHandler():
 		self.tagManager = TagManager()
 		btThread = threading.Thread(name='Bluetooththread', target=self.tagManager.run)
 		btThread.start()
+		selT
 
 	def setupReady(self):
 		self.tagManager.setupReady()
