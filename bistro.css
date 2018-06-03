@@ -194,11 +194,6 @@ td p {
 	transition: 300ms;
 }
 
-td.use .background {
-	transition-delay: 1s;
-	background-color: #06c234;
-}
-
 td.show .background {
 	background-color: #6a626c;
 	transition: 2000ms;
@@ -206,6 +201,10 @@ td.show .background {
 
 td.waiting .background {
 	background-color: #606862;
+}
+
+td.use .background {
+	background-color: #06c234;
 }
 
 td.finished .background {

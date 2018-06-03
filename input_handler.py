@@ -118,8 +118,8 @@ class InputHandler(threading.Thread):
 			# entered a valid dish
 			self.orderHandler.appendToWaitingList({
 				"name": userInput,
-				"extras": "",
-				"recipe": self.recipeHandler.getRecipe(userInput)
+				"extras": ["+ Parmesan"],
+				"recipe": ["Tagliatelle"] + self.recipeHandler.getRecipe(userInput) + ["Parmesan"]
 			})
 			self.assembleMessage()
 

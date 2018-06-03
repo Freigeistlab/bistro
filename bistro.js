@@ -3,6 +3,7 @@ var ws = new WebSocket("ws://192.168.0.111:5678/");
 
 
 var interval;
+var demoStart;
 function demo() {
 	interval = setInterval(function() {
 		var current = $($("td")[Math.floor(Math.random() * 20)]);
@@ -20,6 +21,7 @@ $(document).ready(function() {
 // wait for messages incoming
 ws.onmessage = function (event) {
 	clearInterval(interval);
+	clearTimeout(demoStart);
 	// convert the string we get into a JSON object
 	var json = JSON.parse(event.data);
 	var timeout = 0;
@@ -75,11 +77,11 @@ ws.onmessage = function (event) {
 			$("#countdown").addClass("active");
 			clearTimeout($(".error").data("errorTimeout"));
 			$(".error").removeClass("error");
-			setTimeout(function() {
+			demoStart = setTimeout(function() {
 				$("td").removeClass("ready");
 				demo();	
 				$("#countdown").removeClass("active");
-			}, 5000)
+			}, 6000)
 			
 		}
 
@@ -90,6 +92,16 @@ ws.onmessage = function (event) {
 			// json[ingredient] contains one of the following: "success", "neutral", "blink", or "error"
 			if ($("#"+ingredient).hasClass("error")) {
 				document.getElementById(ingredient).className = json.ingredients[ingredient] + " error";
+			} else if (json.ingredients[ingredient] == "use") {
+				var use = document.getElementById(ingredient);
+				if (diff < 0) {
+					use.className = "use";
+				} else {
+					use.className = "waiting toUse";
+					setTimeout(function() {
+						$(".toUse").removeClass("waiting").removeClass("toUse").addClass("use");
+					},1000);
+				}
 			} else {
 				document.getElementById(ingredient).className = json.ingredients[ingredient];	
 			}
