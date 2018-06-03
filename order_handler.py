@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import re, socket, threading, sys
+import re, socket, threading, sys, sqlite3
 
 class OrderHandler(threading.Thread):
 
@@ -9,11 +9,54 @@ class OrderHandler(threading.Thread):
 		super(OrderHandler, self).__init__()
 
 		self.recipeHandler = recipeHandler
-		self.waitinglist = []
 		self.verbose = verbose
 		self.newInput = False
 		self.fakeData = fakeData
 		self.setupSocket()
+
+	def getWaitingList(self):
+		db = sqlite3.connect('recipes.db')
+		dbc = db.cursor()
+		return dbc.execute('SELECT id FROM WaitingList').fetchall()
+
+	def emptyWaitingList(self):
+		#delete all entries from waiting list
+		db = sqlite3.connect('recipes.db')
+		dbc = db.cursor()
+		dbc.execute('DELETE FROM WaitingList');
+		db.commit()
+
+	def getNextWaitingDish(self):
+		#fetch next dish, remove it from waiting list and return
+		db = sqlite3.connect('recipes.db')
+		dbc = db.cursor()
+		current = dbc.execute('SELECT * FROM Current LIMIT 1').fetchall()
+		if current:
+			return eval(current[0][1])
+
+		dish = dbc.execute('SELECT * FROM WaitingList LIMIT 1').fetchall()
+		if dish:
+			dish = dish[0]
+			dbc.execute('DELETE FROM WaitingList WHERE id = ' + str(dish[0]));
+			db.commit()
+
+			dbc.execute('INSERT INTO Current(dish) VALUES (?)', (dish[1],))
+			db.commit()
+
+			return eval(dish[1])
+
+	def appendToWaitingList(self, dish):
+		#append dish to waiting list json.dumps(dish)
+		db = sqlite3.connect('recipes.db')
+		dbc = db.cursor()
+		dbc.execute('INSERT INTO WaitingList(dish) VALUES (?)', (str(dish),))
+		db.commit()
+
+	def recipeReady(self):
+		db = sqlite3.connect('recipes.db')
+		dbc = db.cursor()
+		dbc.execute('DELETE FROM Current');
+		db.commit()
 
 	def setupSocket(self):
 		# sets up the socket to establish the connection to orderbird
@@ -29,15 +72,14 @@ class OrderHandler(threading.Thread):
 		# returns the next dish in the waitinglist
 		# and removes it from there
 
-		if not self.waitinglist:
+		if not self.getWaitingList():
 			return ""
 
-		nextDish = self.waitinglist[0]
-		self.waitinglist = self.waitinglist[1:]
+		nextDish = self.getNextWaitingDish()
 		return nextDish
 
 	def waiting(self):
-		return len(self.waitinglist)
+		return len(self.getWaitingList())
 
 	def getIpAddress(self):
 		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -45,7 +87,7 @@ class OrderHandler(threading.Thread):
 		return s.getsockname()[0]
 
 	def reset(self):
-		self.waitinglist = []
+		self.emptyWaitingList()
 
 	def receivedNewInput(self):
 		res = self.newInput
@@ -214,7 +256,7 @@ class OrderHandler(threading.Thread):
 							}
 
 							for i in range(0,amount):
-								self.waitinglist.append(dish)
+								self.appendToWaitingList(dish)
 
 						self.newInput = True
 

@@ -18,17 +18,18 @@ class TagManager(gatt.DeviceManager):
 		self.selectionTime = time.time()
 		self.setup = False
 
-		self.db = sqlite3.connect('tags.db')
-		self.dbc = self.db.cursor()
-
 		self.getTagPool()
 		self.start_discovery()
 
 	def getTags(self):
-		tags = self.dbc.execute('SELECT * FROM Tags').fetchall()
+		db = sqlite3.connect('tags.db')
+		dbc = db.cursor()
+		tags = dbc.execute('SELECT * FROM Tags').fetchall()
 		return dict((tag,ingredient) for tag,ingredient in tags)
 
 	def getTagPool(self):
+		db = sqlite3.connect('tags.db')
+		dbc = db.cursor()
 		pool = dbc.execute('SELECT * FROM TagPool').fetchall()
 		self.tagPool = list(tag[0] for tag in pool)
 
@@ -55,8 +56,10 @@ class TagManager(gatt.DeviceManager):
 		self.selection = ""
 
 	def beginSetup(self):
-		self.dbc.execute('DELETE FROM Tags')
-		self.db.commit()
+		db = sqlite3.connect('tags.db')
+		dbc = db.cursor()
+		dbc.execute('DELETE FROM Tags')
+		db.commit()
 		self.setup = True
 
 	def setupReady(self):
@@ -64,9 +67,11 @@ class TagManager(gatt.DeviceManager):
 
 	def setupTag(self, ingredient, macAddress):
 		# assign a tag to its ingredient
+		db = sqlite3.connect('tags.db')
+		dbc = db.cursor()
 		print("setup",ingredient,"to mac address", macAddress)
-		self.dbc.execute('INSERT INTO Tags VALUES (?,?)', (macAddress, ingredient))
-		self.db.commit()
+		dbc.execute('INSERT INTO Tags VALUES (?,?)', (macAddress, ingredient))
+		db.commit()
 		print(self.getTags())
 
 class BluetoothHandler():

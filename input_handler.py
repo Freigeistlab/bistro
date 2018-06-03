@@ -116,7 +116,7 @@ class InputHandler(threading.Thread):
 
 		elif userInput in self.recipeHandler.dishes():
 			# entered a valid dish
-			self.orderHandler.waitinglist.append({
+			self.orderHandler.appendToWaitingList({
 				"name": userInput,
 				"extras": "",
 				"recipe": self.recipeHandler.getRecipe(userInput)
@@ -203,6 +203,7 @@ class InputHandler(threading.Thread):
 			for i in self.recipeHandler.ingredients():
 				self.message["ingredients"][i] = "ready" #blinking
 			self.recipeHandler.selectRecipe("")
+			self.orderHandler.recipeReady();
 			if self.bluetoothHandler:
 				self.bluetoothHandler.resetSelection()
 			self.newMessage = True

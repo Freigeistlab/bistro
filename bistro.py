@@ -19,7 +19,7 @@ class Bistro:
 				bluetooth = False
 			if arg == "--fake-data":
 				fakeData = True
-			if arg == "--setup".
+			if arg == "--setup":
 				setupTags = True
 
 		# Input handler is a separate thread, needs to be started
