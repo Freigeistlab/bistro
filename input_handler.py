@@ -9,7 +9,7 @@ from serial_handler import SerialHandler
 
 class InputHandler(threading.Thread):
 
-	def __init__(self, verbose, bluetooth, fakeData):
+	def __init__(self, verbose, bluetooth, fakeData, setupTags):
 		# let python do the threading magic
 		super().__init__()
 
@@ -24,6 +24,7 @@ class InputHandler(threading.Thread):
 		# nothing to send yet
 		self.newMessage = False
 
+		self.setupTags = setupTags
 		self.bluetoothHandler = False
 		if bluetooth:
 			self.bluetoothHandler = BluetoothHandler()
@@ -33,6 +34,7 @@ class InputHandler(threading.Thread):
 		# Walk through all our ingredients
 		# and wait until there is a tag being moved.
 		# This tag will be assigned to the ingredient.
+		self.bluetoothHandler.beginSetup()
 		for i in self.recipeHandler.ingredients():
 			print("setup",i)
 			self.message = {
@@ -63,7 +65,7 @@ class InputHandler(threading.Thread):
 		self.newMessage = True
 
 	def run(self):
-		if self.bluetoothHandler:
+		if self.bluetoothHandler and self.setupTags:
 			self.setupBluetooth()
 
 		# check user inputs and evaluate which action to take
@@ -127,6 +129,12 @@ class InputHandler(threading.Thread):
 
 		elif userInput == "status":
 			self.printStatus()
+
+		elif userInput == "setup":
+			if self.bluetoothHandler:
+				self.setupBluetooth()
+			else:
+				print("No bluetooth to set up")
 
 		elif userInput == "reset":
 			# go back to zero

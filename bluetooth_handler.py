@@ -1,23 +1,11 @@
 #!/usr/bin/env python3
 
-import threading, gatt, time
+import threading, gatt, time, sqlite3
 
 # Static list of all possible tags to be used
 # Tags are assigned to their ingredients in a setup routine
 # but need to appear in this list in order to be selectable
-TAG_POOL = [
-	"b0:b4:48:da:b9:e4",
-	"a0:e6:f8:29:21:d9",
-	"b0:b4:48:da:b8:29",
-	"a0:e6:f8:29:25:19",
-	"a0:e6:f8:29:21:dd",
-	"a0:e6:f8:47:66:83",
-	"a0:e6:f8:47:63:f6",
-	"a0:e6:f8:47:63:f5",
-	"c8:5f:72:65:45:13",
-	"e3:f6:8c:d3:be:37",
-	"f0:71:a3:2e:b0:72",
-]
+
 
 class TagManager(gatt.DeviceManager):
 
@@ -28,23 +16,34 @@ class TagManager(gatt.DeviceManager):
 		self.newInput = False
 		self.selection = ""
 		self.selectionTime = time.time()
-		self.setup = True
-		self.tags = {}
-		
+		self.setup = False
 
+		self.db = sqlite3.connect('tags.db')
+		self.dbc = self.db.cursor()
+
+		self.setupTagPool()
 		self.start_discovery()
+
+	def getTags(self):
+		tags = self.dbc.execute('SELECT * FROM Tags').fetchall()
+		return dict((tag,ingredient) for tag,ingredient in tags)
+
+	def setupTagPool(self):
+		pool = dbc.execute('SELECT * FROM TagPool').fetchall()
+		self.tagPool = list(tag[0] for tag in pool)
 
 	def device_discovered(self, device):
 		# if we're still setting up,
 		# check if the mac address is in our tag pool
 		# and in case it's a new tag, add to our used tags
+		tags = self.getTags()		
 		if self.setup:
-			if device.mac_address in TAG_POOL and device.mac_address not in self.tags:
+			if device.mac_address in self.tagPool and device.mac_address not in tags:
 				self.selection = device.mac_address
 				self.newInput = True 
 
-		elif device.mac_address in self.tags and (self.tags[device.mac_address] != self.selection or time.time() - self.selectionTime > 5):
-			self.selection = self.tags[device.mac_address]
+		elif device.mac_address in tags and (tags[device.mac_address] != self.selection or time.time() - self.selectionTime > 5):
+			self.selection = tags[device.mac_address]
 			self.selectionTime = time.time()
 			self.newInput = True
 
@@ -55,14 +54,20 @@ class TagManager(gatt.DeviceManager):
 	def resetSelection(self):
 		self.selection = ""
 
+	def beginSetup(self):
+		self.dbc.execute('DELETE FROM Tags')
+		self.db.commit()
+		self.setup = True
+
 	def setupReady(self):
 		self.setup = False
 
 	def setupTag(self, ingredient, macAddress):
 		# assign a tag to its ingredient
 		print("setup",ingredient,"to mac address", macAddress)
-		self.tags[macAddress] = ingredient;
-		print(self.tags)
+		self.dbc.execute('INSERT INTO Tags VALUES (?,?)', (macAddress, ingredient))
+		self.db.commit()
+		print(self.getTags())
 
 class BluetoothHandler():
 
@@ -70,10 +75,12 @@ class BluetoothHandler():
 		self.tagManager = TagManager()
 		btThread = threading.Thread(name='Bluetooththread', target=self.tagManager.run)
 		btThread.start()
-		selT
 
 	def setupReady(self):
 		self.tagManager.setupReady()
+
+	def beginSetup(self):
+		self.tagManager.beginSetup()
 
 	def setupTag(self, ingredient, macAddress):
 		self.tagManager.setupTag(ingredient, macAddress)

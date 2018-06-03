@@ -10,6 +10,7 @@ class Bistro:
 		verbose = False
 		bluetooth = True
 		fakeData = False
+		setupTags = False
 
 		for arg in sys.argv:
 			if arg == "--verbose":
@@ -18,9 +19,11 @@ class Bistro:
 				bluetooth = False
 			if arg == "--fake-data":
 				fakeData = True
+			if arg == "--setup".
+				setupTags = True
 
 		# Input handler is a separate thread, needs to be started
-		self.inputHandler = InputHandler(verbose, bluetooth, fakeData)
+		self.inputHandler = InputHandler(verbose, bluetooth, fakeData, setupTags)
 		self.inputHandler.start()
 
 		# open the website in our default browser
