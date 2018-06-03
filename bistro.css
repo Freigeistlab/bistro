@@ -199,6 +199,11 @@ td.use .background {
 	background-color: #06c234;
 }
 
+td.show .background {
+	background-color: #6a626c;
+	transition: 2000ms;
+}
+
 td.waiting .background {
 	background-color: #606862;
 }

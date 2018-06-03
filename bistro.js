@@ -1,8 +1,25 @@
 // connect to the websocket of our app
 var ws = new WebSocket("ws://192.168.0.111:5678/");
 
+
+var interval;
+function demo() {
+	interval = setInterval(function() {
+		var current = $($("td")[Math.floor(Math.random() * 20)]);
+		current.addClass("show");
+		setTimeout(function(){
+			current.removeClass("show");
+		},5000)
+	}, 1000);
+}
+
+$(document).ready(function() {
+	demo();	
+});
+
 // wait for messages incoming
 ws.onmessage = function (event) {
+	clearInterval(interval);
 	// convert the string we get into a JSON object
 	var json = JSON.parse(event.data);
 	var timeout = 0;
@@ -58,6 +75,12 @@ ws.onmessage = function (event) {
 			$("#countdown").addClass("active");
 			clearTimeout($(".error").data("errorTimeout"));
 			$(".error").removeClass("error");
+			setTimeout(function() {
+				$("td").removeClass("ready");
+				demo();	
+				$("#countdown").removeClass("active");
+			}, 5000)
+			
 		}
 
 		// iterate through all our ingredients
