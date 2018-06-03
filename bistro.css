@@ -147,6 +147,7 @@ td p {
 }
 
 td.use .background {
+	transition-delay: 1s;
 	background-color: #06c234;
 }
 

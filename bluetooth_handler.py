@@ -21,14 +21,14 @@ class TagManager(gatt.DeviceManager):
 		self.db = sqlite3.connect('tags.db')
 		self.dbc = self.db.cursor()
 
-		self.setupTagPool()
+		self.getTagPool()
 		self.start_discovery()
 
 	def getTags(self):
 		tags = self.dbc.execute('SELECT * FROM Tags').fetchall()
 		return dict((tag,ingredient) for tag,ingredient in tags)
 
-	def setupTagPool(self):
+	def getTagPool(self):
 		pool = dbc.execute('SELECT * FROM TagPool').fetchall()
 		self.tagPool = list(tag[0] for tag in pool)
 
