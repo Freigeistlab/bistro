@@ -18,11 +18,11 @@ RECIPES = {
 }
 
 PASTA = [
-	"Penne", "Farfalle", "Tagliatelle"
+	"Penne", "Farfalle", "Tagliatelle", "Spaghetti", "Fussili", "Macaroni"
 ]
 
 TOPPINGS = [
-	"Mais", "Hackfleisch", "Parmesan", "Salzkartoffeln"
+	"Mais", "Hackfleisch", "Parmesan", "Salzkartoffeln", "Paprika", "Oliven", "Rucola", "Kapern", "Majo", "Ketchup", "Senf"
 ]
 
 

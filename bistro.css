@@ -19,11 +19,35 @@ body {
 	padding: 0;
 	width: 100vw;
 	height: 100vh;
-	font-size: 2vh;
+	font-size: 16px;
 	font-family: "Roboto", sans-serif;
 	background: black;
 	color: white;
-	overflow: hidden;
+	overflow: scroll;
+}
+
+#area {
+	margin: 0;
+	padding: 0;
+	width: 1920px;
+	height: 1080px;
+	background: black;
+	display: block;
+	position: absolute;
+	z-index: -1;
+}
+
+#textarea {
+	margin: 0;
+	padding: 0;
+	width: 800px;
+	height: 120px;
+	top: 870px;
+	left: 40px;
+	background: black;
+	display: block;
+	position: absolute;
+	z-index: -1;
 }
 
 header {
@@ -50,13 +74,21 @@ header a {
 
 table {
 	margin: 0;
-	margin-top: 23vh;
+	top: 75px;
+	left: 500px;
 	padding: 0;
-	width: 80vw;
-	margin-left: 5vw;
-	height: 70vh;
+	width: 1380px;
+	height: 771px;
 	display: inline-block;
+	position: absolute;
 	text-align: center;
+	background: black;
+	border-collapse: collapse;
+}
+
+table.large {
+	width: 460px;
+	left: 40px;
 }
 
 #scales {
@@ -64,7 +96,8 @@ table {
 	height: 70vh;
 	margin: 0;
 	padding: 0;
-	display: inline-block;
+	/*display: inline-block; */
+	display: none;
 	position: fixed;
 	top: 20vh;
 	right: 5vw;
@@ -113,35 +146,50 @@ table {
 	margin-bottom: 10.52vh;
 }
 
+tr {
+	vertical-align: middle;
+}
+
 
 td {
 	display: inline-block;
-	padding: 3vh;
-	margin: 1.5vh;
-	width: 16vh;
-	height: 16vh;
+	padding: 0;
+	margin: 0;
+	width: 230px;
+	height: 257px;
 	text-align: center;
 	vertical-align: middle;
-	border: 1px solid #fff;
-	border-radius: 10%;
+	border: none;
+	background: black;
+	position: relative;
+}
+
+table.large td {
+	height: 771px;
 }
 
 td .background,
 td .error_bg {
+	margin-top: 3px;
 	text-align: center;
 	vertical-align: middle;
 	position: relative;
 	display: inline-block;
-	width: 16vh;
-	height: 16vh;
-	border-radius: 10%;
+	width: 224px;
+	height: 251px;
+	border-radius: 20px;
 	background: #131f16;
 	transition: 300ms;
 }
 
+table.large td .background,
+table.large td .error_bg {
+	height: 764px;
+}
+
 td p {
 	position: relative;
-	top: -10vh;
+	top: -100px;
 	font-size: .6em;
 	transition: 300ms;
 }
@@ -192,12 +240,11 @@ td.error .error_bg {
 }
 
 #setup {
-	display: block;
+	display: none;
 	position: absolute;
-	height: 10vh;
-	bottom: 0;
-	left: 5vw;
-	right: 5vw;
+	height: 48px;
+	top: 870px;
+	left: 60px;
 }
 
 #setup p {
@@ -208,10 +255,10 @@ td.error .error_bg {
 #current {
 	display: none;
 	position: absolute;
-	width: 100vw;
-	height: 10vh;
-	bottom: 0;
-	font-size: 2.8vh;
+	width: 390px;
+	height: 120px;
+	top: 890px;
+	font-size: 20px;
 	font-weight: 400;
 	margin: 0;
 	padding: 0;
@@ -221,57 +268,56 @@ td.error .error_bg {
 #current p {
 	margin: 0;
 	padding: 0;
-	margin-top: 1.2vh;
+	margin-top: 8px;
 }
 
 #waiting p.heading,
 #current p.heading {
 	text-transform: uppercase;
 	font-weight: 100;
-	letter-spacing: .2vw;
-	font-size: 1.6vh;
+	letter-spacing: 1.6px;
+	font-size: 12px;
 	margin: 0;
 	padding: 0;
 }
 
 #waiting {
-	padding-right: 1vw;
-	left: -51vw;
+	width: 1000px;
+	left: -570px;
 	text-align: right;
 }
 
 #current {
-	padding-left: 1vw;
-	right: -51vw;
+	left: 450px;
 }
 
 #extras {
-	font-size: .4em;
+	font-size: 12px;
 	position: relative;
-	top: -1em;
+	top: -6px;
 }
 
 #waiting .item {
 	display: inline-block;
 	background: #fff;
-	height: .8vh;
-	width: .8vh;
-	border-radius: .4vh;
-	margin: .4vh;
-	margin-right: .4vh;
+	height: 6px;
+	width: 6px;
+	border-radius: 3px;
+	margin: 3px;
+	margin-right: 2px;
 	left: 0;
 	top: 0;
 	transition: all 500ms;
 }
 
 #waiting .item.new {
-	margin-right: 50vw;
+	margin-right: 440px;
 } 
 
 #waiting .item.old {
 	position: relative;
-	left: 2.6vw;
-	top: -.8vh;
+	left: 50px;
+	top: -9px;
 	height: 0;
 	width: 0;
 	margin: 0;
@@ -280,22 +326,22 @@ td.error .error_bg {
 
 
 @keyframes countdown-animation {
-	0%   {height: 2vw; width: 2vw; border-radius: 1vw; margin-left: -1vw; margin-top: -1vw;}
-	20%  {height: 4vw; width: 4vw; border-radius: 2vw; margin-left: -2vw; margin-top: -2vw;}
-	100% {height: 2vw; width: 2vw; border-radius: 1vw; margin-left: -1vw; margin-top: -1vw;}
+	0%   {height: 30px; width: 30px; margin-top: 0; margin-left: 0;}
+	20%  {height: 60px; width: 60px; margin-top: -15px; margin-left: -15px;}
+	100% {height: 30px; width: 30px; margin-top: 0; margin-left: 0;}
 }
 
 #countdown {
+	margin: 0;
+	padding: 0;
 	position: absolute;
-	height: 2vw;
-	width: 2vw;
+	height: 30px;
+	width: 30px;
 	display: none;
 	background: white;
-	border-radius: 1vw;
-	top: 45vh;
-	left: 50vw;
-	margin-top: -1vw;
-	margin-left: -1vw;
+	border-radius: 30px;
+	top: 525px;
+	left: 945px;
 	animation-name: countdown-animation;
 	animation-duration: 1.2s;
 	animation-iteration-count: infinite;
