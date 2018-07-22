@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import threading, gatt, time, sqlite3
+import os, threading, gatt, time, sqlite3
 
 # Static list of all possible tags to be used
 # Tags are assigned to their ingredients in a setup routine
@@ -17,18 +17,19 @@ class TagManager(gatt.DeviceManager):
 		self.selection = ""
 		self.selectionTime = time.time()
 		self.setup = False
+		self.dbPath = os.path.dirname(os.path.abspath(__file__))+'/tags.db'
 
 		self.getTagPool()
 		self.start_discovery()
 
 	def getTags(self):
-		db = sqlite3.connect('tags.db')
+		db = sqlite3.connect(self.dbPath)
 		dbc = db.cursor()
 		tags = dbc.execute('SELECT * FROM Tags').fetchall()
 		return dict((tag,ingredient) for tag,ingredient in tags)
 
 	def getTagPool(self):
-		db = sqlite3.connect('tags.db')
+		db = sqlite3.connect(self.dbPath)
 		dbc = db.cursor()
 		pool = dbc.execute('SELECT * FROM TagPool').fetchall()
 		self.tagPool = list(tag[0] for tag in pool)
@@ -56,7 +57,7 @@ class TagManager(gatt.DeviceManager):
 		self.selection = ""
 
 	def beginSetup(self):
-		db = sqlite3.connect('tags.db')
+		db = sqlite3.connect(self.dbPath)
 		dbc = db.cursor()
 		dbc.execute('DELETE FROM Tags')
 		db.commit()
@@ -67,7 +68,7 @@ class TagManager(gatt.DeviceManager):
 
 	def setupTag(self, ingredient, macAddress):
 		# assign a tag to its ingredient
-		db = sqlite3.connect('tags.db')
+		db = sqlite3.connect(self.dbPath)
 		dbc = db.cursor()
 		print("setup",ingredient,"to mac address", macAddress)
 		dbc.execute('INSERT INTO Tags VALUES (?,?)', (macAddress, ingredient))

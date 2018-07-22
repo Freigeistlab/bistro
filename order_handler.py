@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import re, socket, threading, sys, sqlite3
+import re, socket, threading, sys, sqlite3, os
 
 class OrderHandler(threading.Thread):
 
@@ -12,23 +12,24 @@ class OrderHandler(threading.Thread):
 		self.verbose = verbose
 		self.newInput = False
 		self.fakeData = fakeData
+		self.dbPath = os.path.dirname(os.path.abspath(__file__))+'/recipes.db'
 		self.setupSocket()
 
 	def getWaitingList(self):
-		db = sqlite3.connect('recipes.db')
+		db = sqlite3.connect(self.dbPath)
 		dbc = db.cursor()
 		return dbc.execute('SELECT id FROM WaitingList').fetchall()
 
 	def emptyWaitingList(self):
 		#delete all entries from waiting list
-		db = sqlite3.connect('recipes.db')
+		db = sqlite3.connect(self.dbPath)
 		dbc = db.cursor()
 		dbc.execute('DELETE FROM WaitingList');
 		db.commit()
 
 	def getNextWaitingDish(self):
 		#fetch next dish, remove it from waiting list and return
-		db = sqlite3.connect('recipes.db')
+		db = sqlite3.connect(self.dbPath)
 		dbc = db.cursor()
 		current = dbc.execute('SELECT * FROM Current LIMIT 1').fetchall()
 		if current:
@@ -47,13 +48,13 @@ class OrderHandler(threading.Thread):
 
 	def appendToWaitingList(self, dish):
 		#append dish to waiting list json.dumps(dish)
-		db = sqlite3.connect('recipes.db')
+		db = sqlite3.connect(self.dbPath)
 		dbc = db.cursor()
 		dbc.execute('INSERT INTO WaitingList(dish) VALUES (?)', (str(dish),))
 		db.commit()
 
 	def recipeReady(self):
-		db = sqlite3.connect('recipes.db')
+		db = sqlite3.connect(self.dbPath)
 		dbc = db.cursor()
 		dbc.execute('DELETE FROM Current');
 		db.commit()

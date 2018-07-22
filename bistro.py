@@ -27,7 +27,7 @@ class Bistro:
 		self.inputHandler.start()
 
 		# open the website in our default browser
-		webbrowser.open_new_tab("file://" + os.path.realpath("bistro.html"))
+		#webbrowser.open_new_tab("file://" + os.path.realpath("bistro.html"))
 
 		# setup the websocket server - port is 5678 on our local machine
 		server = websockets.serve(self.bistro, '', 5678)
