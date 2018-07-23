@@ -2,10 +2,9 @@
 
 import os, threading, gatt, time, sqlite3
 
-# Static list of all possible tags to be used
-# Tags are assigned to their ingredients in a setup routine
-# but need to appear in this list in order to be selectable
-
+# minimal number of signals that need to be sent by a device
+# within one second in order to be recognized as a valid input
+SIGNAL_THRESHOLD = 3
 
 class TagManager(gatt.DeviceManager):
 
@@ -17,6 +16,7 @@ class TagManager(gatt.DeviceManager):
 		self.selection = ""
 		self.selectionTime = time.time()
 		self.setup = False
+		self.latestSelections = []
 		self.dbPath = os.path.dirname(os.path.abspath(__file__))+'/tags.db'
 
 		self.getTagPool()
@@ -34,6 +34,27 @@ class TagManager(gatt.DeviceManager):
 		pool = dbc.execute('SELECT * FROM TagPool').fetchall()
 		self.tagPool = list(tag[0] for tag in pool)
 
+	def checkForNewInput(self):
+		# filter for devices discovered within last second
+		self.latestDiscoveries = [discovery for discovery in self.latestDiscoveries if time.time() - discovery.time < 1]
+		# count how many signals of each device we received
+		counter = {}
+		for discovery in self.latestDiscoveries:
+			if not counter.has_key(discovery["device"]):
+				counter.update({discovery["device"]: 1})
+			else:
+				counter[discovery["device"]] += 1
+		# which device(s) sent most signals?
+		maxSignals = max(counter.values())
+
+		counter = {device: signals for device, signals in counter.items() if not signals < maxSignals}
+
+		# is it a distinct device, did it send enough signals, is it not selected already or has been selected long enough ago?
+		if len(counter) == 1 and counter.values()[0] >= SIGNAL_THRESHOLD and (tags[counter.keys()[0]] != self.selection or time.time() - self.selectionTime > 5):
+				self.selection = tags[counter.keys()[0]]
+				self.selectionTime = time.time()
+				self.newInput = True
+
 	def device_discovered(self, device):
 		# if we're still setting up,
 		# check if the mac address is in our tag pool
@@ -44,10 +65,12 @@ class TagManager(gatt.DeviceManager):
 				self.selection = device.mac_address
 				self.newInput = True 
 
-		elif device.mac_address in tags and (tags[device.mac_address] != self.selection or time.time() - self.selectionTime > 5):
-			self.selection = tags[device.mac_address]
-			self.selectionTime = time.time()
-			self.newInput = True
+		# if the device is known
+		# buffer it to our latest discoveries
+		# and check if its a valid new input
+		elif device.mac_address in tags:
+			self.latestDiscoveries.append({'device': device.mac_address, 'time': time.time()})
+			self.checkForNewInput()
 
 	def getSelection(self):
 		self.newInput = False
