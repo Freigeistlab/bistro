@@ -1,5 +1,5 @@
 // connect to the websocket of our app
-var ws = new WebSocket("ws://192.168.0.111:5678/");
+var ws = new WebSocket("ws://10.101.5.103:5678/");
 
 
 var interval;
@@ -91,8 +91,8 @@ ws.onmessage = function (event) {
 			// that will cause it to show the right color (see bistro.css)
 			// json[ingredient] contains one of the following: "success", "neutral", "blink", or "error"
 			if ($("#"+ingredient).hasClass("error")) {
-				document.getElementById(ingredient).className = json.ingredients[ingredient] + " error";
-			} else if (json.ingredients[ingredient] == "use") {
+				document.getElementById(ingredient.replace(" ","_")).className = json.ingredients[ingredient] + " error";
+			} else if (json.ingredients[ingredient.replace(" ","_")] == "use") {
 				var use = document.getElementById(ingredient);
 				if (diff < 0) {
 					use.className = "use";
@@ -103,7 +103,7 @@ ws.onmessage = function (event) {
 					},1000);
 				}
 			} else {
-				document.getElementById(ingredient).className = json.ingredients[ingredient];	
+				document.getElementById(ingredient.replace(" ","_")).className = json.ingredients[ingredient];	
 			}
 			
 			if (json.ingredients[ingredient] == "ready") {

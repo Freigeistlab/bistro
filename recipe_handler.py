@@ -14,7 +14,7 @@ import copy
 
 RECIPES = {
 	"Bolognese": [{"Tomaten","Hackfleisch"},"Parmesan"],
-	"Arrabiata": ["Chili", "Knoblauch", "Tomaten"]
+	"Arrabiata": ["Chili", "Knoblauch", "Getrocknete Tomaten"]
 }
 
 PASTA = [
@@ -22,7 +22,7 @@ PASTA = [
 ]
 
 TOPPINGS = [
-	"Mais", "Hackfleisch", "Parmesan", "Salzkartoffeln", "Paprika", "Oliven", "Rucola", "Kapern", "Majo", "Ketchup", "Senf"
+	"Mais", "Hackfleisch", "Parmesan", "Salzkartoffeln", "Paprika", "Oliven", "Rucola", "Kapern", "Majo", "Ketchup"
 ]
 
 
