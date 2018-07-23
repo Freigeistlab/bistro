@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import threading, time, os
+import threading, asyncio, time, os
 from recipe_handler import RecipeHandler
 from bluetooth_handler import BluetoothHandler
 from order_handler import OrderHandler
@@ -9,10 +9,11 @@ from serial_handler import SerialHandler
 
 class InputHandler(threading.Thread):
 
-	def __init__(self, verbose, bluetooth, fakeData, setupTags):
+	def __init__(self, verbose, bluetooth, fakeData, setupTags, websocket):
 		# let python do the threading magic
 		super().__init__()
 
+		self.websocket = websocket
 		self.recipeHandler = RecipeHandler()
 		self.orderHandler = OrderHandler(self.recipeHandler, verbose, fakeData)
 		self.orderHandler.start()
@@ -46,6 +47,7 @@ class InputHandler(threading.Thread):
 				}
 			}
 			self.newMessage = True
+			self.websocket.sendMessage()
 			waitForTag = True
 			while waitForTag:
 				if self.bluetoothHandler.receivedNewInput():
@@ -63,6 +65,7 @@ class InputHandler(threading.Thread):
 			"ingredients": {}
 		}
 		self.newMessage = True
+		self.websocket.sendMessage()
 
 	def run(self):
 		if self.bluetoothHandler and self.setupTags:
@@ -207,6 +210,7 @@ class InputHandler(threading.Thread):
 			if self.bluetoothHandler:
 				self.bluetoothHandler.resetSelection()
 			self.newMessage = True
+			self.websocket.sendMessage()
 			time.sleep(5)
 			return
 
