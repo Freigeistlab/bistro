@@ -22,7 +22,7 @@ PASTA = [
 ]
 
 TOPPINGS = [
-	"Mais", "Hackfleisch", "Parmesan", "Salzkartoffeln", "Paprika", "Oliven", "Rucola", "Kapern", "Parmesan"
+	"GetrockneteTomaten", "Mais", "Hackfleisch", "Parmesan", "Salzkartoffeln", "Paprika", "Oliven", "Rucola", "Kapern", "Parmesan"
 ]
 
 DECORATION = [
@@ -40,7 +40,7 @@ class RecipeHandler:
 		# - add all recipes in one flat list
 		# - convert it into a set (only distinct elements)
 		# - convert it back into a list
-		self.__ingredients = dict.fromkeys(list(set(sum(self.flatRecipes(), []) + PASTA + TOPPINGS)))
+		self.__ingredients = dict.fromkeys(list(set(sum(self.flatRecipes(), []) + PASTA + TOPPINGS + DECORATION)))
 		self.selectRecipe("")
 
 	def selectRecipe(self, which):

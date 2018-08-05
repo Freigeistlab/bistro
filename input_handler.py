@@ -23,6 +23,7 @@ class InputHandler(threading.Thread):
 		self.serialHandler.start()
 
 		# nothing to send yet
+		self.message = ""
 		self.newMessage = False
 
 		self.setupTags = setupTags
@@ -47,7 +48,7 @@ class InputHandler(threading.Thread):
 				}
 			}
 			self.newMessage = True
-			self.websocket.sendMessage()
+			self.websocket.sendMessage(self.getMessage())
 			waitForTag = True
 			while waitForTag:
 				if self.bluetoothHandler.receivedNewInput():
@@ -65,7 +66,7 @@ class InputHandler(threading.Thread):
 			"ingredients": {}
 		}
 		self.newMessage = True
-		self.websocket.sendMessage()
+		self.websocket.sendMessage(self.getMessage())
 
 	def run(self):
 		if self.bluetoothHandler and self.setupTags:
@@ -210,7 +211,7 @@ class InputHandler(threading.Thread):
 			if self.bluetoothHandler:
 				self.bluetoothHandler.resetSelection()
 			self.newMessage = True
-			self.websocket.sendMessage()
+			#self.websocket.sendMessage(self.getMessage())
 			time.sleep(5)
 			return
 
