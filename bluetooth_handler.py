@@ -37,7 +37,7 @@ class TagManager(gatt.DeviceManager):
 
 	def checkForNewInput(self):
 		# filter for devices discovered within last second
-		self.latestDiscoveries = [discovery for discovery in self.latestDiscoveries if time.time() - discovery.time < 1]
+		self.latestDiscoveries = [discovery for discovery in self.latestDiscoveries if time.time() - discovery["time"] < 1]
 		# count how many signals of each device we received
 		counter = {}
 		for discovery in self.latestDiscoveries:
