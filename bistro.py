@@ -39,36 +39,42 @@ class Bistro:
 		asyncio.get_event_loop().run_until_complete(server)
 		asyncio.get_event_loop().run_forever()
 
-	async def register(self,websocket):
-		USERS.add(websocket)
-		await asyncio.wait([user.send(self.inputHandler.getMessage()) for user in USERS])
 
-	async def unregister(self,websocket):
+	@asyncio.coroutine
+	def register(self,websocket):
+		USERS.add(websocket)
+		yield from asyncio.wait([user.send(self.inputHandler.getMessage()) for user in USERS])
+
+	@asyncio.coroutine
+	def unregister(self,websocket):
 		USERS.remove(websocket)
 
-	async def sendMessage(self, message):
+	@asyncio.coroutine
+	def sendMessage(self, message):
 		if USERS:
-			await asyncio.wait([user.send(message) for user in USERS])
+			yield from asyncio.wait([user.send(message) for user in USERS])
 
-	async def getMessage(self):
+	@asyncio.coroutine
+	def getMessage(self):
 		if self.inputHandler.newMessage:
-			return self.inputHandler.getMessage() 
+			return self.inputHandler.getMessage()
 		else:
 			return ""
 
-	async def bistro(self, websocket, path):
+	@asyncio.coroutine
+	def bistro(self, websocket, path):
 		# in case there's a new message coming from the input handler
 		# we want to send it via web sockets to the browser
 
-		await self.register(websocket)
+		yield from self.register(websocket)
 		try: 
 			while True:
-				message = await self.getMessage()
+				message = yield from self.getMessage()
 				if message:
-					await self.sendMessage(message)
-				await asyncio.sleep(.1)
+					yield from self.sendMessage(message)
+				yield from  asyncio.sleep(.1)
 		finally: 
-			await self.unregister(websocket)
+			yield from self.unregister(websocket)
 
 
 if __name__ == "__main__":
