@@ -49,9 +49,17 @@ ws.onmessage = function (event) {
 	
 	setTimeout(function() {
 		// show name of current recipe
-		document.getElementById("currentRecipe").innerText = json["recipe"];
-		document.getElementById("extras").innerText = json["extras"];
-		document.getElementById("preparation").innerText = json["preparation"];
+		var currentRecipe = document.getElementById("currentRecipe");
+		if (currentRecipe)
+			currentRecipe.innerText = json["recipe"];
+
+		var extras = document.getElementById("extras");
+		if (extras)
+			extras.innerText = json["extras"];
+
+		var preparation = document.getElementById("preparation");
+		if (preparation)
+			preparation.innerText = json["preparation"];
 
 		if (json["setup"] == 1) {
 			$("#setup").css("display","block");

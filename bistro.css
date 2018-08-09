@@ -207,6 +207,14 @@ td.use .background {
 	background-color: #06c234;
 }
 
+.sauces div {
+	display: none;
+}
+
+.sauces div.use {
+	display: block;
+}
+
 td.use .background.decoration {
 	background-color: #c6c234;
 }
