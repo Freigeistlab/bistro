@@ -13,20 +13,32 @@ import copy
 # To add new ingredients there, see bistro.html file
 
 RECIPES = {
-	"Bolognese": [{"Tomaten","Hackfleisch"},"Parmesan"],
-	"Arrabiata": ["Chili", "Knoblauch", "Tomaten"]
+	"Bolognese": {
+		"recipe": ["T1", "G1", {"Tomaten","Hackfleisch"}],
+		"decoration": ["Basilikum"],
+		"preparation": "Mixen"
+	},
+	"Arrabiata": {
+		"recipe": ["T2", "Chili", "Knoblauch", "Tomaten"],
+		"decoration": ["Basilikum","Balsamico"],
+		"preparation": "Rühren"
+	}
 }
 
 PASTA = [
 	"Penne", "Farfalle", "Tagliatelle", "Spaghetti", "Fussili", "Macaroni"
 ]
 
+# our sauces: Tomaten, Gemüsebrühe, Weißwein and Sahne.
+# all sauces available in 3 portion sizes ranging from 1 to 3
+SAUCES = ["T1", "T2", "T3", "G1", "G2", "G3", "W1", "W2", "W3", "S1", "S2", "S3"]
+
 TOPPINGS = [
-	"GetrockneteTomaten", "Mais", "Hackfleisch", "Parmesan", "Salzkartoffeln", "Paprika", "Oliven", "Rucola", "Kapern", "Parmesan"
+	"Getrocknete Tomaten", "Mais", "Hackfleisch", "Parmesan", "Salzkartoffeln", "Paprika", "Oliven", "Rucola"
 ]
 
 DECORATION = [
-	"Basilikum", "Minze"
+	"Basilikum", "Balsamico", "Minze"
 ]
 
 
@@ -40,7 +52,7 @@ class RecipeHandler:
 		# - add all recipes in one flat list
 		# - convert it into a set (only distinct elements)
 		# - convert it back into a list
-		self.__ingredients = dict.fromkeys(list(set(sum(self.flatRecipes(), []) + PASTA + TOPPINGS + DECORATION)))
+		self.__ingredients = dict.fromkeys(list(set(sum(self.flatRecipes(), []) + PASTA + SAUCES + TOPPINGS + DECORATION)))
 		self.selectRecipe("")
 
 	def selectRecipe(self, which):
@@ -87,7 +99,7 @@ class RecipeHandler:
 		# return a flat list of all ingredients of all recipes
 		l = []
 		for r in RECIPES.values():
-			l.append(self.flatIngredientList(r))
+			l.append(self.flatIngredientList(r["recipe"]))
 		return l
 
 	def ingredientsOfRecipe(self):
@@ -122,6 +134,12 @@ class RecipeHandler:
 
 	def currentExtras(self):
 		return self.__extras
+
+	def currentPreparation(self):
+		if (self.__recipeName):
+			return RECIPES[self.__recipeName]["preparation"]
+		else:
+			return ""
 
 	def reset(self):
 		self.selectRecipe("")
@@ -161,7 +179,13 @@ class RecipeHandler:
 			self.__error = i
 
 	def getRecipe(self, name):
-		return copy.deepcopy(RECIPES[name])
+		return copy.deepcopy(RECIPES[name]["recipe"])
+
+	def getDecorationFor(self, name):
+		return copy.deepcopy(RECIPES[name]["decoration"])
+
+	def getPreparationFor(self, name):
+		return RECIPES[name]["preparation"]
 
 	def getIngredientStatus(self):
 		return self.__ingredients

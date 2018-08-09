@@ -51,6 +51,7 @@ ws.onmessage = function (event) {
 		// show name of current recipe
 		document.getElementById("currentRecipe").innerText = json["recipe"];
 		document.getElementById("extras").innerText = json["extras"];
+		document.getElementById("preparation").innerText = json["preparation"];
 
 		if (json["setup"] == 1) {
 			$("#setup").css("display","block");
@@ -91,19 +92,26 @@ ws.onmessage = function (event) {
 			// that will cause it to show the right color (see bistro.css)
 			// json[ingredient] contains one of the following: "success", "neutral", "blink", or "error"
 			if ($("#"+ingredient).hasClass("error")) {
-				document.getElementById(ingredient.replace(" ","_")).className = json.ingredients[ingredient] + " error";
+				var element = document.getElementById(ingredient.replace(" ","_"));
+				if (element)
+					element.className = json.ingredients[ingredient] + " error";
 			} else if (json.ingredients[ingredient.replace(" ","_")] == "use") {
 				var use = document.getElementById(ingredient);
 				if (diff < 0) {
-					use.className = "use";
+					if (use)
+						use.className = "use";
 				} else {
-					use.className = "waiting toUse";
-					setTimeout(function() {
-						$(".toUse").removeClass("waiting").removeClass("toUse").addClass("use");
-					},1000);
+					if (use) {
+						use.className = "waiting toUse";
+						setTimeout(function() {
+							$(".toUse").removeClass("waiting").removeClass("toUse").addClass("use");
+						},1000);
+					}
 				}
 			} else {
-				document.getElementById(ingredient.replace(" ","_")).className = json.ingredients[ingredient];	
+				var element = document.getElementById(ingredient.replace(" ","_"));
+				if (element)
+					element.className = json.ingredients[ingredient];
 			}
 			
 			if (json.ingredients[ingredient] == "ready") {

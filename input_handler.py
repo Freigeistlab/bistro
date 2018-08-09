@@ -123,7 +123,8 @@ class InputHandler(threading.Thread):
 			self.orderHandler.appendToWaitingList({
 				"name": userInput,
 				"extras": ["+ Parmesan"],
-				"recipe": ["Tagliatelle"] + self.recipeHandler.getRecipe(userInput) + ["Parmesan"]
+				"recipe": ["Tagliatelle"] + self.recipeHandler.getRecipe(userInput) + ["Parmesan"] + self.recipeHandler.getDecorationFor(userInput),
+				"preparation": self.recipeHandler.getPreparationFor(userInput)
 			})
 			self.assembleMessage()
 
@@ -195,6 +196,7 @@ class InputHandler(threading.Thread):
 		self.message = {
 			"recipe": self.recipeHandler.currentRecipe(),
 			"extras": self.recipeHandler.currentExtras(),
+			"preparation": self.recipeHandler.currentPreparation(),
 			"waiting": self.orderHandler.waiting(),
 			"ingredients": {},
 			"weight": self.serialHandler.getValue()
@@ -204,6 +206,7 @@ class InputHandler(threading.Thread):
 		if self.recipeHandler.isReady():
 			self.message["recipe"] = ""
 			self.message["extras"] = ""
+			self.message["preparation"] = ""
 			for i in self.recipeHandler.ingredients():
 				self.message["ingredients"][i] = "ready" #blinking
 			self.recipeHandler.selectRecipe("")

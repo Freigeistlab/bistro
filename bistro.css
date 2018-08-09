@@ -207,6 +207,10 @@ td.use .background {
 	background-color: #06c234;
 }
 
+td.use .background.decoration {
+	background-color: #c6c234;
+}
+
 td.finished .background {
 	background-color: #1a4a26;
 }
@@ -299,6 +303,12 @@ td.error .error_bg {
 	font-size: 12px;
 	position: relative;
 	top: -6px;
+}
+
+#preparation {
+	font-size: 12px;
+	position: relative;
+	top: -12px;
 }
 
 #waiting .item {
