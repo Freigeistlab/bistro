@@ -41,7 +41,7 @@ class TagManager(gatt.DeviceManager):
 		# count how many signals of each device we received
 		counter = {}
 		for discovery in self.latestDiscoveries:
-			if not counter.has_key(discovery["device"]):
+			if not discovery["device"] in counter:
 				counter.update({discovery["device"]: 1})
 			else:
 				counter[discovery["device"]] += 1
