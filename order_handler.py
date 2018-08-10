@@ -251,9 +251,11 @@ class OrderHandler(threading.Thread):
 
 							# put together the ordered dish
 							dish = {
+								"sauce": sauce,
 								"name": dishName,
 								"extras": extras.strip(),
-								"recipe": [pasta] + sauce + toppings
+								"recipe": [pasta] + sauce + toppings,
+								"preparation": self.recipeHandler.getPreparationFor(sauce)
 							}
 
 							for i in range(0,amount):

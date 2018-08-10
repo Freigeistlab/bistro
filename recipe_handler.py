@@ -59,6 +59,7 @@ class RecipeHandler:
 		# use another recipe (that e.g. someone ordered)
 		self.__current = 0
 		if which:
+			self.__sauceName = which["sauce"]
 			self.__recipeName = which["name"]
 			self.__extras = which["extras"]
 			self.__selectedRecipe = which["recipe"]
@@ -137,7 +138,7 @@ class RecipeHandler:
 
 	def currentPreparation(self):
 		if (self.__recipeName):
-			return RECIPES[self.__recipeName]["preparation"]
+			return RECIPES[self.__sauceName]["preparation"]
 		else:
 			return ""
 

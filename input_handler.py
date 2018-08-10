@@ -121,6 +121,7 @@ class InputHandler(threading.Thread):
 		elif userInput in self.recipeHandler.dishes():
 			# entered a valid dish
 			self.orderHandler.appendToWaitingList({
+				"sauce": userInput,
 				"name": userInput,
 				"extras": ["+ Parmesan"],
 				"recipe": ["Tagliatelle"] + self.recipeHandler.getRecipe(userInput) + ["Parmesan"] + self.recipeHandler.getDecorationFor(userInput),
