@@ -4,7 +4,7 @@ import os, threading, gatt, time, sqlite3
 
 # minimal number of signals that need to be sent by a device
 # within one second in order to be recognized as a valid input
-SIGNAL_THRESHOLD = 3
+SIGNAL_THRESHOLD = 1
 
 class TagManager(gatt.DeviceManager):
 
@@ -50,9 +50,11 @@ class TagManager(gatt.DeviceManager):
 
 		counter = {device: signals for device, signals in counter.items() if not signals < maxSignals}
 
+		tags = self.getTags()
+
 		# is it a distinct device, did it send enough signals, is it not selected already or has been selected long enough ago?
-		if len(counter) == 1 and counter.values()[0] >= SIGNAL_THRESHOLD and (tags[counter.keys()[0]] != self.selection or time.time() - self.selectionTime > 5):
-				self.selection = tags[counter.keys()[0]]
+		if len(counter) == 1 and list(counter.values())[0] >= SIGNAL_THRESHOLD and (tags[list(counter.keys())[0]] != self.selection or time.time() - self.selectionTime > 5):
+				self.selection = tags[list(counter.keys())[0]]
 				self.selectionTime = time.time()
 				self.newInput = True
 
@@ -70,6 +72,7 @@ class TagManager(gatt.DeviceManager):
 		# buffer it to our latest discoveries
 		# and check if its a valid new input
 		elif device.mac_address in tags:
+			print(device.mac_address)
 			self.latestDiscoveries.append({'device': device.mac_address, 'time': time.time()})
 			self.checkForNewInput()
 
