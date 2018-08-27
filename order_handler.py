@@ -190,7 +190,8 @@ class OrderHandler(threading.Thread):
 						if self.verbose:
 							print(data)
 
-						orders = re.compile("(?<=-{42}\s\x1ba\x00\x1d!\x11)[\s\S]+?(?=\x1d!\x00\n\x1ba\x00\s+\(\d+,\d{2}\)\s\d+,\d{2}\s-{42})").findall(data)
+						
+						orders = re.compile("(?<=-{42}\s\x1ba\x00\x1d!\x11)[\s\S]+?(?=\x1d!\x00\n\x1ba\x00\s+\(\d+,\d{2}\)\s\d+,\d{2})").findall(data)
 						#orders = re.compile("(?<=-{42}\s)[\w\s-]+").findall(data)
 
 						if self.verbose:
