@@ -14,7 +14,20 @@ function demo() {
 		setTimeout(function(){
 			current.removeClass("show");
 		},5000)
-	}, 1000);
+
+		
+		if ($(".letter").length < 28) {
+			var ingredient = ".";
+			for (var l = 0; l < ingredient.length; l++) {
+				setTimeout(function(ingredient,l) {
+					var newLetter = $('<span class="letter" data-delay='+l+' data-letter="'+ingredient[l]+'">'+ingredient[l]+'</span>');
+					newLetter.css("animation-delay", -20+0.5*l+"s");
+					$("#currentIngredient").append(newLetter);
+				},l * 100, ingredient, l);
+			}
+		}
+
+	}, 100);
 }
 
 $(document).ready(function() {
@@ -106,11 +119,21 @@ ws.onmessage = function (event) {
 				var element = document.getElementById(ingredient.replace(" ","_"));
 				if (element)
 					element.className = json.ingredients[ingredient] + " error";
-			} else if (json.ingredients[ingredient.replace(" ","_")] == "use") {
+			} else if (json.ingredients[ingredient] == "use") {
 				var use = document.getElementById(ingredient);
+				$("#currentIngredient").empty();
+				for (var l = 0; l < ingredient.length; l++) {
+					setTimeout(function(ingredient,l) {
+						var newLetter = $('<span class="letter" data-delay='+l+' data-letter="'+ingredient[l]+'">'+ingredient[l]+'</span>');
+						newLetter.css("animation-delay", -20+0.5*l+"s");
+						$("#currentIngredient").append(newLetter);
+					},l * 100, ingredient, l);
+				}
+				
 				if (diff < 0) {
-					if (use)
+					if (use) {
 						use.className = "use";
+					}
 				} else {
 					if (use) {
 						use.className = "waiting toUse";
@@ -127,6 +150,7 @@ ws.onmessage = function (event) {
 			
 			if (json.ingredients[ingredient] == "ready") {
 				$("#countdown").addClass("active");
+				$("#currentIngredient").empty();
 			} else {
 				$("#countdown").removeClass("active")
 			}
