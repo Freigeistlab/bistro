@@ -23,9 +23,6 @@ class SerialHandler(threading.Thread):
 				self.newInput = True
 			except:
 				self.newInput = False
-				#self.scaleValue = random.random() * 6
-				#self.newInput = True
-				#time.sleep(.5)
 			time.sleep(.1)
 				
 

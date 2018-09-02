@@ -25,6 +25,7 @@ class InputHandler(threading.Thread):
 		# nothing to send yet
 		self.message = ""
 		self.newMessage = False
+		self.firstTime = True
 
 		self.setupTags = setupTags
 		self.bluetoothHandler = False
@@ -94,7 +95,8 @@ class InputHandler(threading.Thread):
 			time.sleep(.1)
 
 	def nextRecipe(self):
-		if (self.orderHandler.waiting()):
+		if (self.orderHandler.waiting() or self.firstTime):
+			self.firstTime = False
 			self.recipeHandler.selectRecipe(self.orderHandler.nextDish())
 			self.printStatus()
 			self.assembleMessage()

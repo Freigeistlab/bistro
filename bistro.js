@@ -1,10 +1,13 @@
 // connect to the websocket of our app
-var ws = new WebSocket("ws://192.168.0.116:5678/");
+var ws = new WebSocket("ws://192.168.0.111:5678/");
 
 
 var interval;
 var demoStart;
 function demo() {
+	if ($(".waiting").length > 0 || $(".use").length > 0)
+		return;
+	
 	interval = setInterval(function() {
 		var current = $($("td")[Math.floor(Math.random() * 20)]);
 		current.addClass("show");
@@ -15,7 +18,7 @@ function demo() {
 }
 
 $(document).ready(function() {
-	demo();	
+	demo();
 });
 
 // wait for messages incoming
@@ -90,7 +93,7 @@ ws.onmessage = function (event) {
 				$("td").removeClass("ready");
 				demo();	
 				$("#countdown").removeClass("active");
-			}, 6000)
+			}, 6000);
 			
 		}
 

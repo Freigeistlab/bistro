@@ -46,6 +46,7 @@ class OrderHandler(threading.Thread):
 
 			return eval(dish[1])
 
+
 	def appendToWaitingList(self, dish):
 		#append dish to waiting list json.dumps(dish)
 		db = sqlite3.connect(self.dbPath)
@@ -73,11 +74,7 @@ class OrderHandler(threading.Thread):
 		# returns the next dish in the waitinglist
 		# and removes it from there
 
-		if not self.getWaitingList():
-			return ""
-
-		nextDish = self.getNextWaitingDish()
-		return nextDish
+		return self.getNextWaitingDish()
 
 	def waiting(self):
 		return len(self.getWaitingList())
