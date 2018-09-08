@@ -4,6 +4,7 @@ var ws = new WebSocket("ws://192.168.0.111:5678/");
 
 var interval;
 var demoStart;
+var letterTimeouts = [];
 function demo() {
 	if ($(".waiting").length > 0 || $(".use").length > 0)
 		return;
@@ -16,14 +17,18 @@ function demo() {
 		},5000)
 
 		
-		if ($(".letter").length < 28) {
+		for (var l = 0; l < letterTimeouts.length;l++) {
+			clearTimeout(letterTimeouts[l]);
+		}
+		letterTimeouts = [];
+		if ($(".letter").length < 105) {
 			var ingredient = ".";
 			for (var l = 0; l < ingredient.length; l++) {
-				setTimeout(function(ingredient,l) {
+				letterTimeouts.push(setTimeout(function(ingredient,l) {
 					var newLetter = $('<span class="letter" data-delay='+l+' data-letter="'+ingredient[l]+'">'+ingredient[l]+'</span>');
 					newLetter.css("animation-delay", -20+0.5*l+"s");
 					$("#currentIngredient").append(newLetter);
-				},l * 100, ingredient, l);
+				},l * 100, ingredient, l));
 			}
 		}
 
@@ -122,12 +127,17 @@ ws.onmessage = function (event) {
 			} else if (json.ingredients[ingredient] == "use") {
 				var use = document.getElementById(ingredient);
 				$("#currentIngredient").empty();
-				for (var l = 0; l < ingredient.length; l++) {
-					setTimeout(function(ingredient,l) {
-						var newLetter = $('<span class="letter" data-delay='+l+' data-letter="'+ingredient[l]+'">'+ingredient[l]+'</span>');
-						newLetter.css("animation-delay", -20+0.5*l+"s");
+				var print_ingredient = ingredient + " ";
+				for (var l = 0; l < letterTimeouts.length;l++) {
+					clearTimeout(letterTimeouts[l]);
+				}
+				letterTimeouts = [];
+				for (var l = 0; l < 75; l++) {
+					letterTimeouts.push(setTimeout(function(print_ingredient,l) {
+						var newLetter = $('<span class="letter" data-delay='+l+' data-letter="'+print_ingredient[l%print_ingredient.length]+'">'+print_ingredient[l%print_ingredient.length]+'</span>');
+						newLetter.css("animation-delay", -40+0.5*l+"s");
 						$("#currentIngredient").append(newLetter);
-					},l * 100, ingredient, l);
+					},l * 100, print_ingredient, l));
 				}
 				
 				if (diff < 0) {
@@ -150,6 +160,10 @@ ws.onmessage = function (event) {
 			
 			if (json.ingredients[ingredient] == "ready") {
 				$("#countdown").addClass("active");
+				for (var l = 0; l < letterTimeouts.length;l++) {
+					clearTimeout(letterTimeouts[l]);
+				}
+				letterTimeouts = [];
 				$("#currentIngredient").empty();
 			} else {
 				$("#countdown").removeClass("active")

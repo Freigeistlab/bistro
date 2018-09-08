@@ -208,6 +208,7 @@ td.use .background {
 }
 
 .sauces div {
+	font-size: 20px;
 	display: none;
 }
 
@@ -307,6 +308,31 @@ td.error .error_bg {
 	left: 450px;
 }
 
+.yeah {
+	font-size: 20px;
+	margin: 0;
+	opacity: 0;
+}
+
+#current.back {
+	width: 600px;
+	height: 120px;
+	top: 300px;
+	left: 250px;
+	z-index: 20000;
+}
+
+#current.back #preparation {
+	font-size: 50px;
+	position: relative;
+	top: -1em;
+	left: -1em;
+	background: #000;
+	width: auto;
+	display: inline-block;
+	padding: 1em;
+}
+
 #extras {
 	font-size: 12px;
 	position: relative;
@@ -383,17 +409,18 @@ td.error .error_bg {
 
 #currentIngredient {
 	position: absolute;
-	top: 15%;
-	left: 10%;
-	width: 60%;
-	height: 80%;
-	line-height: 5.5em;
+	top: 3%;
+	left: 2%;
+	width: 97%;
+	height: 94%;
+	overflow: hidden;
+	line-height: 5.9em;
 }
 
 .letter{
 	display: inline-block;
 	font-weight: 900;
-	font-size: 11em;
+	font-size: 10em;
 	margin: 0.05em;
 	text-transform: uppercase;
 	position: relative;
