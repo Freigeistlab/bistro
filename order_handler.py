@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import re, socket, threading, sys, sqlite3, os
+import re, socket, threading, sys, sqlite3, os, time
 
 class OrderHandler(threading.Thread):
 
@@ -187,7 +187,6 @@ class OrderHandler(threading.Thread):
 						if self.verbose:
 							print(data)
 
-						
 						orders = re.compile("(?<=-{42}\s\x1ba\x00\x1d!\x11)[\s\S]+?(?=\x1d!\x00\n\x1ba\x00\s+\(\d+,\d{2}\)\s\d+,\d{2})").findall(data)
 						#orders = re.compile("(?<=-{42}\s)[\w\s-]+").findall(data)
 
@@ -216,8 +215,7 @@ class OrderHandler(threading.Thread):
 							if self.verbose:
 								print("    Items: ", items)
 
-							dishName = items[0] + " " + items[1]
-							extras = ""
+							
 							
 							if not self.recipeHandler.isPasta(items[0]):
 								print("Error: Ich kenne keine Pasta namens", pasta, ". Vielleicht in der recipe_handler.py eintragen?")
@@ -230,8 +228,10 @@ class OrderHandler(threading.Thread):
 								sauce = self.recipeHandler.getRecipe(items[1])
 
 							sauceName = items[1]
+							dishName = pasta + " " + sauceName
 
 							items = items[2:]
+							extras = ""
 							toppings = []
 
 							for item in items:
@@ -251,6 +251,8 @@ class OrderHandler(threading.Thread):
 
 							# put together the ordered dish
 							dish = {
+								"time": time.strftime('%x %X %Z'),
+								"order": order,
 								"sauce": sauceName,
 								"name": dishName,
 								"extras": extras.strip(),
