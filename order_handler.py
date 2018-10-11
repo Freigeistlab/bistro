@@ -15,13 +15,13 @@ class OrderHandler(threading.Thread):
 		self.dbPath = os.path.dirname(os.path.abspath(__file__))+'/recipes.db'
 		self.setupSocket()
 
-	def getWaitingList(self):
+	def getOrderQueue(self):
 		db = sqlite3.connect(self.dbPath)
 		dbc = db.cursor()
 		return dbc.execute('SELECT id FROM WaitingList').fetchall()
 
-	def emptyWaitingList(self):
-		#delete all entries from waiting list
+	def clearOrderQueue(self):
+		#delete all entries from order queue
 		db = sqlite3.connect(self.dbPath)
 		dbc = db.cursor()
 		dbc.execute('DELETE FROM WaitingList');
@@ -47,7 +47,7 @@ class OrderHandler(threading.Thread):
 			return eval(dish[1])
 
 
-	def appendToWaitingList(self, dish):
+	def appendToOrderQueue(self, dish):
 		#append dish to waiting list json.dumps(dish)
 		db = sqlite3.connect(self.dbPath)
 		dbc = db.cursor()
@@ -77,7 +77,7 @@ class OrderHandler(threading.Thread):
 		return self.getNextWaitingDish()
 
 	def waiting(self):
-		return len(self.getWaitingList())
+		return len(self.getOrderQueue())
 
 	def getIpAddress(self):
 		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -85,7 +85,7 @@ class OrderHandler(threading.Thread):
 		return s.getsockname()[0]
 
 	def reset(self):
-		self.emptyWaitingList()
+		self.clearOrderQueue()
 
 	def receivedNewInput(self):
 		res = self.newInput
@@ -98,10 +98,10 @@ class OrderHandler(threading.Thread):
 
 		while True:
 			try:
-				# accept connections (probably from orderbird)
+				# accept connections (probably from orderbird or order dashboard)
 				conn, addr = self.socket.accept()
 				print("\n  Connection from: " + str(addr))
-
+				
 				while True:
 					data = conn.recv(8192).decode("cp1252")
 
@@ -261,7 +261,7 @@ class OrderHandler(threading.Thread):
 							}
 
 							for i in range(0,amount):
-								self.appendToWaitingList(dish)
+								self.appendToOrderQueue(dish)
 
 						self.newInput = True
 

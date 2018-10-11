@@ -28,12 +28,14 @@ class Bistro:
 		# Input handler is a separate thread, needs to be started
 		self.inputHandler = InputHandler(verbose, bluetooth, fakeData, setupTags, self)
 		self.inputHandler.start()
-
+		print("hello")
 		# open the website in our default browser
 		#webbrowser.open_new_tab("file://" + os.path.realpath("bistro.html"))
 
 		# setup the websocket server - port is 5678 on our local machine
+		
 		server = websockets.serve(self.bistro, '', 5678)
+		self.dashboard_server = websockets.serve(self.echo, '', 443)
 
 		# tell the server to run forever
 		asyncio.get_event_loop().run_until_complete(server)
@@ -53,6 +55,7 @@ class Bistro:
 	def sendMessage(self, message):
 		if USERS:
 			yield from asyncio.wait([user.send(message) for user in USERS])
+			#send message to both dashboard and website
 
 	@asyncio.coroutine
 	def getMessage(self):
@@ -75,7 +78,13 @@ class Bistro:
 				yield from  asyncio.sleep(.1)
 		finally: 
 			yield from self.unregister(websocket)
-
+	
+	@asyncio.coroutine
+	async def echo(self, websocket, path):
+		print("Connected to dashboard")
+	    async for message in websocket:
+	        print(message)
+	        await websocket.send(message)
 
 if __name__ == "__main__":
 	# Create the Bistro object that does all the magic

@@ -31,6 +31,8 @@ class InputHandler(threading.Thread):
 		self.bluetoothHandler = False
 		if bluetooth:
 			self.bluetoothHandler = BluetoothHandler()
+		else:
+			print("No Bluetooth available");
 
 	def setupBluetooth(self):
 
@@ -122,7 +124,7 @@ class InputHandler(threading.Thread):
 
 		elif userInput in self.recipeHandler.dishes():
 			# entered a valid dish
-			self.orderHandler.appendToWaitingList({
+			self.orderHandler.appendToOrderQueue({
 				"sauce": userInput,
 				"name": userInput,
 				"extras": ["+ Parmesan"],
