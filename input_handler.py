@@ -22,6 +22,7 @@ class InputHandler(threading.Thread):
 		self.serialHandler = SerialHandler()
 		self.serialHandler.start()
 
+
 		# nothing to send yet
 		self.message = ""
 		self.newMessage = False
@@ -219,7 +220,7 @@ class InputHandler(threading.Thread):
 			if self.bluetoothHandler:
 				self.bluetoothHandler.resetSelection()
 			self.newMessage = True
-			#self.websocket.sendMessage(self.getMessage())
+			self.websocket.sendMessage(self.getMessage())
 			time.sleep(5)
 			return
 
@@ -227,6 +228,7 @@ class InputHandler(threading.Thread):
 		self.message["error"] = self.recipeHandler.getError()
 
 		self.newMessage = True
+		self.websocket.sendMessage(self.getMessage())
 
 	def getMessage(self):
 		# distributing the message to the outer world

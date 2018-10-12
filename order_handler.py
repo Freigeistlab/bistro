@@ -92,6 +92,58 @@ class OrderHandler(threading.Thread):
 		self.newInput = False
 		return res
 
+	#this function deals with meals that are added by the dashboard
+	def addMealPreparation(self, meal, amount):
+		print("adding meal to prepare")
+		self.getRecipe(meal.split(" "), meal, amount)
+
+	def getRecipe(self, items, order, amount):
+		if not self.recipeHandler.isPasta(items[0]):
+			print("Error: Ich kenne keine Pasta namens", pasta, ". Vielleicht in der recipe_handler.py eintragen?")
+		else: 
+			pasta = items[0]
+
+		if not self.recipeHandler.isSauce(items[1]):
+			print("Error: Ich kenne keine Sauce namens", items[1], ". Vielleicht in der recipe_handler.py eintragen?")
+		else:
+			sauce = self.recipeHandler.getRecipe(items[1])
+
+		sauceName = items[1]
+		dishName = pasta + " " + sauceName
+
+		items = items[2:]
+		extras = ""
+		toppings = []
+
+		for item in items:
+			if item.startswith("Ohne "):
+				if item[5:] in sauce:
+					sauce.remove(item[5:])
+					extras += " – " + item[5:]
+				for ingredient in sauce:
+					if item[5:] in ingredient:
+						ingredient.remove(item[5:])
+						extras += " – " + item[5:]
+			elif not self.recipeHandler.isTopping(item):
+				print(item,"ist kein Topping. Vielleicht ein Getränk. Ansonsten vielleicht in der recipe_handler.py eintragen?")
+			else:
+				toppings.append(item)
+				extras += " + " + item
+
+		# put together the ordered dish
+		dish = {
+			"time": time.strftime('%x %X %Z'),
+			"order": order,
+			"sauce": sauceName,
+			"name": dishName,
+			"extras": extras.strip(),
+			"recipe": [pasta] + sauce + toppings + self.recipeHandler.getDecorationFor(sauceName),
+			"preparation": self.recipeHandler.getPreparationFor(sauceName)
+		}
+
+		for i in range(0,amount):
+			self.appendToOrderQueue(dish)
+
 	def run(self):
 		print("Set up your orderbird printer to IP", self.getIpAddress())
 		print("Waiting for orders...")
@@ -101,7 +153,7 @@ class OrderHandler(threading.Thread):
 				# accept connections (probably from orderbird or order dashboard)
 				conn, addr = self.socket.accept()
 				print("\n  Connection from: " + str(addr))
-				
+
 				while True:
 					data = conn.recv(8192).decode("cp1252")
 
@@ -217,51 +269,7 @@ class OrderHandler(threading.Thread):
 
 							
 							
-							if not self.recipeHandler.isPasta(items[0]):
-								print("Error: Ich kenne keine Pasta namens", pasta, ". Vielleicht in der recipe_handler.py eintragen?")
-							else: 
-								pasta = items[0]
-
-							if not self.recipeHandler.isSauce(items[1]):
-								print("Error: Ich kenne keine Sauce namens", items[1], ". Vielleicht in der recipe_handler.py eintragen?")
-							else:
-								sauce = self.recipeHandler.getRecipe(items[1])
-
-							sauceName = items[1]
-							dishName = pasta + " " + sauceName
-
-							items = items[2:]
-							extras = ""
-							toppings = []
-
-							for item in items:
-								if item.startswith("Ohne "):
-									if item[5:] in sauce:
-										sauce.remove(item[5:])
-										extras += " – " + item[5:]
-									for ingredient in sauce:
-										if item[5:] in ingredient:
-											ingredient.remove(item[5:])
-											extras += " – " + item[5:]
-								elif not self.recipeHandler.isTopping(item):
-									print(item,"ist kein Topping. Vielleicht ein Getränk. Ansonsten vielleicht in der recipe_handler.py eintragen?")
-								else:
-									toppings.append(item)
-									extras += " + " + item
-
-							# put together the ordered dish
-							dish = {
-								"time": time.strftime('%x %X %Z'),
-								"order": order,
-								"sauce": sauceName,
-								"name": dishName,
-								"extras": extras.strip(),
-								"recipe": [pasta] + sauce + toppings + self.recipeHandler.getDecorationFor(sauceName),
-								"preparation": self.recipeHandler.getPreparationFor(sauceName)
-							}
-
-							for i in range(0,amount):
-								self.appendToOrderQueue(dish)
+							self.getRecipe(items, order, amount)
 
 						self.newInput = True
 
