@@ -93,6 +93,7 @@ class InputHandler(threading.Thread):
 				self.handleSerialInput()
 
 			if self.orderHandler.receivedNewInput():
+				print("New order input handler")
 				self.handleOrderInput()
 
 			time.sleep(.1)
@@ -220,6 +221,7 @@ class InputHandler(threading.Thread):
 			if self.bluetoothHandler:
 				self.bluetoothHandler.resetSelection()
 			self.newMessage = True
+			print("Sending recipe finished message to clients")
 			self.websocket.sendMessage(self.getMessage())
 			time.sleep(5)
 			return
@@ -228,6 +230,7 @@ class InputHandler(threading.Thread):
 		self.message["error"] = self.recipeHandler.getError()
 
 		self.newMessage = True
+		print("Sending message to clients ", self.getMessage())
 		self.websocket.sendMessage(self.getMessage())
 
 	def getMessage(self):

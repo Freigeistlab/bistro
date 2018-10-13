@@ -2,3 +2,4 @@
 websockets
 gatt
 serial
+flask-restful

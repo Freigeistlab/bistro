@@ -96,6 +96,7 @@ class OrderHandler(threading.Thread):
 	def addMealPreparation(self, meal, amount):
 		print("adding meal to prepare")
 		self.getRecipe(meal.split(" "), meal, amount)
+		self.newInput = True
 
 	def getRecipe(self, items, order, amount):
 		if not self.recipeHandler.isPasta(items[0]):
@@ -142,6 +143,7 @@ class OrderHandler(threading.Thread):
 		}
 
 		for i in range(0,amount):
+			print("Appending to queue")
 			self.appendToOrderQueue(dish)
 
 	def run(self):
