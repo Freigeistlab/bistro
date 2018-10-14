@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-import re, socket, threading, sys, sqlite3, os, time
+import re, socket, threading, sys, os, time
+from order_sql_interface import OrderSQLInterface
 
 class OrderHandler(threading.Thread):
 
@@ -8,57 +9,16 @@ class OrderHandler(threading.Thread):
 		# let python do the threading magic
 		super(OrderHandler, self).__init__()
 
+
+		
 		self.recipeHandler = recipeHandler
 		self.verbose = verbose
 		self.newInput = False
 		self.fakeData = fakeData
 		self.dbPath = os.path.dirname(os.path.abspath(__file__))+'/recipes.db'
+		self.orderSQLInterface = OrderSQLInterface(self.dbPath)
 		self.setupSocket()
 
-	def getOrderQueue(self):
-		db = sqlite3.connect(self.dbPath)
-		dbc = db.cursor()
-		return dbc.execute('SELECT id FROM WaitingList').fetchall()
-
-	def clearOrderQueue(self):
-		#delete all entries from order queue
-		db = sqlite3.connect(self.dbPath)
-		dbc = db.cursor()
-		dbc.execute('DELETE FROM WaitingList');
-		db.commit()
-
-	def getNextWaitingDish(self):
-		#fetch next dish, remove it from waiting list and return
-		db = sqlite3.connect(self.dbPath)
-		dbc = db.cursor()
-		current = dbc.execute('SELECT * FROM Current LIMIT 1').fetchall()
-		if current:
-			return eval(current[0][1])
-
-		dish = dbc.execute('SELECT * FROM WaitingList LIMIT 1').fetchall()
-		if dish:
-			dish = dish[0]
-			dbc.execute('DELETE FROM WaitingList WHERE id = ' + str(dish[0]));
-			db.commit()
-
-			dbc.execute('INSERT INTO Current(dish) VALUES (?)', (dish[1],))
-			db.commit()
-
-			return eval(dish[1])
-
-
-	def appendToOrderQueue(self, dish):
-		#append dish to waiting list json.dumps(dish)
-		db = sqlite3.connect(self.dbPath)
-		dbc = db.cursor()
-		dbc.execute('INSERT INTO WaitingList(dish) VALUES (?)', (str(dish),))
-		db.commit()
-
-	def recipeReady(self):
-		db = sqlite3.connect(self.dbPath)
-		dbc = db.cursor()
-		dbc.execute('DELETE FROM Current');
-		db.commit()
 
 	def setupSocket(self):
 		# sets up the socket to establish the connection to orderbird
@@ -74,10 +34,10 @@ class OrderHandler(threading.Thread):
 		# returns the next dish in the waitinglist
 		# and removes it from there
 
-		return self.getNextWaitingDish()
+		return self.orderSQLInterface.getNextWaitingDish()
 
 	def waiting(self):
-		return len(self.getOrderQueue())
+		return len(self.orderSQLInterface.getOrderQueue())
 
 	def getIpAddress(self):
 		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -85,7 +45,7 @@ class OrderHandler(threading.Thread):
 		return s.getsockname()[0]
 
 	def reset(self):
-		self.clearOrderQueue()
+		self.orderSQLInterface.clearOrderQueue()
 
 	def receivedNewInput(self):
 		res = self.newInput
@@ -144,7 +104,7 @@ class OrderHandler(threading.Thread):
 
 		for i in range(0,amount):
 			print("Appending to queue")
-			self.appendToOrderQueue(dish)
+			self.orderSQLInterface.appendToOrderQueue(dish)
 
 	def run(self):
 		print("Set up your orderbird printer to IP", self.getIpAddress())

@@ -2,6 +2,9 @@
 
 import asyncio, websockets, webbrowser, os, time, sys, json
 from input_handler import InputHandler
+from flask import Flask
+from flask_restful import Resource, Api
+from api import WebServer
 
 USERS = set()
 
@@ -25,12 +28,19 @@ class Bistro:
 			if arg == "--setup":
 				setupTags = True
 
+
+		#init the webserver which is necessary for handling user interactions from the dashboard
+		self.webserver = WebServer()
+		self.webserver.start()
+
 		# Input handler is a separate thread, needs to be started
 		self.inputHandler = InputHandler(verbose, bluetooth, fakeData, setupTags, self)
 		self.inputHandler.start()
+		
 		# open the website in our default browser
 		#webbrowser.open_new_tab("file://" + os.path.realpath("bistro.html"))
 
+		
 		# setup the websocket server - port is 5678 on our local machine
 		
 		server = websockets.serve(self.bistro, '', 5678)
