@@ -2,6 +2,7 @@ from flask import Flask
 from flask_restful import Resource, Api
 import threading, os, json
 from order_sql_interface import OrderSQLInterface
+from flask_cors import CORS
 
 #the server that's responsible for handling user interactions from the dashboard
 class WebServer(threading.Thread):
@@ -9,6 +10,7 @@ class WebServer(threading.Thread):
 		super().__init__()
 		self.app = Flask(__name__)
 		self.api = Api(self.app)
+		CORS(self.app)
 		self.dbPath = os.path.dirname(os.path.abspath(__file__))+'/recipes.db'
 		self.orderSQLInterface = OrderSQLInterface(self.dbPath)
 

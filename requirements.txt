@@ -1,5 +1,5 @@
-
 websockets
 gatt
 serial
 flask-restful
+flask-cors
