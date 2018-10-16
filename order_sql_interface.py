@@ -39,13 +39,22 @@ class OrderSQLInterface():
 			return eval(dish[1])
 
 
-	def appendToOrderQueue(self, dish):
+	def appendToOrderQueue(self, dish, realOrder):
 		#append dish to waiting list json.dumps(dish)
 		db = sqlite3.connect(self.dbPath)
 		dbc = db.cursor()
-		dbc.execute('INSERT INTO WaitingList(dish) VALUES (?)', (str(dish),))
+		boolRealOrder = 0
+		if realOrder: 
+			boolRealOrder = 1
+		dbc.execute('INSERT INTO WaitingList(dish, realOrder) VALUES (?,?)', (str(dish),boolRealOrder))
 		db.commit()
 
+	def getPreparedOrders(self):
+		db = sqlite3.connect(self.dbPath)
+		dbc = db.cursor()
+		queue = dbc.execute('SELECT dish FROM WaitingList WHERE realOrder == 0').fetchall()
+		orders = [eval(o[0]) for o in queue]
+		return orders
 	def recipeReady(self):
 		db = sqlite3.connect(self.dbPath)
 		dbc = db.cursor()

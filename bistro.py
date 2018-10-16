@@ -5,6 +5,7 @@ from input_handler import InputHandler
 from flask import Flask
 from flask_restful import Resource, Api
 from api import WebServer
+from recipe_handler import RecipeHandler
 
 USERS = set()
 
@@ -28,13 +29,14 @@ class Bistro:
 			if arg == "--setup":
 				setupTags = True
 
+		self.recipeHandler = RecipeHandler()
 
 		#init the webserver which is necessary for handling user interactions from the dashboard
-		self.webserver = WebServer()
+		self.webserver = WebServer(self.recipeHandler)
 		self.webserver.start()
 
 		# Input handler is a separate thread, needs to be started
-		self.inputHandler = InputHandler(verbose, bluetooth, fakeData, setupTags, self)
+		self.inputHandler = InputHandler(verbose, bluetooth, fakeData, setupTags, self, self.recipeHandler)
 		self.inputHandler.start()
 		
 		# open the website in our default browser
@@ -66,6 +68,7 @@ class Bistro:
 		if USERS:
 			print("Sending message to users ", message)
 			await asyncio.wait([user.send(message) for user in USERS])
+			print("message sent")
 			#send message to both dashboard and website
 
 	#TODO: do we still need that method?

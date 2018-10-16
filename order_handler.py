@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 
-import re, socket, threading, sys, os, time
+import re, socket, threading, sys, os, asyncio, functools
 from order_sql_interface import OrderSQLInterface
 
 class OrderHandler(threading.Thread):
 
-	def __init__(self, recipeHandler, verbose, fakeData):
+	def __init__(self, recipeHandler, verbose, fakeData, websocket):
 		# let python do the threading magic
 		super(OrderHandler, self).__init__()
 
 
-		
+		self.websocket = websocket
 		self.recipeHandler = recipeHandler
 		self.verbose = verbose
 		self.newInput = False
@@ -55,60 +55,39 @@ class OrderHandler(threading.Thread):
 	#this function deals with meals that are added by the dashboard
 	def addMealPreparation(self, meal, amount):
 		print("adding meal to prepare")
-		self.getRecipe(meal.split(" "), meal, amount)
-		self.newInput = True
-
-	def getRecipe(self, items, order, amount):
-		if not self.recipeHandler.isPasta(items[0]):
-			print("Error: Ich kenne keine Pasta namens", pasta, ". Vielleicht in der recipe_handler.py eintragen?")
-		else: 
-			pasta = items[0]
-
-		if not self.recipeHandler.isSauce(items[1]):
-			print("Error: Ich kenne keine Sauce namens", items[1], ". Vielleicht in der recipe_handler.py eintragen?")
-		else:
-			sauce = self.recipeHandler.getRecipe(items[1])
-
-		sauceName = items[1]
-		dishName = pasta + " " + sauceName
-
-		items = items[2:]
-		extras = ""
-		toppings = []
-
-		for item in items:
-			if item.startswith("Ohne "):
-				if item[5:] in sauce:
-					sauce.remove(item[5:])
-					extras += " – " + item[5:]
-				for ingredient in sauce:
-					if item[5:] in ingredient:
-						ingredient.remove(item[5:])
-						extras += " – " + item[5:]
-			elif not self.recipeHandler.isTopping(item):
-				print(item,"ist kein Topping. Vielleicht ein Getränk. Ansonsten vielleicht in der recipe_handler.py eintragen?")
-			else:
-				toppings.append(item)
-				extras += " + " + item
-
-		# put together the ordered dish
-		dish = {
-			"time": time.strftime('%x %X %Z'),
-			"order": order,
-			"sauce": sauceName,
-			"name": dishName,
-			"extras": extras.strip(),
-			"recipe": [pasta] + sauce + toppings + self.recipeHandler.getDecorationFor(sauceName),
-			"preparation": self.recipeHandler.getPreparationFor(sauceName)
-		}
-
+		dish = self.recipeHandler.constructRecipe(meal.split(" "), meal)
 		for i in range(0,amount):
-			print("Appending to queue")
-			self.orderSQLInterface.appendToOrderQueue(dish)
+			print("Appending to order queue")
+			self.orderSQLInterface.appendToOrderQueue(dish, False)
+		
+		self.sendNewOrderToClients(meal, False)
+	
+	def sendNewOrderToClients(self, meal, realOrder):
+		#directly send out response after successful adding --> actually check if adding to queue was successful
+		loop = asyncio.get_event_loop()
+		realOrderBool = 0
+		if realOrder:
+			realOrderBool = 1
+		message = {
+			"recipe": meal,
+			"realOrder": realOrderBool,
+			"action": "new_order"
+		}
+		message = str(message).replace("'",'"')
+		#task = loop.create_task(self.websocket.sendMessage(message))
+		#loop.run_until_complete(task)
+		#print("is send message co routine ? ", self.websocket.sendMessage)
+		#asyncio.run_coroutine_threadsafe(self.websocket.sendMessage, message)
+		asyncio.run_coroutine_threadsafe(self.websocket.sendMessage(message), loop)
+		
+		
 
 	def run(self):
 		print("Set up your orderbird printer to IP", self.getIpAddress())
 		print("Waiting for orders...")
+		
+		#needed for async events (like sending via websocket) that don't need to be awaited
+		#asyncio.set_event_loop(asyncio.new_event_loop())
 
 		while True:
 			try:
@@ -228,12 +207,18 @@ class OrderHandler(threading.Thread):
 
 							if self.verbose:
 								print("    Items: ", items)
-
 							
 							
-							self.getRecipe(items, order, amount)
+							dish = self.recipeHandler.constructRecipe(items, order)
+							for i in range(0,amount):
+								print("Appending to order queue")
+								self.orderSQLInterface.appendToOrderQueue(dish, True)
 
-						self.newInput = True
+							self.sendNewOrderToClients(dish, True)
+							
+							#TODO: check this: do we actually need to send the current recipe to the client if 
+							#self.newInput = True
+
 
 			except:
 				print("exception: ", sys.exc_info()[0])

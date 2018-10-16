@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
-import threading, asyncio, time, os
-from recipe_handler import RecipeHandler
+import threading, time, os, asyncio
 from bluetooth_handler import BluetoothHandler
 from order_handler import OrderHandler
 from keyboard_handler import KeyboardHandler
@@ -9,13 +8,13 @@ from serial_handler import SerialHandler
 
 class InputHandler(threading.Thread):
 
-	def __init__(self, verbose, bluetooth, fakeData, setupTags, websocket):
+	def __init__(self, verbose, bluetooth, fakeData, setupTags, websocket, recipeHandler):
 		# let python do the threading magic
 		super().__init__()
 
 		self.websocket = websocket
-		self.recipeHandler = RecipeHandler()
-		self.orderHandler = OrderHandler(self.recipeHandler, verbose, fakeData)
+		self.recipeHandler = recipeHandler
+		self.orderHandler = OrderHandler(self.recipeHandler, verbose, fakeData, websocket)
 		self.orderHandler.start()
 		self.keyboardHandler = KeyboardHandler()
 		self.keyboardHandler.start()
@@ -73,6 +72,10 @@ class InputHandler(threading.Thread):
 		self.websocket.sendMessage(self.getMessage())
 
 	def run(self):
+
+		#needed for async events (like sending via websocket) that don't need to be awaited
+		asyncio.set_event_loop(asyncio.new_event_loop())
+
 		if self.bluetoothHandler and self.setupTags:
 			self.setupBluetooth()
 
@@ -208,7 +211,7 @@ class InputHandler(threading.Thread):
 			"ingredients": {},
 			"weight": self.serialHandler.getValue()
 		}
-
+		loop = asyncio.get_event_loop()
 		# if the recipe is finished, blink for a bit and reset
 		if self.recipeHandler.isReady():
 			self.message["recipe"] = ""
@@ -222,7 +225,9 @@ class InputHandler(threading.Thread):
 				self.bluetoothHandler.resetSelection()
 			self.newMessage = True
 			print("Sending recipe finished message to clients")
-			self.websocket.sendMessage(self.getMessage())
+			task = loop.create_task(self.websocket.sendMessage(self.getMessage()))
+			loop.run_until_complete(task)
+		
 			time.sleep(5)
 			return
 
@@ -231,7 +236,10 @@ class InputHandler(threading.Thread):
 
 		self.newMessage = True
 		print("Sending message to clients ", self.getMessage())
-		self.websocket.sendMessage(self.getMessage())
+		
+		task = loop.create_task(self.websocket.sendMessage(self.getMessage()))
+		loop.run_until_complete(task)
+		
 
 	def getMessage(self):
 		# distributing the message to the outer world
