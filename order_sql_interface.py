@@ -1,4 +1,4 @@
-import sqlite3
+import sqlite3, json
 
 class OrderSQLInterface():
 
@@ -8,15 +8,18 @@ class OrderSQLInterface():
 	def getOrderQueue(self):
 		db = sqlite3.connect(self.dbPath)
 		dbc = db.cursor()
-		queue = dbc.execute('SELECT dish FROM WaitingList').fetchall()
-		orders = [eval(o[0]) for o in queue]
+		queue = dbc.execute('SELECT dish, realOrder FROM WaitingList').fetchall()
+		
+		orders = [dict([("realOrder",o[1]),("name",eval(o[0])["order"])]) for o in queue]
+
 		return orders
 
 	def clearOrderQueue(self):
 		#delete all entries from order queue
 		db = sqlite3.connect(self.dbPath)
 		dbc = db.cursor()
-		dbc.execute('DELETE FROM WaitingList');
+		dbc.execute('DELETE FROM WaitingList')
+		dbc.execute('DELETE FROM Current')
 		db.commit()
 
 	def getNextWaitingDish(self):
@@ -37,6 +40,10 @@ class OrderSQLInterface():
 			dbc.execute('INSERT INTO Current(dish) VALUES (?)', (dish[1],))
 			db.commit()
 			return eval(dish[1])
+
+	"""def getDishForId(self, id):
+		dish = dbc.execute('SELECT * FROM WaitingList WHERE id = ' + id + ' LIMIT 1').fetchall()
+		return eval(dish[1])"""
 
 
 	def appendToOrderQueue(self, dish, realOrder):

@@ -31,9 +31,6 @@ class Bistro:
 
 		self.recipeHandler = RecipeHandler()
 
-		#init the webserver which is necessary for handling user interactions from the dashboard
-		self.webserver = WebServer(self.recipeHandler)
-		self.webserver.start()
 
 		# Input handler is a separate thread, needs to be started
 		self.inputHandler = InputHandler(verbose, bluetooth, fakeData, setupTags, self, self.recipeHandler)
@@ -42,6 +39,9 @@ class Bistro:
 		# open the website in our default browser
 		#webbrowser.open_new_tab("file://" + os.path.realpath("bistro.html"))
 
+		#init the webserver which is necessary for handling user interactions from the dashboard
+		self.webserver = WebServer(self.inputHandler)
+		self.webserver.start()
 		
 		# setup the websocket server - port is 5678 on our local machine
 		
@@ -64,7 +64,7 @@ class Bistro:
 
 	@asyncio.coroutine
 	async def sendMessage(self, message):
-		print("Send message in python ws")
+		
 		if USERS:
 			print("Sending message to users ", message)
 			await asyncio.wait([user.send(message) for user in USERS])

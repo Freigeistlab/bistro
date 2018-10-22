@@ -9,15 +9,14 @@ class OrderHandler(threading.Thread):
 		# let python do the threading magic
 		super(OrderHandler, self).__init__()
 
-
 		self.websocket = websocket
 		self.recipeHandler = recipeHandler
 		self.verbose = verbose
-		self.newInput = False
 		self.fakeData = fakeData
 		self.dbPath = os.path.dirname(os.path.abspath(__file__))+'/recipes.db'
 		self.orderSQLInterface = OrderSQLInterface(self.dbPath)
 		self.setupSocket()
+		self.loop = asyncio.get_event_loop()
 
 
 	def setupSocket(self):
@@ -33,7 +32,7 @@ class OrderHandler(threading.Thread):
 	def nextDish(self):
 		# returns the next dish in the waitinglist
 		# and removes it from there
-
+		print("order handler next dish")
 		return self.orderSQLInterface.getNextWaitingDish()
 
 	def waiting(self):
@@ -46,12 +45,14 @@ class OrderHandler(threading.Thread):
 
 	def reset(self):
 		self.orderSQLInterface.clearOrderQueue()
+		#send the message out to all clients
+		message = {
+			"action": "clear_queue"
+		}
+		message = str(message).replace("'",'"')
+		asyncio.run_coroutine_threadsafe(self.websocket.sendMessage(message), self.loop)
 
-	def receivedNewInput(self):
-		res = self.newInput
-		self.newInput = False
-		return res
-
+	
 	#this function deals with meals that are added by the dashboard
 	def addMealPreparation(self, meal, amount):
 		print("adding meal to prepare")
@@ -59,26 +60,35 @@ class OrderHandler(threading.Thread):
 		for i in range(0,amount):
 			print("Appending to order queue")
 			self.orderSQLInterface.appendToOrderQueue(dish, False)
-		
-		self.sendNewOrderToClients(meal, False)
+			self.sendNewOrderToClients(dish, False)
 	
-	def sendNewOrderToClients(self, meal, realOrder):
-		#directly send out response after successful adding --> actually check if adding to queue was successful
-		loop = asyncio.get_event_loop()
+	#directly send out response after successful adding --> TODO: actually check if adding to queue was successful
+	def sendNewOrderToClients(self, dish, realOrder):
+		
 		realOrderBool = 0
 		if realOrder:
 			realOrderBool = 1
+		"""
+		self.message = {
+			"recipe": self.recipeHandler.currentRecipe(),
+			"extras": self.recipeHandler.currentExtras(),
+			"preparation": self.recipeHandler.currentPreparation(),
+		"""
+		print("Dish ", dish)
+			
+
 		message = {
-			"recipe": meal,
+			"name": dish["order"],
 			"realOrder": realOrderBool,
 			"action": "new_order"
 		}
+
 		message = str(message).replace("'",'"')
 		#task = loop.create_task(self.websocket.sendMessage(message))
 		#loop.run_until_complete(task)
 		#print("is send message co routine ? ", self.websocket.sendMessage)
 		#asyncio.run_coroutine_threadsafe(self.websocket.sendMessage, message)
-		asyncio.run_coroutine_threadsafe(self.websocket.sendMessage(message), loop)
+		asyncio.run_coroutine_threadsafe(self.websocket.sendMessage(message), self.loop)
 		
 		
 
@@ -216,7 +226,7 @@ class OrderHandler(threading.Thread):
 
 							self.sendNewOrderToClients(dish, True)
 							
-							#TODO: check this: do we actually need to send the current recipe to the client if 
+							#TODO: check this: do we actually need to send the current recipe to the client?
 							#self.newInput = True
 
 

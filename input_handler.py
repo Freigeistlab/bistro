@@ -75,7 +75,7 @@ class InputHandler(threading.Thread):
 
 		#needed for async events (like sending via websocket) that don't need to be awaited
 		asyncio.set_event_loop(asyncio.new_event_loop())
-
+		
 		if self.bluetoothHandler and self.setupTags:
 			self.setupBluetooth()
 
@@ -95,26 +95,28 @@ class InputHandler(threading.Thread):
 			if self.serialHandler.receivedNewInput():
 				self.handleSerialInput()
 
-			if self.orderHandler.receivedNewInput():
+			"""if self.orderHandler.receivedNewInput():
 				print("New order input handler")
 				self.handleOrderInput()
-
+			"""
 			time.sleep(.1)
 
 	def nextRecipe(self):
 		if (self.orderHandler.waiting() or self.afterStartup):
+			print("next recipe")
 			self.afterStartup = False
 			self.recipeHandler.selectRecipe(self.orderHandler.nextDish())
 			self.printStatus()
 			self.assembleMessage()
 		elif (self.recipeHandler.currentRecipe()):
+			print("resetting recipe")
 			self.recipeHandler.selectRecipe("")
 			self.printStatus()
 			self.assembleMessage()
 
-	def handleOrderInput(self):
+	"""def handleOrderInput(self):
 		self.assembleMessage()
-
+	"""
 	def handleSerialInput(self):
 		self.assembleMessage()
 
@@ -209,8 +211,10 @@ class InputHandler(threading.Thread):
 			"preparation": self.recipeHandler.currentPreparation(),
 			"waiting": self.orderHandler.waiting(),
 			"ingredients": {},
-			"weight": self.serialHandler.getValue()
+			"weight": self.serialHandler.getValue(),
+			"action": "update"
 		}
+
 		loop = asyncio.get_event_loop()
 		# if the recipe is finished, blink for a bit and reset
 		if self.recipeHandler.isReady():
@@ -224,7 +228,6 @@ class InputHandler(threading.Thread):
 			if self.bluetoothHandler:
 				self.bluetoothHandler.resetSelection()
 			self.newMessage = True
-			print("Sending recipe finished message to clients")
 			task = loop.create_task(self.websocket.sendMessage(self.getMessage()))
 			loop.run_until_complete(task)
 		
@@ -235,8 +238,7 @@ class InputHandler(threading.Thread):
 		self.message["error"] = self.recipeHandler.getError()
 
 		self.newMessage = True
-		print("Sending message to clients ", self.getMessage())
-		
+	
 		task = loop.create_task(self.websocket.sendMessage(self.getMessage()))
 		loop.run_until_complete(task)
 		
