@@ -35,7 +35,8 @@ class WebServer(threading.Thread):
 		@self.app.route('/next_ingredient', methods=['GET'])
 		def next_ingredient():
 			#all ingredients that are currently in use need to be set to finished
-			self.inputHandler.orderHandler.addMealPreparation(...,...)
+			asyncio.set_event_loop(asyncio.new_event_loop())
+			self.inputHandler.nextIngredients()
 			return 'hello world'
 
 		@self.app.route('/prepared_orders', methods=['GET'])

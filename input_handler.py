@@ -114,11 +114,17 @@ class InputHandler(threading.Thread):
 			self.printStatus()
 			self.assembleMessage(Action.NEXT_ORDER)
 
+	def nextIngredients(self):
+		self.recipeHandler.getNextIngredients()
+		self.printStatus()
+		self.assembleMessage(Action.NEXT_INGREDIENT)
+		
+
 	"""def handleOrderInput(self):
 		self.assembleMessage()
 	"""
 	def handleSerialInput(self):
-		self.assembleMessage(Action.USE_INGREDIENT)
+		self.assembleMessage(Action.NEXT_INGREDIENT)
 
 	def handleKeyboardInput(self):
 		userInput = self.keyboardHandler.getInput()
@@ -127,7 +133,7 @@ class InputHandler(threading.Thread):
 			# entered a valid ingredient
 			print("- ", userInput)
 			self.recipeHandler.useIngredient(userInput)
-			self.assembleMessage(Action.USE_INGREDIENT)
+			self.assembleMessage(Action.NEXT_INGREDIENT)
 
 		elif userInput in self.recipeHandler.dishes():
 			# entered a valid dish

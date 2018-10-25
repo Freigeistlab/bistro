@@ -179,6 +179,19 @@ class RecipeHandler:
 		else:
 			self.__error = i
 
+	def getNextIngredients(self):
+		
+		print("ingredient ", self.__ingredients.keys())
+		for i in self.__ingredients.keys():
+			
+			if self.__ingredients[i] == "use":
+				self.__ingredients[i] = "finished"
+	
+		self.__current += 1
+		for i in self.currentIngredients():
+			self.__ingredients[i] = "use"
+
+
 	def getRecipe(self, name):
 		return copy.deepcopy(RECIPES[name]["recipe"])
 
