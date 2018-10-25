@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import copy
+import copy, time
 
 # Static set of sauce recipes. Can be extended.
 # Ingredients appearing in sets (such as {"pasta","tomato"}) do not affect
@@ -202,3 +202,58 @@ class RecipeHandler:
 			return False
 
 		return "use" not in self.__ingredients.values() and "waiting" not in self.__ingredients.values()
+
+	def constructRecipe(self, items, order):
+		
+		#checks if we have an order from orderbird (with pasta, that is ignored) or a prepared order without pasta
+		if not self.isPasta(items[0]):
+			print("Bestellung ohne Pasta eingegangen")
+			if not self.isSauce(items[0]):
+				print("Error: Ich kenne keine Sauce namens", items[0], ". Vielleicht in der recipe_handler.py eintragen?")
+			else:
+				sauce = self.getRecipe(items[0])
+				sauceName = items[0]
+		else: 
+			pasta = items[0]
+			if not self.isSauce(items[1]):
+				print("Error: Ich kenne keine Sauce namens", items[1], ". Vielleicht in der recipe_handler.py eintragen?")
+			else:
+				sauce = self.getRecipe(items[1])
+				sauceName = items[1]
+
+		#sauceName = items[1]
+		#dishName = pasta + " " + sauceName
+
+		items = items[2:]
+		extras = ""
+		toppings = []
+
+		for item in items:
+			if item.startswith("Ohne "):
+				if item[5:] in sauce:
+					sauce.remove(item[5:])
+					extras += " – " + item[5:]
+				for ingredient in sauce:
+					if item[5:] in ingredient:
+						ingredient.remove(item[5:])
+						extras += " – " + item[5:]
+			elif not self.isTopping(item):
+				print(item,"ist kein Topping. Vielleicht ein Getränk. Ansonsten vielleicht in der recipe_handler.py eintragen?")
+			else:
+				toppings.append(item)
+				extras += " + " + item
+
+		# put together the ordered dish
+		dish = {
+			"time": time.strftime('%x %X %Z'),
+			"order": order,
+			"sauce": sauceName,
+			"name": sauceName,
+			"extras": extras.strip(),
+			"recipe": sauce + toppings + self.getDecorationFor(sauceName),
+			"preparation": self.getPreparationFor(sauceName)
+		}
+
+		return dish
+		
+

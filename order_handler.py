@@ -1,64 +1,24 @@
 #!/usr/bin/env python3
 
-import re, socket, threading, sys, sqlite3, os, time
+import re, socket, threading, sys, os, asyncio, functools
+from order_sql_interface import OrderSQLInterface
+from actions import Action
 
 class OrderHandler(threading.Thread):
 
-	def __init__(self, recipeHandler, verbose, fakeData):
+	def __init__(self, recipeHandler, verbose, fakeData, websocket):
 		# let python do the threading magic
 		super(OrderHandler, self).__init__()
 
+		self.websocket = websocket
 		self.recipeHandler = recipeHandler
 		self.verbose = verbose
-		self.newInput = False
 		self.fakeData = fakeData
 		self.dbPath = os.path.dirname(os.path.abspath(__file__))+'/recipes.db'
+		self.orderSQLInterface = OrderSQLInterface(self.dbPath)
 		self.setupSocket()
+		self.loop = asyncio.get_event_loop()
 
-	def getOrderQueue(self):
-		db = sqlite3.connect(self.dbPath)
-		dbc = db.cursor()
-		return dbc.execute('SELECT id FROM WaitingList').fetchall()
-
-	def clearOrderQueue(self):
-		#delete all entries from order queue
-		db = sqlite3.connect(self.dbPath)
-		dbc = db.cursor()
-		dbc.execute('DELETE FROM WaitingList');
-		db.commit()
-
-	def getNextWaitingDish(self):
-		#fetch next dish, remove it from waiting list and return
-		db = sqlite3.connect(self.dbPath)
-		dbc = db.cursor()
-		current = dbc.execute('SELECT * FROM Current LIMIT 1').fetchall()
-		if current:
-			return eval(current[0][1])
-
-		dish = dbc.execute('SELECT * FROM WaitingList LIMIT 1').fetchall()
-		if dish:
-			dish = dish[0]
-			dbc.execute('DELETE FROM WaitingList WHERE id = ' + str(dish[0]));
-			db.commit()
-
-			dbc.execute('INSERT INTO Current(dish) VALUES (?)', (dish[1],))
-			db.commit()
-
-			return eval(dish[1])
-
-
-	def appendToOrderQueue(self, dish):
-		#append dish to waiting list json.dumps(dish)
-		db = sqlite3.connect(self.dbPath)
-		dbc = db.cursor()
-		dbc.execute('INSERT INTO WaitingList(dish) VALUES (?)', (str(dish),))
-		db.commit()
-
-	def recipeReady(self):
-		db = sqlite3.connect(self.dbPath)
-		dbc = db.cursor()
-		dbc.execute('DELETE FROM Current');
-		db.commit()
 
 	def setupSocket(self):
 		# sets up the socket to establish the connection to orderbird
@@ -73,11 +33,11 @@ class OrderHandler(threading.Thread):
 	def nextDish(self):
 		# returns the next dish in the waitinglist
 		# and removes it from there
-
-		return self.getNextWaitingDish()
+		print("order handler next dish")
+		return self.orderSQLInterface.getNextWaitingDish()
 
 	def waiting(self):
-		return len(self.getOrderQueue())
+		return len(self.orderSQLInterface.getOrderQueue())
 
 	def getIpAddress(self):
 		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -85,23 +45,67 @@ class OrderHandler(threading.Thread):
 		return s.getsockname()[0]
 
 	def reset(self):
-		self.clearOrderQueue()
+		self.orderSQLInterface.clearOrderQueue()
+		#send the message out to all clients
+		message = {
+			"action": Action.CLEAR_QUEUE.value
+		}
+		message = str(message).replace("'",'"')
+		asyncio.run_coroutine_threadsafe(self.websocket.sendMessage(message), self.loop)
 
-	def receivedNewInput(self):
-		res = self.newInput
-		self.newInput = False
-		return res
+	
+	#this function deals with meals that are added by the dashboard
+	def addMealPreparation(self, meal, amount):
+		print("adding meal to prepare")
+		dish = self.recipeHandler.constructRecipe(meal.split(" "), meal)
+		for i in range(0,amount):
+			print("Appending to order queue")
+			self.orderSQLInterface.appendToOrderQueue(dish, False)
+			self.sendNewOrderToClients(dish, False)
+	
+	#directly send out response after successful adding --> TODO: actually check if adding to queue was successful
+	def sendNewOrderToClients(self, dish, realOrder):
+		
+		realOrderBool = 0
+		if realOrder:
+			realOrderBool = 1
+		"""
+		self.message = {
+			"recipe": self.recipeHandler.currentRecipe(),
+			"extras": self.recipeHandler.currentExtras(),
+			"preparation": self.recipeHandler.currentPreparation(),
+		"""
+		print("Dish ", dish)
+			
+
+		message = {
+			"name": dish["order"],
+			"realOrder": realOrderBool,
+			"action": Action.NEW_ORDER.value
+		}
+
+		message = str(message).replace("'",'"')
+		#task = loop.create_task(self.websocket.sendMessage(message))
+		#loop.run_until_complete(task)
+		#print("is send message co routine ? ", self.websocket.sendMessage)
+		#asyncio.run_coroutine_threadsafe(self.websocket.sendMessage, message)
+		asyncio.run_coroutine_threadsafe(self.websocket.sendMessage(message), self.loop)
+		
+		
 
 	def run(self):
 		print("Set up your orderbird printer to IP", self.getIpAddress())
 		print("Waiting for orders...")
+		
+		#needed for async events (like sending via websocket) that don't need to be awaited
+		#asyncio.set_event_loop(asyncio.new_event_loop())
 
 		while True:
 			try:
 				# accept connections (probably from orderbird or order dashboard)
 				conn, addr = self.socket.accept()
 				print("\n  Connection from: " + str(addr))
-				
+
 				while True:
 					data = conn.recv(8192).decode("cp1252")
 
@@ -214,56 +218,16 @@ class OrderHandler(threading.Thread):
 
 							if self.verbose:
 								print("    Items: ", items)
-
 							
 							
-							if not self.recipeHandler.isPasta(items[0]):
-								print("Error: Ich kenne keine Pasta namens", pasta, ". Vielleicht in der recipe_handler.py eintragen?")
-							else: 
-								pasta = items[0]
-
-							if not self.recipeHandler.isSauce(items[1]):
-								print("Error: Ich kenne keine Sauce namens", items[1], ". Vielleicht in der recipe_handler.py eintragen?")
-							else:
-								sauce = self.recipeHandler.getRecipe(items[1])
-
-							sauceName = items[1]
-							dishName = pasta + " " + sauceName
-
-							items = items[2:]
-							extras = ""
-							toppings = []
-
-							for item in items:
-								if item.startswith("Ohne "):
-									if item[5:] in sauce:
-										sauce.remove(item[5:])
-										extras += " – " + item[5:]
-									for ingredient in sauce:
-										if item[5:] in ingredient:
-											ingredient.remove(item[5:])
-											extras += " – " + item[5:]
-								elif not self.recipeHandler.isTopping(item):
-									print(item,"ist kein Topping. Vielleicht ein Getränk. Ansonsten vielleicht in der recipe_handler.py eintragen?")
-								else:
-									toppings.append(item)
-									extras += " + " + item
-
-							# put together the ordered dish
-							dish = {
-								"time": time.strftime('%x %X %Z'),
-								"order": order,
-								"sauce": sauceName,
-								"name": dishName,
-								"extras": extras.strip(),
-								"recipe": [pasta] + sauce + toppings + self.recipeHandler.getDecorationFor(sauceName),
-								"preparation": self.recipeHandler.getPreparationFor(sauceName)
-							}
-
+							dish = self.recipeHandler.constructRecipe(items, order)
 							for i in range(0,amount):
-								self.appendToOrderQueue(dish)
+								print("Appending to order queue")
+								self.orderSQLInterface.appendToOrderQueue(dish, True)
 
-						self.newInput = True
+							self.sendNewOrderToClients(dish, True)
+							
+
 
 			except:
 				print("exception: ", sys.exc_info()[0])

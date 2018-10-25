@@ -2,6 +2,10 @@
 
 import asyncio, websockets, webbrowser, os, time, sys, json
 from input_handler import InputHandler
+from flask import Flask
+from flask_restful import Resource, Api
+from api import WebServer
+from recipe_handler import RecipeHandler
 
 USERS = set()
 
@@ -25,17 +29,24 @@ class Bistro:
 			if arg == "--setup":
 				setupTags = True
 
+		self.recipeHandler = RecipeHandler()
+
+
 		# Input handler is a separate thread, needs to be started
-		self.inputHandler = InputHandler(verbose, bluetooth, fakeData, setupTags, self)
+		self.inputHandler = InputHandler(verbose, bluetooth, fakeData, setupTags, self, self.recipeHandler)
 		self.inputHandler.start()
-		print("hello")
+		
 		# open the website in our default browser
 		#webbrowser.open_new_tab("file://" + os.path.realpath("bistro.html"))
 
+		#init the webserver which is necessary for handling user interactions from the dashboard
+		self.webserver = WebServer(self.inputHandler)
+		self.webserver.start()
+		
 		# setup the websocket server - port is 5678 on our local machine
 		
 		server = websockets.serve(self.bistro, '', 5678)
-		self.dashboard_server = websockets.serve(self.echo, '', 443)
+		#self.dashboard_server = websockets.serve(self.echo, '', 443)
 
 		# tell the server to run forever
 		asyncio.get_event_loop().run_until_complete(server)
@@ -43,48 +54,45 @@ class Bistro:
 
 
 	@asyncio.coroutine
-	def register(self,websocket):
+	async def register(self,websocket):
 		USERS.add(websocket)
-		yield from asyncio.wait([user.send(self.inputHandler.getMessage()) for user in USERS])
+		#await asyncio.wait([user.send(self.inputHandler.getMessage()) for user in USERS])
+		#TODO: send current order out to new websocket
 
 	@asyncio.coroutine
 	def unregister(self,websocket):
 		USERS.remove(websocket)
 
 	@asyncio.coroutine
-	def sendMessage(self, message):
+	async def sendMessage(self, message):
+		
 		if USERS:
-			yield from asyncio.wait([user.send(message) for user in USERS])
+			print("Sending message to users ", message)
+			await asyncio.wait([user.send(message) for user in USERS])
+			print("message sent")
 			#send message to both dashboard and website
 
-	@asyncio.coroutine
+	#TODO: do we still need that method?
+	"""@asyncio.coroutine
 	def getMessage(self):
 		if self.inputHandler.newMessage:
 			return self.inputHandler.getMessage()
 		else:
-			return ""
+			return """
 
 	@asyncio.coroutine
-	def bistro(self, websocket, path):
+	async def bistro(self, websocket, path):
 		# in case there's a new message coming from the input handler
 		# we want to send it via web sockets to the browser
+		await self.register(websocket)
+		print("Connected to websocket")
+		async for message in websocket:
+			json_msg = json.loads(message)
+			#print(json_msg.action, " " , json_msg.meal, " ", json_msg.amount)
+			if json_msg["action"]=="prepare_order":
+				self.inputHandler.orderHandler.addMealPreparation(json_msg["meal"], json_msg["amount"])
 
-		yield from self.register(websocket)
-		try: 
-			while True:
-				message = yield from self.getMessage()
-				if message:
-					yield from self.sendMessage(message)
-				yield from  asyncio.sleep(.1)
-		finally: 
-			yield from self.unregister(websocket)
-	
-	@asyncio.coroutine
-	async def echo(self, websocket, path):
-		print("Connected to dashboard")
-	    async for message in websocket:
-	        print(message)
-	        await websocket.send(message)
+			#await websocket.send(message)
 
 if __name__ == "__main__":
 	# Create the Bistro object that does all the magic
