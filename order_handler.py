@@ -2,6 +2,7 @@
 
 import re, socket, threading, sys, os, asyncio, functools
 from order_sql_interface import OrderSQLInterface
+from actions import Action
 
 class OrderHandler(threading.Thread):
 
@@ -47,7 +48,7 @@ class OrderHandler(threading.Thread):
 		self.orderSQLInterface.clearOrderQueue()
 		#send the message out to all clients
 		message = {
-			"action": "clear_queue"
+			"action": Action.CLEAR_QUEUE.value
 		}
 		message = str(message).replace("'",'"')
 		asyncio.run_coroutine_threadsafe(self.websocket.sendMessage(message), self.loop)
@@ -80,7 +81,7 @@ class OrderHandler(threading.Thread):
 		message = {
 			"name": dish["order"],
 			"realOrder": realOrderBool,
-			"action": "new_order"
+			"action": Action.NEW_ORDER.value
 		}
 
 		message = str(message).replace("'",'"')
@@ -226,8 +227,6 @@ class OrderHandler(threading.Thread):
 
 							self.sendNewOrderToClients(dish, True)
 							
-							#TODO: check this: do we actually need to send the current recipe to the client?
-							#self.newInput = True
 
 
 			except:

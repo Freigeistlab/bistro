@@ -56,7 +56,8 @@ class Bistro:
 	@asyncio.coroutine
 	async def register(self,websocket):
 		USERS.add(websocket)
-		await asyncio.wait([user.send(self.inputHandler.getMessage()) for user in USERS])
+		#await asyncio.wait([user.send(self.inputHandler.getMessage()) for user in USERS])
+		#TODO: send current order out to new websocket
 
 	@asyncio.coroutine
 	def unregister(self,websocket):
@@ -72,12 +73,12 @@ class Bistro:
 			#send message to both dashboard and website
 
 	#TODO: do we still need that method?
-	@asyncio.coroutine
+	"""@asyncio.coroutine
 	def getMessage(self):
 		if self.inputHandler.newMessage:
 			return self.inputHandler.getMessage()
 		else:
-			return ""
+			return """
 
 	@asyncio.coroutine
 	async def bistro(self, websocket, path):

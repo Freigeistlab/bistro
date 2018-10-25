@@ -3,6 +3,7 @@ from flask_restful import Resource, Api
 import threading, os, json, asyncio
 from order_sql_interface import OrderSQLInterface
 from flask_cors import CORS
+from recipe_handler import RECIPES, PASTA, TOPPINGS, DECORATION
 
 #the server that's responsible for handling user interactions from the dashboard
 class WebServer(threading.Thread):
@@ -33,17 +34,19 @@ class WebServer(threading.Thread):
 
 		@self.app.route('/next_ingredient', methods=['GET'])
 		def next_ingredient():
+			#all ingredients that are currently in use need to be set to finished
 			self.inputHandler.orderHandler.addMealPreparation(...,...)
 			return 'hello world'
 
 		@self.app.route('/prepared_orders', methods=['GET'])
 		def get_prepared_orders():
+			#TODO
 			#return all prepared orders
 			#orders = self.orderSQLInterface.getOrderQueue()
 			#access new table
 			order_names = [order["order"] for order in orders]
 			#print(order_names)
-			#return "hallo"
+			
 			return json.dumps({"order_names": order_names})
 
 		@self.app.route('/next_order', methods=['GET'])
@@ -62,6 +65,19 @@ class WebServer(threading.Thread):
 			print("After Reset")
 			return 'hello world'
 
+		@self.app.route('/recipes', methods=['GET'])
+		def get_recipes():
+			#return all recipes we know
+			recipes = RECIPES.keys()
+			
+			message = json.dumps({
+				"recipes": list(recipes), 
+				"pasta": PASTA,
+				"toppings": TOPPINGS,
+				"decoration": DECORATION   
+				})
+			
+			return message
 
 	def run(self):
 		#for debug mode the flask server must run on the main thread
