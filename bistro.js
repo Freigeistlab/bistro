@@ -5,6 +5,19 @@ var ws = new WebSocket("ws://localhost:5678/");
 var interval;
 var demoStart;
 var letterTimeouts = [];
+
+const ingredientImages = {
+	"Tomaten": "https://image.flaticon.com/icons/svg/135/135471.svg",
+	"T1": "https://image.flaticon.com/icons/svg/1046/1046892.svg",
+  "T2": "https://image.flaticon.com/icons/svg/1046/1046892.svg",
+	"G1": "https://image.flaticon.com/icons/svg/455/455214.svg",
+	"Hackfleisch": "https://image.flaticon.com/icons/svg/67/67122.svg",
+	"Basilikum": "https://image.flaticon.com/icons/svg/1193/1193748.svg",
+	"Knoblauch": "https://image.flaticon.com/icons/svg/1193/1193756.svg",
+	"Balsamico": "https://image.flaticon.com/icons/svg/80/80186.svg",
+	"Chili": "https://image.flaticon.com/icons/svg/1193/1193708.svg"
+};
+
 function demo() {
 	if ($(".waiting").length > 0 || $(".use").length > 0)
 		return;
@@ -39,6 +52,91 @@ $(document).ready(function() {
 	demo();
 });
 
+function drawBackgroundAnimation(json, diff){
+  // iterate through all our ingredients
+  console.log("drawing bg animation", json);
+  for (var ingredient in json.ingredients) {
+    // each cell in the table of our HTML page gets its respective CSS class
+    // that will cause it to show the right color (see bistro.css)
+    // json[ingredient] contains one of the following: "success", "neutral", "blink", or "error"
+    if ($("#"+ingredient).hasClass("error")) {
+      var element = document.getElementById(ingredient.replace(" ","_"));
+      if (element)
+        element.className = json.ingredients[ingredient] + " error";
+    } else if (json.ingredients[ingredient] == "use") {
+      var use = document.getElementById(ingredient);
+      $("#currentIngredient").empty();
+      console.log("adding ingredients ");
+
+			let imageSrc = ingredientImages[ingredient];
+
+      let image = $('<img id="img1" class="ingredientImage" src="' + imageSrc + '" alt="Ingredient">');
+      let ingredientText = $('<span class="ingredientText" >'+ingredient+'</span>').css({animationDuration: "10s", top: 100});
+			let image1 = $('<img id="img3" class="ingredientImage" src="' + imageSrc + '" alt="Ingredient">').css({animationDuration: "8s", top: 200});
+      let ingredientText1 = $('<span class="ingredientText" >'+ingredient+'</span>').css({animationDuration: "6s", top: 300})
+			let image2 = $('<img id="img3" class="ingredientImage" src="' + imageSrc + '"  alt="Ingredient">').css({animationDuration: "11s", top: 400});
+      let ingredientText2 = $('<span class="ingredientText" >'+ingredient+'</span>').css({animationDuration: "5s", top: 500})
+      /*let image3 = $('<img id="img3" class="ingredientImage" src="' + imageSrc + '"  alt="Ingredient">').css({animationDuration: "7s", top: 600});
+      let ingredientText3 = $('<span class="ingredientText" >'+ingredient+'</span>').css({animationDuration: "12s", top: 700})*/
+
+      $("#currentIngredient").append(image);
+      $("#currentIngredient").append(image1);
+      $("#currentIngredient").append(image2);
+      //$("#currentIngredient").append(image3);
+
+
+      $("#currentIngredient").append(ingredientText);
+      $("#currentIngredient").append(ingredientText1);
+      $("#currentIngredient").append(ingredientText2);
+      //$("#currentIngredient").append(ingredientText3);
+
+      /*var print_ingredient = ingredient + " ";
+      for (var l = 0; l < letterTimeouts.length;l++) {
+        clearTimeout(letterTimeouts[l]);
+      }
+      letterTimeouts = [];
+      for (var l = 0; l < 75; l++) {
+        letterTimeouts.push(setTimeout(function(print_ingredient,l) {
+          var newLetter = $('<span class="letter" data-delay='+l+' data-letter="'+print_ingredient[l%print_ingredient.length]+'">'+print_ingredient[l%print_ingredient.length]+'</span>');
+          newLetter.css("animation-delay", -40+0.5*l+"s");
+          $("#currentIngredient").append(newLetter);
+        },l * 100, print_ingredient, l));
+      }*/
+
+
+
+      if (diff < 0) {
+        if (use) {
+          use.className = "use";
+        }
+      } else {
+        if (use) {
+          use.className = "waiting toUse";
+          setTimeout(function() {
+            $(".toUse").removeClass("waiting").removeClass("toUse").addClass("use");
+          },1000);
+        }
+      }
+    } else {
+      var element = document.getElementById(ingredient.replace(" ","_"));
+      if (element)
+        element.className = json.ingredients[ingredient];
+    }
+
+    if (json.ingredients[ingredient] == "ready") {
+      $("#countdown").addClass("active");
+      for (var l = 0; l < letterTimeouts.length;l++) {
+        clearTimeout(letterTimeouts[l]);
+      }
+      letterTimeouts = [];
+      $("#currentIngredient").empty();
+    } else {
+      $("#countdown").removeClass("active")
+    }
+  }
+
+}
+
 // wait for messages incoming
 ws.onmessage = function (event) {
 	clearInterval(interval);
@@ -52,7 +150,7 @@ ws.onmessage = function (event) {
 	var diff = waiting - json["waiting"];
 	if (diff < 0) {
 		for (var i = waiting; i < json["waiting"]; i++) {
-			$("#waitingList").prepend("<span class='item new'></span");
+			$("#waitingList").prepend("<span class='item new'/>");
 			setTimeout(function() {
 				$("#waitingList span.item.new").removeClass("new");
 			}, 10);
@@ -66,6 +164,7 @@ ws.onmessage = function (event) {
 			}, 500);
 		}
 	}
+
 
 	
 	setTimeout(function() {
@@ -115,61 +214,7 @@ ws.onmessage = function (event) {
 			
 		}
 
-		// iterate through all our ingredients
-		for (var ingredient in json.ingredients) {
-			// each cell in the table of our HTML page gets its respective CSS class
-			// that will cause it to show the right color (see bistro.css)
-			// json[ingredient] contains one of the following: "success", "neutral", "blink", or "error"
-			if ($("#"+ingredient).hasClass("error")) {
-				var element = document.getElementById(ingredient.replace(" ","_"));
-				if (element)
-					element.className = json.ingredients[ingredient] + " error";
-			} else if (json.ingredients[ingredient] == "use") {
-				var use = document.getElementById(ingredient);
-				$("#currentIngredient").empty();
-				var print_ingredient = ingredient + " ";
-				for (var l = 0; l < letterTimeouts.length;l++) {
-					clearTimeout(letterTimeouts[l]);
-				}
-				letterTimeouts = [];
-				for (var l = 0; l < 75; l++) {
-					letterTimeouts.push(setTimeout(function(print_ingredient,l) {
-						var newLetter = $('<span class="letter" data-delay='+l+' data-letter="'+print_ingredient[l%print_ingredient.length]+'">'+print_ingredient[l%print_ingredient.length]+'</span>');
-						newLetter.css("animation-delay", -40+0.5*l+"s");
-						$("#currentIngredient").append(newLetter);
-					},l * 100, print_ingredient, l));
-				}
-				
-				if (diff < 0) {
-					if (use) {
-						use.className = "use";
-					}
-				} else {
-					if (use) {
-						use.className = "waiting toUse";
-						setTimeout(function() {
-							$(".toUse").removeClass("waiting").removeClass("toUse").addClass("use");
-						},1000);
-					}
-				}
-			} else {
-				var element = document.getElementById(ingredient.replace(" ","_"));
-				if (element)
-					element.className = json.ingredients[ingredient];
-			}
-			
-			if (json.ingredients[ingredient] == "ready") {
-				$("#countdown").addClass("active");
-				for (var l = 0; l < letterTimeouts.length;l++) {
-					clearTimeout(letterTimeouts[l]);
-				}
-				letterTimeouts = [];
-				$("#currentIngredient").empty();
-			} else {
-				$("#countdown").removeClass("active")
-			}
-		}
-
+    drawBackgroundAnimation(json, diff);
 		
 		if (json["error"]) {
 			$("#"+json["error"]).removeClass("error");

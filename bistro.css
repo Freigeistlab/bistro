@@ -21,7 +21,7 @@ body {
 	height: 100vh;
 	font-size: 16px;
 	font-family: "Roboto", sans-serif;
-	background: black;
+	background: wheat;
 	color: white;
 	overflow: scroll;
 }
@@ -327,7 +327,6 @@ td.error .error_bg {
 	position: relative;
 	top: -1em;
 	left: -1em;
-	background: #000;
 	width: auto;
 	display: inline-block;
 	padding: 1em;
@@ -467,7 +466,7 @@ td.error .error_bg {
 		rotateY(-15deg)
 		rotateZ(0deg);
 	}
-} 
+}
 
 @keyframes letter-after-animation {
 	0% {transform:
@@ -511,4 +510,27 @@ td.error .error_bg {
 	animation-name: letter-after-animation;
 	animation-iteration-count: infinite;
 	animation-duration: 3s;
+}
+
+.ingredientImage {
+	animation-name: ingredient-animation;
+	animation-duration: 4s;
+	height: 100px;
+	width: 100px;
+	position:absolute;
+	animation-iteration-count: infinite;
+	animation-timing-function: linear;
+}
+
+@keyframes ingredient-animation {
+	from { left: -50%;}
+	to{ left : 100%;}
+}
+
+.ingredientText {
+	font-size: 26px;
+	animation-name: ingredient-animation;
+	position:absolute;
+	animation-iteration-count: infinite;
+	animation-timing-function: linear;
 }
