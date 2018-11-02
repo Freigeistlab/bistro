@@ -76,33 +76,13 @@ function drawBackgroundAnimation(json, diff){
       let ingredientText1 = $('<span class="ingredientText" >'+ingredient+'</span>').css({animationDuration: "6s", top: 300})
 			let image2 = $('<img id="img3" class="ingredientImage" src="' + imageSrc + '"  alt="Ingredient">').css({animationDuration: "11s", top: 400});
       let ingredientText2 = $('<span class="ingredientText" >'+ingredient+'</span>').css({animationDuration: "5s", top: 500})
-      /*let image3 = $('<img id="img3" class="ingredientImage" src="' + imageSrc + '"  alt="Ingredient">').css({animationDuration: "7s", top: 600});
-      let ingredientText3 = $('<span class="ingredientText" >'+ingredient+'</span>').css({animationDuration: "12s", top: 700})*/
 
       $("#currentIngredient").append(image);
       $("#currentIngredient").append(image1);
       $("#currentIngredient").append(image2);
-      //$("#currentIngredient").append(image3);
-
-
       $("#currentIngredient").append(ingredientText);
       $("#currentIngredient").append(ingredientText1);
       $("#currentIngredient").append(ingredientText2);
-      //$("#currentIngredient").append(ingredientText3);
-
-      /*var print_ingredient = ingredient + " ";
-      for (var l = 0; l < letterTimeouts.length;l++) {
-        clearTimeout(letterTimeouts[l]);
-      }
-      letterTimeouts = [];
-      for (var l = 0; l < 75; l++) {
-        letterTimeouts.push(setTimeout(function(print_ingredient,l) {
-          var newLetter = $('<span class="letter" data-delay='+l+' data-letter="'+print_ingredient[l%print_ingredient.length]+'">'+print_ingredient[l%print_ingredient.length]+'</span>');
-          newLetter.css("animation-delay", -40+0.5*l+"s");
-          $("#currentIngredient").append(newLetter);
-        },l * 100, print_ingredient, l));
-      }*/
-
 
 
       if (diff < 0) {
