@@ -1,6 +1,6 @@
 websockets
 gatt
-serial
 pathlib
 flask-restful
 flask-cors
+pyserial
