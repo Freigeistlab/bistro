@@ -6,6 +6,7 @@ from flask import Flask
 from flask_restful import Resource, Api
 from api import WebServer
 from recipe_handler import RecipeHandler
+from actions import Action
 
 USERS = set()
 
@@ -57,7 +58,9 @@ class Bistro:
 	def register(self,websocket):
 		USERS.add(websocket)
 		#await asyncio.wait([user.send(self.inputHandler.getMessage()) for user in USERS])
-		#TODO: send current order out to new websocket
+		#send current order out to new websocket
+		message = self.inputHandler.assembleMessage(Action.INIT)
+		yield from asyncio.wait([websocket.send(message)])
 
 	@asyncio.coroutine
 	def unregister(self,websocket):
