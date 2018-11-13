@@ -1,5 +1,5 @@
 // connect to the websocket of our app
-var ws = new WebSocket("ws://localhost:5678/");
+var ws = new WebSocket("ws://192.168.42.133:5678/");
 
 
 var interval;
