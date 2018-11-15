@@ -13,7 +13,6 @@ class WebServer(threading.Thread):
 		self.api = Api(self.app)
 		CORS(self.app)
 		self.dbPath = os.getcwd()+'/database/recipes.db'
-		print(self.dbPath)
 		self.orderSQLInterface = OrderSQLInterface(self.dbPath)
 		self.inputHandler = inputHandler
 

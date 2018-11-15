@@ -15,7 +15,6 @@ class OrderHandler(threading.Thread):
 		self.verbose = verbose
 		self.fakeData = fakeData
 		self.dbPath = os.getcwd()+'/database/recipes.db'
-		print(self.dbPath)
 		self.orderSQLInterface = OrderSQLInterface(self.dbPath)
 		self.setupSocket()
 		self.loop = asyncio.get_event_loop()
