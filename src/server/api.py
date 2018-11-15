@@ -12,7 +12,8 @@ class WebServer(threading.Thread):
 		self.app = Flask(__name__)
 		self.api = Api(self.app)
 		CORS(self.app)
-		self.dbPath = os.path.dirname(os.path.abspath(__file__))+'/recipes.db'
+		self.dbPath = os.getcwd()+'/database/recipes.db'
+		print(self.dbPath)
 		self.orderSQLInterface = OrderSQLInterface(self.dbPath)
 		self.inputHandler = inputHandler
 

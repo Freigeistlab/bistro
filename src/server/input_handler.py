@@ -21,8 +21,6 @@ class InputHandler(threading.Thread):
 		self.keyboardHandler.start()
 		self.serialHandler = SerialHandler()
 		self.serialHandler.start()
-                print("started serialHandler")
-
 
 		# nothing to send yet
 		self.message = ""

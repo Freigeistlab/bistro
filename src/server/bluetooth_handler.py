@@ -18,7 +18,7 @@ class TagManager(gatt.DeviceManager):
 		self.setup = False
 		self.latestSelections = []
 		self.latestDiscoveries = []
-		self.dbPath = os.path.dirname(os.path.abspath(__file__))+'/tags.db'
+		self.dbPath = os.getcwd()+'/database/tags.db'
 
 		self.getTagPool()
 		self.start_discovery()
