@@ -16,6 +16,10 @@ class WebServer(threading.Thread):
 		self.orderSQLInterface = OrderSQLInterface(self.dbPath)
 		self.inputHandler = inputHandler
 
+		@self.app.route('/', methods=['GET'])
+		def index():
+			return json.dumps({ "status": 200 })
+
 		@self.app.route('/orders', methods=['GET'])
 		def get_orders():
 			#return all orders
@@ -79,6 +83,7 @@ class WebServer(threading.Thread):
 				})
 			
 			return message
+
 
 	def run(self):
 		#for debug mode the flask server must run on the main thread
