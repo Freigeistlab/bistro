@@ -21,6 +21,7 @@ class InputHandler(threading.Thread):
 		self.keyboardHandler.start()
 		self.serialHandler = SerialHandler()
 		self.serialHandler.start()
+                print("started serialHandler")
 
 
 		# nothing to send yet
@@ -93,12 +94,8 @@ class InputHandler(threading.Thread):
 				self.handleKeyboardInput()
 
 			if self.serialHandler.receivedNewInput():
-				self.handleSerialInput()
+                                self.handleSerialInput()
 
-			"""if self.orderHandler.receivedNewInput():
-				print("New order input handler")
-				self.handleOrderInput()
-			"""
 			time.sleep(.1)
 
 	def nextRecipe(self):
@@ -118,13 +115,28 @@ class InputHandler(threading.Thread):
 		self.recipeHandler.getNextIngredients()
 		self.printStatus()
 		self.sendMessage(Action.NEXT_INGREDIENT)
-		
+	
 
-	"""def handleOrderInput(self):
-		self.assembleMessage()
-	"""
+	def handleOrderInput(self):
+		self.assembleMessage(Action.NEXT_ORDER)
+
 	def handleSerialInput(self):
-		self.sendMessage(Action.NEXT_INGREDIENT)
+		self.serialHandler.resetInputFlag()
+		event = self.serialHandler.getButtonEvent()
+		print("Received button event: " + str(event))
+
+		if(event[0] == "0" and event[1] == "D"):
+			self.nextIngredients()
+		if(event[0] == "1" and event[1] == "D"):
+			self.nextRecipe()
+		if(event[0] == "2" and event[1] == "D"):
+			self.orderHandler.reset()
+		if(event[0] == "3" and event[1] == "D"):
+			pass
+		if(event[0] == "4" and event[1] == "D"):
+			pass
+		if(event[0] == "5" and event[1] == "D"):
+			pass
 
 	def handleKeyboardInput(self):
 		userInput = self.keyboardHandler.getInput()
@@ -181,7 +193,7 @@ class InputHandler(threading.Thread):
 			# entered a valid ingredient
 			print("- ", selected)
 			self.recipeHandler.useIngredient(selected)
-			self.sendMessage()
+			self.assembleMessage(Action.NEXT_INGREDIENT)
 
 		else:
 			# everything else
@@ -219,7 +231,6 @@ class InputHandler(threading.Thread):
 				"preparation": self.recipeHandler.currentPreparation(),
 				"waiting": self.orderHandler.waiting(),
 				"ingredients": {},
-				"weight": self.serialHandler.getValue(),
 				"action": action.value
 			}
 
