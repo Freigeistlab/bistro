@@ -21,6 +21,7 @@ class InputHandler(threading.Thread):
 		self.keyboardHandler.start()
 		self.serialHandler = SerialHandler()
 		self.serialHandler.start()
+                print("started serialHandler")
 
 
 		# nothing to send yet
@@ -93,12 +94,8 @@ class InputHandler(threading.Thread):
 				self.handleKeyboardInput()
 
 			if self.serialHandler.receivedNewInput():
-				self.handleSerialInput()
+                                self.handleSerialInput()
 
-			"""if self.orderHandler.receivedNewInput():
-				print("New order input handler")
-				self.handleOrderInput()
-			"""
 			time.sleep(.1)
 
 	def nextRecipe(self):
@@ -107,24 +104,39 @@ class InputHandler(threading.Thread):
 			self.afterStartup = False
 			self.recipeHandler.selectRecipe(self.orderHandler.nextDish())
 			self.printStatus()
-			self.assembleMessage(Action.NEXT_ORDER)
+			self.sendMessage(Action.NEXT_ORDER)
 		elif (self.recipeHandler.currentRecipe()):
 			print("resetting recipe")
 			self.recipeHandler.selectRecipe("")
 			self.printStatus()
-			self.assembleMessage(Action.NEXT_ORDER)
+			self.sendMessage(Action.NEXT_ORDER)
 
 	def nextIngredients(self):
 		self.recipeHandler.getNextIngredients()
 		self.printStatus()
-		self.assembleMessage(Action.NEXT_INGREDIENT)
-		
+		self.sendMessage(Action.NEXT_INGREDIENT)
+	
 
-	"""def handleOrderInput(self):
-		self.assembleMessage()
-	"""
+	def handleOrderInput(self):
+		self.assembleMessage(Action.NEXT_ORDER)
+
 	def handleSerialInput(self):
-		self.assembleMessage(Action.NEXT_INGREDIENT)
+		self.serialHandler.resetInputFlag()
+		event = self.serialHandler.getButtonEvent()
+		print("Received button event: " + str(event))
+
+		if(event[0] == "0" and event[1] == "D"):
+			self.nextIngredients()
+		if(event[0] == "1" and event[1] == "D"):
+			self.nextRecipe()
+		if(event[0] == "2" and event[1] == "D"):
+			self.orderHandler.reset()
+		if(event[0] == "3" and event[1] == "D"):
+			pass
+		if(event[0] == "4" and event[1] == "D"):
+			pass
+		if(event[0] == "5" and event[1] == "D"):
+			pass
 
 	def handleKeyboardInput(self):
 		userInput = self.keyboardHandler.getInput()
@@ -133,7 +145,7 @@ class InputHandler(threading.Thread):
 			# entered a valid ingredient
 			print("- ", userInput)
 			self.recipeHandler.useIngredient(userInput)
-			self.assembleMessage(Action.NEXT_INGREDIENT)
+			self.sendMessage(Action.NEXT_INGREDIENT)
 
 		elif userInput in self.recipeHandler.dishes():
 			# entered a valid dish
@@ -145,7 +157,7 @@ class InputHandler(threading.Thread):
 				"preparation": self.recipeHandler.getPreparationFor(userInput)
 			})
 
-			self.assembleMessage(Action.NEW_ORDER)
+			self.sendMessage(Action.NEW_ORDER)
 
 		elif userInput == "+":
 			# go to next recipe
@@ -165,7 +177,7 @@ class InputHandler(threading.Thread):
 			print("Resetting program...")
 			self.recipeHandler.reset()
 			self.orderHandler.reset()
-			self.assembleMessage(Action.CLEAR_QUEUE)
+			self.sendMessage(Action.CLEAR_QUEUE)
 
 		elif userInput == "exit":
 			os._exit(1)
@@ -181,7 +193,7 @@ class InputHandler(threading.Thread):
 			# entered a valid ingredient
 			print("- ", selected)
 			self.recipeHandler.useIngredient(selected)
-			self.assembleMessage()
+			self.assembleMessage(Action.NEXT_INGREDIENT)
 
 		else:
 			# everything else
@@ -211,7 +223,6 @@ class InputHandler(threading.Thread):
 		#		...
 		#	}
 		# }
-		loop = asyncio.get_event_loop()
 		
 		if action != Action.CLEAR_QUEUE:
 			self.message = {
@@ -220,7 +231,6 @@ class InputHandler(threading.Thread):
 				"preparation": self.recipeHandler.currentPreparation(),
 				"waiting": self.orderHandler.waiting(),
 				"ingredients": {},
-				"weight": self.serialHandler.getValue(),
 				"action": action.value
 			}
 
@@ -235,29 +245,23 @@ class InputHandler(threading.Thread):
 				self.orderHandler.orderSQLInterface.recipeReady();
 				if self.bluetoothHandler:
 					self.bluetoothHandler.resetSelection()
-				task = loop.create_task(self.websocket.sendMessage(self.getMessage()))
-				loop.run_until_complete(task)
-			
+
 				time.sleep(5)
 			else:
 				self.message["ingredients"] = self.recipeHandler.getIngredientStatus()
 				self.message["error"] = self.recipeHandler.getError()
-
-				task = loop.create_task(self.websocket.sendMessage(self.getMessage()))
-				loop.run_until_complete(task)
 
 		else: 
 			self.message = {
 				"action": action
 			}
 		
-			task = loop.create_task(self.websocket.sendMessage(self.getMessage()))
-			loop.run_until_complete(task)
-
-		
-
-	def getMessage(self):
-		# distributing the message to the outer world
+			
 		# modifying the message so that javascript in the browser can understand it:
 		return str(self.message).replace("'",'"')
+
+	def sendMessage(self, action):
+		loop = asyncio.get_event_loop()
+		task = loop.create_task(self.websocket.sendMessage(self.assembleMessage(action)))
+		loop.run_until_complete(task)
 		

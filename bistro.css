@@ -17,20 +17,20 @@
 body {
 	margin: 0;
 	padding: 0;
-	width: 100vw;
-	height: 100vh;
-	font-size: 16px;
+	width: 10vw;
+	height: 10vh;
+	font-size: 20px;
 	font-family: "Roboto", sans-serif;
-	background: wheat;
+	background: black;
 	color: white;
-	overflow: scroll;
+	overflow: hidden;
 }
 
 #area {
 	margin: 0;
 	padding: 0;
-	width: 1920px;
-	height: 1080px;
+	width: 1280px;
+	height: 800px;
 	background: black;
 	display: block;
 	position: absolute;
@@ -40,10 +40,10 @@ body {
 #textarea {
 	margin: 0;
 	padding: 0;
-	width: 800px;
-	height: 120px;
-	top: 870px;
-	left: 40px;
+	width: 400px;
+	height: 80px;
+	top: 510px;
+	left: 0px;
 	background: black;
 	display: block;
 	position: absolute;
@@ -52,7 +52,7 @@ body {
 
 header {
 	position: fixed;
-	width: 100vw;
+	width: 10vw;
 	height: 10vh;
 	top: 0;
 	left: 0;
@@ -74,11 +74,11 @@ header a {
 
 table {
 	margin: 0;
-	top: 75px;
-	left: 500px;
+	top: 60px;
+	left: 31px;
 	padding: 0;
-	width: 1380px;
-	height: 771px;
+	width: 885px;
+	height: 470px;
 	display: inline-block;
 	position: absolute;
 	text-align: center;
@@ -87,8 +87,8 @@ table {
 }
 
 table.large {
-	width: 460px;
-	left: 40px;
+	width: 320px;
+	left: 915px;
 }
 
 #scales {
@@ -155,8 +155,8 @@ td {
 	display: inline-block;
 	padding: 0;
 	margin: 0;
-	width: 230px;
-	height: 257px;
+	width: 147.5px;
+	height: 160px;
 	text-align: center;
 	vertical-align: middle;
 	border: none;
@@ -165,37 +165,38 @@ td {
 }
 
 table.large td {
-	height: 771px;
+	height: 470px;
 }
 
 td .background,
 td .error_bg {
-	margin-top: 3px;
+	margin-top: 1px;
 	text-align: center;
-	vertical-align: middle;
+	vertical-align: bottom;
 	position: relative;
 	display: inline-block;
-	width: 224px;
-	height: 251px;
-	border-radius: 20px;
+	width: 140px;
+	height: 153px;
+	border-radius: 35px;
 	background: #131f16;
 	transition: 300ms;
 }
 
 table.large td .background,
 table.large td .error_bg {
-	height: 764px;
+	height: 472px;
 }
 
 td p {
 	position: relative;
-	top: -100px;
+	top: -30px;
 	font-size: .6em;
 	transition: 300ms;
 }
 
 td.show .background {
-	background-color: #6a626c;
+	box-sizing: border-box;
+	border: 10px solid #06c234;
 	transition: 2000ms;
 }
 
@@ -250,7 +251,7 @@ td .error_bg {
 }
 
 td.error .error_bg {
- 	background-color: #c20d06;
+ 	background-color: #FF0000;
  	animation-name: blink-animation;
  	animation-duration: 1.2s;
 	animation-iteration-count: infinite;
@@ -260,7 +261,7 @@ td.error .error_bg {
 	display: none;
 	position: absolute;
 	height: 48px;
-	top: 870px;
+	top: 170px;
 	left: 60px;
 }
 
@@ -274,7 +275,7 @@ td.error .error_bg {
 	position: absolute;
 	width: 390px;
 	height: 120px;
-	top: 890px;
+	top: 540px;
 	font-size: 20px;
 	font-weight: 400;
 	margin: 0;
@@ -299,13 +300,13 @@ td.error .error_bg {
 }
 
 #waiting {
-	width: 1000px;
-	left: -570px;
+	width: 100px;
+	left: 0px;
 	text-align: right;
 }
 
 #current {
-	left: 450px;
+	left: 150px;
 }
 
 .yeah {
@@ -327,6 +328,7 @@ td.error .error_bg {
 	position: relative;
 	top: -1em;
 	left: -1em;
+	background: #000;
 	width: auto;
 	display: inline-block;
 	padding: 1em;
@@ -339,7 +341,7 @@ td.error .error_bg {
 }
 
 #preparation {
-	font-size: 12px;
+	font-size: 20px;
 	position: relative;
 	top: -12px;
 }
@@ -374,7 +376,7 @@ td.error .error_bg {
 
 @keyframes countdown-animation {
 	0%   {height: 30px; width: 30px; margin-top: 0; margin-left: 0;}
-	20%  {height: 60px; width: 60px; margin-top: -15px; margin-left: -15px;}
+	20%  {height: 200px; width: 200px; margin-top: -85px; margin-left: -85px;}
 	100% {height: 30px; width: 30px; margin-top: 0; margin-left: 0;}
 }
 
@@ -387,10 +389,10 @@ td.error .error_bg {
 	display: none;
 	background: white;
 	border-radius: 30px;
-	top: 525px;
-	left: 945px;
+	top: 280px;
+	left: 540px;
 	animation-name: countdown-animation;
-	animation-duration: 1.2s;
+	animation-duration: 1.0s;
 	animation-iteration-count: infinite;
 }
 
@@ -423,7 +425,7 @@ td.error .error_bg {
 	margin: 0.05em;
 	text-transform: uppercase;
 	position: relative;
-	color: #291c2a;
+	color: #ffffff;
 	transform-style: preserve-3d;
 	perspective: 400;
 	z-index: 1;
@@ -466,7 +468,7 @@ td.error .error_bg {
 		rotateY(-15deg)
 		rotateZ(0deg);
 	}
-}
+} 
 
 @keyframes letter-after-animation {
 	0% {transform:
@@ -510,27 +512,4 @@ td.error .error_bg {
 	animation-name: letter-after-animation;
 	animation-iteration-count: infinite;
 	animation-duration: 3s;
-}
-
-.ingredientImage {
-	animation-name: ingredient-animation;
-	animation-duration: 4s;
-	height: 100px;
-	width: 100px;
-	position:absolute;
-	animation-iteration-count: infinite;
-	animation-timing-function: linear;
-}
-
-@keyframes ingredient-animation {
-	from { left: -50%;}
-	to{ left : 100%;}
-}
-
-.ingredientText {
-	font-size: 26px;
-	animation-name: ingredient-animation;
-	position:absolute;
-	animation-iteration-count: infinite;
-	animation-timing-function: linear;
 }

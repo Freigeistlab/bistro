@@ -6,6 +6,7 @@ from flask import Flask
 from flask_restful import Resource, Api
 from api import WebServer
 from recipe_handler import RecipeHandler
+from actions import Action
 
 USERS = set()
 
@@ -54,21 +55,23 @@ class Bistro:
 
 
 	@asyncio.coroutine
-	async def register(self,websocket):
+	def register(self,websocket):
 		USERS.add(websocket)
 		#await asyncio.wait([user.send(self.inputHandler.getMessage()) for user in USERS])
-		#TODO: send current order out to new websocket
+		#send current order out to new websocket
+		message = self.inputHandler.assembleMessage(Action.INIT)
+		yield from asyncio.wait([websocket.send(message)])
 
 	@asyncio.coroutine
 	def unregister(self,websocket):
 		USERS.remove(websocket)
 
 	@asyncio.coroutine
-	async def sendMessage(self, message):
+	def sendMessage(self, message):
 		
 		if USERS:
 			print("Sending message to users ", message)
-			await asyncio.wait([user.send(message) for user in USERS])
+			yield from asyncio.wait([user.send(message) for user in USERS])
 			print("message sent")
 			#send message to both dashboard and website
 
@@ -81,12 +84,13 @@ class Bistro:
 			return """
 
 	@asyncio.coroutine
-	async def bistro(self, websocket, path):
+	def bistro(self, websocket, path):
 		# in case there's a new message coming from the input handler
 		# we want to send it via web sockets to the browser
-		await self.register(websocket)
+		yield from self.register(websocket)
 		print("Connected to websocket")
-		async for message in websocket:
+		while True:
+			message = yield from websocket.recv()
 			json_msg = json.loads(message)
 			#print(json_msg.action, " " , json_msg.meal, " ", json_msg.amount)
 			if json_msg["action"]=="prepare_order":

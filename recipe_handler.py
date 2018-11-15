@@ -12,37 +12,71 @@ import copy, time
 # If new ingredients are added here, it will not affect the output in the webbrowser
 # To add new ingredients there, see bistro.html file
 
+
 RECIPES = {
-	"Bolognese": {
-		"recipe": ["T1", "G1", {"Tomaten","Hackfleisch"}],
+	"Bolognese Rind": {
+		"recipe": ["Basilikumbutter","Hackfleisch"],
 		"decoration": ["Basilikum"],
-		"preparation": "Mixen"
+		"preparation": "T2 Rühren"
 	},
-	"Arrabiata": {
-		"recipe": ["T2", "Chili", "Knoblauch", "Tomaten"],
-		"decoration": ["Basilikum","Balsamico"],
-		"preparation": "Rühren"
+	"Bolognese Bulgur": {
+		"recipe": ["Basilikumbutter","Bulgur"],
+		"decoration": ["Basilikum"],
+		"preparation": "T2 Rühren"
+	},
+	"Carbonara": {
+		"recipe": ["Rucola","KäseMix"],
+		"decoration": ["Speck"],
+		"preparation": "S3 Rühren"
+	},
+	"Napoli": {
+		"recipe": ["Basilikumbutter", "Olivenöl", "Zwiebeln", "getrockneteTomaten"],
+		"decoration": ["Basilikum"],
+		"preparation": "T2 Rühren"
+	},
+	"Arrabbiata": {
+		"recipe": ["Chili", "Zwiebeln", "Basilikumbutter", "getrockneteTomaten"],
+		"decoration": ["Basilikum"],
+		"preparation": "T2 Rühren"
+	},
+	"Pesto Verde": {
+		"recipe": ["Basilikumbutter", "KäseMix", "Rucola"],
+		"decoration": ["Sonnenblumenkerne"],
+		"preparation": "W2 Mixen"
+	},
+	"Aioli": {
+		"recipe": ["Knoblauch", "KäseMix", "marinierteKräuter", "getrockneteTomaten"],
+		"decoration": ["gehacktePetersilie"],
+		"preparation": "W2 S1 Rühren"
+	},
+	"Gorgonzola Sauce": {
+		"recipe": ["Gorgonzola", "KäseMix"],
+		"decoration": ["gehacktePetersilie"],
+		"preparation": "W2 S1 Mixen"
+	},
+	"Salbei Symphonie": {
+		"recipe": ["Salbeibutter", "KäseMix", "Butter"],
+		"decoration": [],
+		"preparation": "W2 S1 Mixen"
 	}
 }
 
 PASTA = [
-	"Penne", "Farfalle", "Tagliatelle", "Spaghetti", "Fussili", "Macaroni"
+	"Hausmacher", "Hausmacher1"
 ]
 
 # our sauces: Tomaten, Gemüsebrühe, Weißwein and Sahne.
 # all sauces available in 3 portion sizes ranging from 1 to 3
-SAUCES = ["T1", "T2", "T3", "G1", "G2", "G3", "W1", "W2", "W3", "S1", "S2", "S3"]
+SAUCES = ["T1", "T2", "T3", "W2_S1", "W1", "W2", "W3", "S1", "S2", "S3"]
 
 TOPPINGS = [
-	"Getrocknete Tomaten", "Mais", "Hackfleisch", "Parmesan", "Salzkartoffeln", "Paprika", "Oliven", "Rucola"
+        "marinierteKräuter", "Knoblauch",  "Zwiebeln", "Chili", "Gorgonzola", "Erbsen", "getrockneteTomaten", "Hackfleisch", "Rucola", "Salbeibutter", "Bulgur", "Speck"
 ]
 
 DECORATION = [
-	"Basilikum", "Balsamico", "Minze"
+	"Basilikum", "gehacktePetersilie", "Sonnenblumenkerne"
 ]
 
-
-	
 
 class RecipeHandler:
 	# The class that handles our recipes and ingredients

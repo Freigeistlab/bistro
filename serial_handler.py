@@ -1,34 +1,39 @@
 #!/usr/bin/env python3
 
-import threading, time, serial, random
+import threading, time, random, serial
+
 
 SERIAL_PORT = "/dev/ttyUSB0"
 
 class SerialHandler(threading.Thread):
 
-	def __init__(self):
-		super().__init__()
-		self.scaleValue = 0
-		self.newInput = False
-		try: 
-			self.__serial = serial.Serial(SERIAL_PORT, 9600, timeout=0.5)
-		except:
-			print("Could not find scales at given port " + SERIAL_PORT + ". Maybe change port in serial_handler.py?")
+    def __init__(self):
+        super().__init__()
+        self.newInput = False
+        self.buttonEvent = tuple()
+        self.connected = False
+        try: 
+            self.__serial = serial.Serial(SERIAL_PORT, 9600, timeout=0.5)
+            print("Connected to buttonpanel")
+            self.connected = True
+        except:
+            print("Could not connect to buttonpanel at " + SERIAL_PORT + ". Maybe change port in serial_handler.py?")
 
-	def run(self):
-		while True:
-			try:
-				line = self.__serial.readline()
-				self.scaleValue = float(line[3:8].replace(",","."))
-				self.newInput = True
-			except:
-				self.newInput = False
-			time.sleep(.1)
-				
+    def run(self):
+        while self.connected:
+            line = self.__serial.readline().decode("utf-8")
+            
+            if(line != '') and ('start' not in line):
+                self.newInput = True
+                self.buttonEvent = (line[0],line[1])
 
-	def getValue(self):
-		self.newInput = False
-		return self.scaleValue
+            time.sleep(.01)
 
-	def receivedNewInput(self):
-		return self.newInput
+    def getButtonEvent(self):
+        return self.buttonEvent
+
+    def receivedNewInput(self):
+        return self.newInput
+
+    def resetInputFlag(self):
+        self.newInput = False
