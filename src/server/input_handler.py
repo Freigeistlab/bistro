@@ -70,6 +70,9 @@ class InputHandler(threading.Thread):
 		
 		self.websocket.sendMessage(self.getMessage())
 
+	def reboot(self):
+		os.system('reboot')				
+
 	def run(self):
 
 		#needed for async events (like sending via websocket) that don't need to be awaited
