@@ -15,15 +15,16 @@ async function pingServer(){
     window.location.reload();
     }, 5000);
   });
-  if (response.status !== 200) {
-    setTimeout(function(){
-        window.location.reload();
-        }, 5000);
+  if (response){
+      if (response.status !== 200) {
+        setTimeout(function(){
+            window.location.reload();
+            }, 5000);
+      }
   }
 }
 
-
-pingServer();
+setInterval(pingServer, 3000);
 
 
 
