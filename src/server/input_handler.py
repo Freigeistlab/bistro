@@ -50,7 +50,7 @@ class InputHandler(threading.Thread):
 				}
 			}
 			
-			self.websocket.sendMessage(self.getMessage())
+			self.sendMessage(message=self.message, action=Action.BT_SETUP)
 			waitForTag = True
 			while waitForTag:
 				if self.bluetoothHandler.receivedNewInput():
@@ -67,8 +67,8 @@ class InputHandler(threading.Thread):
 			"waiting": 0,
 			"ingredients": {}
 		}
-		
-		self.websocket.sendMessage(self.getMessage())
+
+		self.sendMessage(message=self.message, action=Action.BT_READY)
 
 	def reboot(self):
 		os.system('reboot')				
@@ -265,4 +265,13 @@ class InputHandler(threading.Thread):
 		loop = asyncio.get_event_loop()
 		task = loop.create_task(self.websocket.sendMessage(self.assembleMessage(action)))
 		loop.run_until_complete(task)
-		
+
+	def sendMessage(self, action, message):
+		message["action"] = action
+		loop = asyncio.get_event_loop()
+		task = loop.create_task(self.websocket.sendMessage(message))
+		loop.run_until_complete(task)
+
+
+	def restart(self):
+		self.sendMessage(Action.RESTART)

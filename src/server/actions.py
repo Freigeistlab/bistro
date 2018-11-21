@@ -6,3 +6,6 @@ class Action(Enum):
 	NEXT_ORDER = "next_order"
 	NEW_ORDER = "new_order"
 	CLEAR_QUEUE = "clear_queue"
+	RESTART = "restart"
+	BT_SETUP = "bt_setup"
+	BT_READY = "bt_ready"
