@@ -14,12 +14,12 @@ import copy, time
 
 
 RECIPES = {
-	"Bolognese Rind": {
+	"Bolognese_Rind": {
 		"recipe": ["Basilikumbutter","Hackfleisch"],
 		"decoration": ["Basilikum"],
 		"preparation": "T2 Rühren"
 	},
-	"Bolognese Bulgur": {
+	"Bolognese_Bulgur": {
 		"recipe": ["Basilikumbutter","Bulgur"],
 		"decoration": ["Basilikum"],
 		"preparation": "T2 Rühren"
@@ -39,7 +39,7 @@ RECIPES = {
 		"decoration": ["Basilikum"],
 		"preparation": "T2 Rühren"
 	},
-	"Pesto Verde": {
+	"Pesto_Verde": {
 		"recipe": ["Basilikumbutter", "KäseMix", "Rucola"],
 		"decoration": ["Sonnenblumenkerne"],
 		"preparation": "W2 Mixen"
@@ -49,12 +49,12 @@ RECIPES = {
 		"decoration": ["gehacktePetersilie"],
 		"preparation": "W2 S1 Rühren"
 	},
-	"Gorgonzola Sauce": {
+	"Gorgonzola_Sauce": {
 		"recipe": ["Gorgonzola", "KäseMix"],
 		"decoration": ["gehacktePetersilie"],
 		"preparation": "W2 S1 Mixen"
 	},
-	"Salbei Symphonie": {
+	"Salbei_Symphonie": {
 		"recipe": ["Salbeibutter", "KäseMix", "Butter"],
 		"decoration": [],
 		"preparation": "W2 S1 Mixen"
@@ -251,12 +251,15 @@ class RecipeHandler:
 		return "use" not in self.__ingredients.values() and "waiting" not in self.__ingredients.values()
 
 	def constructRecipe(self, items, order):
-		
+
+		print(items)
+
 		#checks if we have an order from orderbird (with pasta, that is ignored) or a prepared order without pasta
 		if not self.isPasta(items[0]):
 			print("Bestellung ohne Pasta eingegangen")
 			# only the sauce name is given
-			sauceName = " ".join(items)
+			sauceName = items[0]
+			items = items[1:]
 			if not self.isSauce(sauceName):
 				print("Error: Ich kenne keine Sauce namens", sauceName, ". Vielleicht in der recipe_handler.py eintragen?")
 			else:
@@ -264,7 +267,8 @@ class RecipeHandler:
 		else:
 			pasta = items[0]
 
-			sauceName = " ".join(items)[len(items[0]):]
+			sauceName = items[1]
+			items = items[2:]
 			if not self.isSauce(sauceName):
 				print("Error: Ich kenne keine Sauce namens", sauceName, ". Vielleicht in der recipe_handler.py eintragen?")
 			else:
@@ -273,19 +277,19 @@ class RecipeHandler:
 		#sauceName = items[1]
 		#dishName = pasta + " " + sauceName
 
-		items = items[2:]
 		extras = ""
 		toppings = []
 
 		for item in items:
 			if item.startswith("Ohne "):
-				if item[5:] in sauce:
-					sauce.remove(item[5:])
-					extras += " – " + item[5:]
+				item = item[5:]
+				if item in sauce:
+					sauce.remove(item)
+					extras += " – " + item
 				for ingredient in sauce:
-					if item[5:] in ingredient:
-						ingredient.remove(item[5:])
-						extras += " – " + item[5:]
+					if item in ingredient:
+						ingredient.remove(item)
+						extras += " – " + item
 			elif not self.isTopping(item):
 				print(item,"ist kein Topping. Vielleicht ein Getränk. Ansonsten vielleicht in der recipe_handler.py eintragen?")
 			else:
