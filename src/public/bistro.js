@@ -1,3 +1,33 @@
+/*import axios from "axios";
+
+const API = axios.create({
+  baseURL: "http://localhost:5000"
+});
+*/
+
+// on start check if server is up and running -- otherwise restart after 5 secs
+
+async function pingServer(){
+
+  const response = await fetch("http://localhost:5000/").catch((error) => {
+    console.error('network error: ' + error);
+    setTimeout(function(){
+    window.location.reload();
+    }, 5000);
+  });
+  if (response.status !== 200) {
+    setTimeout(function(){
+        window.location.reload();
+        }, 5000);
+  }
+}
+
+
+pingServer();
+
+
+
+
 // connect to the websocket of our app
 var ws = new WebSocket("ws://localhost:5678/");
 
@@ -24,6 +54,8 @@ const ingredientImages = {
   "Bulgur": "../../images/ingredients/Bulgur.jpg",
   "Basilikumbutter": "../../images/ingredients/Basilikum.jpg",
 };
+
+
 
 function demo() {
   if ($(".waiting").length > 0 || $(".use").length > 0)
