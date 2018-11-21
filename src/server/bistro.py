@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 
-import asyncio, websockets, webbrowser, os, time, sys, json
+import asyncio, websockets, sys, json
 from input_handler import InputHandler
-from flask import Flask
-from flask_restful import Resource, Api
 from api import WebServer
 from recipe_handler import RecipeHandler
 from actions import Action
@@ -38,16 +36,16 @@ class Bistro:
 		self.inputHandler.start()
 		
 		# open the website in our default browser
-		#webbrowser.open_new_tab("file://" + os.path.realpath("bistro.html"))
+		# webbrowser.open_new_tab("file://" + os.path.realpath("bistro.html"))
 
-		#init the webserver which is necessary for handling user interactions from the dashboard
+		# init the webserver which is necessary for handling user interactions from the dashboard
 		self.webserver = WebServer(self.inputHandler)
 		self.webserver.start()
 		
 		# setup the websocket server - port is 5678 on our local machine
 		
 		server = websockets.serve(self.bistro, '', 5678)
-		#self.dashboard_server = websockets.serve(self.echo, '', 443)
+		# self.dashboard_server = websockets.serve(self.echo, '', 443)
 
 		# tell the server to run forever
 		asyncio.get_event_loop().run_until_complete(server)
@@ -57,8 +55,8 @@ class Bistro:
 	@asyncio.coroutine
 	def register(self,websocket):
 		USERS.add(websocket)
-		#await asyncio.wait([user.send(self.inputHandler.getMessage()) for user in USERS])
-		#send current order out to new websocket
+		# await asyncio.wait([user.send(self.inputHandler.getMessage()) for user in USERS])
+		# send current order out to new websocket
 		message = self.inputHandler.assembleMessage(Action.INIT)
 		yield from asyncio.wait([websocket.send(message)])
 
@@ -73,7 +71,7 @@ class Bistro:
 			print("Sending message to users ", message)
 			yield from asyncio.wait([user.send(message) for user in USERS])
 			print("message sent")
-			#send message to both dashboard and website
+			# send message to both dashboard and website
 
 	#TODO: do we still need that method?
 	"""@asyncio.coroutine
@@ -92,12 +90,13 @@ class Bistro:
 		while True:
 			message = yield from websocket.recv()
 			json_msg = json.loads(message)
-			#print(json_msg.action, " " , json_msg.meal, " ", json_msg.amount)
+			# print(json_msg.action, " " , json_msg.meal, " ", json_msg.amount)
 			if json_msg["action"]=="prepare_order":
 				print(json_msg["meal"])
 				self.inputHandler.orderHandler.addMealPreparation(json_msg["meal"], json_msg["amount"])
 
-			#await websocket.send(message)
+			# await websocket.send(message)
+
 
 if __name__ == "__main__":
 	# Create the Bistro object that does all the magic
