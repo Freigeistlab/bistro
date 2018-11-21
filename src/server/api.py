@@ -5,6 +5,7 @@ from order_sql_interface import OrderSQLInterface
 from flask_cors import CORS
 from recipe_handler import RECIPES, PASTA, TOPPINGS, DECORATION
 
+from time import sleep
 #the server that's responsible for handling user interactions from the dashboard
 class WebServer(threading.Thread):
 	def __init__(self, inputHandler):
@@ -36,6 +37,15 @@ class WebServer(threading.Thread):
 			self.inputHandler.orderHandler.addMealPreparation(...,...)
 			return 'hello world'
 
+		@self.app.route('/restart', methods=['GET'])
+		def restart():
+
+			print("Restart")
+			thread = threading.Thread(target = self.inputHandler.reboot)
+			thread.start()
+			return 'hello world'
+
+
 		@self.app.route('/next_ingredient', methods=['GET'])
 		def next_ingredient():
 			#all ingredients that are currently in use need to be set to finished
@@ -43,7 +53,7 @@ class WebServer(threading.Thread):
 			self.inputHandler.nextIngredients()
 			return 'hello world'
 
-		@self.app.route('/prepared_orders', methods=['GET'])
+		"""@self.app.route('/prepared_orders', methods=['GET'])
 		def get_prepared_orders():
 			#TODO
 			#return all prepared orders
@@ -53,7 +63,7 @@ class WebServer(threading.Thread):
 			#print(order_names)
 			
 			return json.dumps({"order_names": order_names})
-
+		"""
 		@self.app.route('/next_order', methods=['GET'])
 		def next_order():
 			#next_order = self.orderSQLInterface.getOrderQueue()

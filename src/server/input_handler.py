@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import threading, time, os, asyncio
+import threading, time, os, asyncio, sys
 from bluetooth_handler import BluetoothHandler
 from order_handler import OrderHandler
 from keyboard_handler import KeyboardHandler
@@ -49,8 +49,9 @@ class InputHandler(threading.Thread):
 					i: "use"
 				}
 			}
-			
-			self.sendMessage(message=self.message, action=Action.BT_SETUP)
+			self.message["action"] = Action.BT_SETUP
+
+			self.sendMessageWithMsg(message=self.message)
 			waitForTag = True
 			while waitForTag:
 				if self.bluetoothHandler.receivedNewInput():
@@ -67,17 +68,15 @@ class InputHandler(threading.Thread):
 			"waiting": 0,
 			"ingredients": {}
 		}
+		self.message["action"] = Action.BT_READY
 
-		self.sendMessage(message=self.message, action=Action.BT_READY)
-
-	def reboot(self):
-		os.system('reboot')				
+		self.sendMessageWithMsg(message=self.message)
 
 	def run(self):
 
 		#needed for async events (like sending via websocket) that don't need to be awaited
 		asyncio.set_event_loop(asyncio.new_event_loop())
-		
+
 		if self.bluetoothHandler and self.setupTags:
 			self.setupBluetooth()
 
@@ -95,7 +94,7 @@ class InputHandler(threading.Thread):
 				self.handleKeyboardInput()
 
 			if self.serialHandler.receivedNewInput():
-                                self.handleSerialInput()
+				self.handleSerialInput()
 
 			time.sleep(.1)
 
@@ -116,7 +115,7 @@ class InputHandler(threading.Thread):
 		self.recipeHandler.getNextIngredients()
 		self.printStatus()
 		self.sendMessage(Action.NEXT_INGREDIENT)
-	
+
 
 	def handleOrderInput(self):
 		self.assembleMessage(Action.NEXT_ORDER)
@@ -224,7 +223,7 @@ class InputHandler(threading.Thread):
 		#		...
 		#	}
 		# }
-		
+
 		if action != Action.CLEAR_QUEUE:
 			self.message = {
 				"recipe": self.recipeHandler.currentRecipe(),
@@ -252,12 +251,12 @@ class InputHandler(threading.Thread):
 				self.message["ingredients"] = self.recipeHandler.getIngredientStatus()
 				self.message["error"] = self.recipeHandler.getError()
 
-		else: 
+		else:
 			self.message = {
 				"action": action
 			}
-		
-			
+
+
 		# modifying the message so that javascript in the browser can understand it:
 		return str(self.message).replace("'",'"')
 
@@ -266,12 +265,16 @@ class InputHandler(threading.Thread):
 		task = loop.create_task(self.websocket.sendMessage(self.assembleMessage(action)))
 		loop.run_until_complete(task)
 
-	def sendMessage(self, action, message):
-		message["action"] = action
+	def sendMessageWithMsg(self, message):
 		loop = asyncio.get_event_loop()
 		task = loop.create_task(self.websocket.sendMessage(message))
 		loop.run_until_complete(task)
 
-
-	def restart(self):
+	def reboot(self):
+		print("restarting")
+		time.sleep(1)
+		asyncio.set_event_loop(asyncio.new_event_loop())
+		# notify the frontends to restart in 10 s and then so long until the server is back again
 		self.sendMessage(Action.RESTART)
+		#os.system('reboot')
+		os.execv(sys.executable, ['python'] + sys.argv)
