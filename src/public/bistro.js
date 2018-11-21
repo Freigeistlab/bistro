@@ -7,22 +7,22 @@ var demoStart;
 var letterTimeouts = [];
 
 const ingredientImages = {
-  "Tomaten": "/home/pi/Documents/V17_freigeist-lab-bistro-981727852b02/Basilikum.jpg",
-  "Hackfleisch": "/home/pi/Documents/V17_freigeist-lab-bistro-981727852b02/Kuh.jpg",
-  "Basilikum": "/home/pi/Documents/V17_freigeist-lab-bistro-981727852b02/Basilikum.jpg",
-  "Knoblauch": "/home/pi/Documents/V17_freigeist-lab-bistro-981727852b02/Knoblauch.jpg",
-  "KaeseMix": "/home/pi/Documents/V17_freigeist-lab-bistro-981727852b02/Kaese.jpg",
-  "marinierteKraeuter": "/home/pi/Documents/V17_freigeist-lab-bistro-981727852b02/Kraeuter.jpg",
-  "Zwiebeln": "/home/pi/Documents/V17_freigeist-lab-bistro-981727852b02/Zwiebel.jpg",
-  "gehacktePetersilie": "/home/pi/Documents/V17_freigeist-lab-bistro-981727852b02/Petersilie.jpg",
-  "Sonnenblumenkerne": "/home/pi/Documents/V17_freigeist-lab-bistro-981727852b02/Sonnenblume.jpg",
-  "getrockneteTomaten": "/home/pi/Documents/V17_freigeist-lab-bistro-981727852b02/GetrockneteTomaten.jpg",
-  "Salbeibutter": "/home/pi/Documents/V17_freigeist-lab-bistro-981727852b02/Salbei.jpg",
-  "Gorgonzola": "/home/pi/Documents/V17_freigeist-lab-bistro-981727852b02/Gorgonzola.jpg",
-  "Rucola": "/home/pi/Documents/V17_freigeist-lab-bistro-981727852b02/Rucola.jpg",
-  "Olivenöl": "/home/pi/Documents/V17_freigeist-lab-bistro-981727852b02/Olivenoel.jpg",
-  "Bulgur": "/home/pi/Documents/V17_freigeist-lab-bistro-981727852b02/Bulgur.jpg",
-  "Basilikumbutter": "/home/pi/Documents/V17_freigeist-lab-bistro-981727852b02/Basilikum.jpg",
+  "Tomaten": "../../images/ingredients/Basilikum.jpg",
+  "Hackfleisch": "../../images/ingredients/Kuh.jpg",
+  "Basilikum": "../../images/ingredients/Basilikum.jpg",
+  "Knoblauch": "../../images/ingredients/Knoblauch.jpg",
+  "KaeseMix": "../../images/ingredients/Kaese.jpg",
+  "marinierteKraeuter": "../../images/ingredients/Kraeuter.jpg",
+  "Zwiebeln": "../../images/ingredients/Zwiebel.jpg",
+  "gehacktePetersilie": "../../images/ingredients/Petersilie.jpg",
+  "Sonnenblumenkerne": "../../images/ingredients/Sonnenblume.jpg",
+  "getrockneteTomaten": "../../images/ingredients/GetrockneteTomaten.jpg",
+  "Salbeibutter": "../../images/ingredients/Salbei.jpg",
+  "Gorgonzola": "../../images/ingredients/Gorgonzola.jpg",
+  "Rucola": "../../images/ingredients/Rucola.jpg",
+  "Olivenöl": "../../images/ingredients/Olivenoel.jpg",
+  "Bulgur": "../../images/ingredients/Bulgur.jpg",
+  "Basilikumbutter": "../../images/ingredients/Basilikum.jpg",
 };
 
 function demo() {
