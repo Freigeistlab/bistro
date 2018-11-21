@@ -1,5 +1,5 @@
 // connect to the websocket of our app
-var ws = new WebSocket("ws://192.168.42.133:5678/");
+var ws = new WebSocket("ws://localhost:5678/");
 
 
 var interval;
@@ -124,12 +124,25 @@ function drawBackgroundAnimation(json, diff){
 
 }
 
+
+
 // wait for messages incoming
 ws.onmessage = function (event) {
   clearInterval(interval);
   clearTimeout(demoStart);
 // convert the string we get into a JSON object
   var json = JSON.parse(event.data);
+  switch(json.action){
+    case "restart":
+      setTimeout(function() {
+        window.location.reload();
+      }, 5000);
+      break;
+    default:
+        break;
+  }
+
+  console.log(json)
   var timeout = 0;
 
 // add items to waiting list
