@@ -94,6 +94,7 @@ class Bistro:
 			json_msg = json.loads(message)
 			#print(json_msg.action, " " , json_msg.meal, " ", json_msg.amount)
 			if json_msg["action"]=="prepare_order":
+				print(json_msg["meal"])
 				self.inputHandler.orderHandler.addMealPreparation(json_msg["meal"], json_msg["amount"])
 
 			#await websocket.send(message)

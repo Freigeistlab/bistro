@@ -255,18 +255,20 @@ class RecipeHandler:
 		#checks if we have an order from orderbird (with pasta, that is ignored) or a prepared order without pasta
 		if not self.isPasta(items[0]):
 			print("Bestellung ohne Pasta eingegangen")
-			if not self.isSauce(items[0]):
-				print("Error: Ich kenne keine Sauce namens", items[0], ". Vielleicht in der recipe_handler.py eintragen?")
+			# only the sauce name is given
+			sauceName = " ".join(items)
+			if not self.isSauce(sauceName):
+				print("Error: Ich kenne keine Sauce namens", sauceName, ". Vielleicht in der recipe_handler.py eintragen?")
 			else:
-				sauce = self.getRecipe(items[0])
-				sauceName = items[0]
-		else: 
+				sauce = self.getRecipe(sauceName)
+		else:
 			pasta = items[0]
-			if not self.isSauce(items[1]):
-				print("Error: Ich kenne keine Sauce namens", items[1], ". Vielleicht in der recipe_handler.py eintragen?")
+
+			sauceName = " ".join(items)[len(items[0]):]
+			if not self.isSauce(sauceName):
+				print("Error: Ich kenne keine Sauce namens", sauceName, ". Vielleicht in der recipe_handler.py eintragen?")
 			else:
-				sauce = self.getRecipe(items[1])
-				sauceName = items[1]
+				sauce = self.getRecipe(sauceName)
 
 		#sauceName = items[1]
 		#dishName = pasta + " " + sauceName
