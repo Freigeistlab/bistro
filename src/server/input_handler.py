@@ -10,11 +10,12 @@ from actions import Action
 class InputHandler(threading.Thread):
 
 	def __init__(self, verbose, bluetooth, fakeData, setupTags, websocket, recipeHandler):
-		# let python do the threading magic
 		super().__init__()
 
 		self.websocket = websocket
 		self.recipeHandler = recipeHandler
+		
+		# initialize threads
 		self.orderHandler = OrderHandler(self.recipeHandler, verbose, fakeData, websocket)
 		self.orderHandler.start()
 		self.keyboardHandler = KeyboardHandler()
@@ -32,6 +33,7 @@ class InputHandler(threading.Thread):
 			self.bluetoothHandler = BluetoothHandler()
 		else:
 			print("No Bluetooth available");
+	
 
 	def setupBluetooth(self):
 
@@ -82,6 +84,12 @@ class InputHandler(threading.Thread):
 		# will run infinetly and wait for inputs
 
 		while True:
+			
+			# for some reason keyboardInterrupts always reach bluetooththread first
+			if self.bluetoothHandler and self.bluetoothHandler.btThread.isAlive() == False:
+				print("bluetooththread quit, exiting")
+				os._exit(1)
+
 			if not self.recipeHandler.currentRecipe():
 				self.nextRecipe()
 
@@ -92,7 +100,7 @@ class InputHandler(threading.Thread):
 				self.handleKeyboardInput()
 
 			if self.serialHandler.receivedNewInput():
-                                self.handleSerialInput()
+				self.handleSerialInput()
 
 			time.sleep(.1)
 

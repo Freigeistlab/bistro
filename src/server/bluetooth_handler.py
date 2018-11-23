@@ -106,8 +106,8 @@ class BluetoothHandler():
 
 	def __init__(self):
 		self.tagManager = TagManager()
-		btThread = threading.Thread(name='Bluetooththread', target=self.tagManager.run)
-		btThread.start()
+		self.btThread = threading.Thread(name='Bluetooththread', target=self.tagManager.run)
+		self.btThread.start()
 
 	def setupReady(self):
 		self.tagManager.setupReady()
