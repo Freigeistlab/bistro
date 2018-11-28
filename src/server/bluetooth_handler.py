@@ -5,11 +5,39 @@ import os, threading, gatt, time, sqlite3
 # minimal number of signals that need to be sent by a device
 # within one second in order to be recognized as a valid input
 SIGNAL_THRESHOLD = 1
-
-class TagManager(gatt.DeviceManager):
+'''
+class BluetoothHandler():
 
 	def __init__(self):
-		super().__init__(adapter_name='hci0')
+		self.tagManager = TagManager()
+		self.btThread = threading.Thread(name='Bluetooththread', target=self.tagManager.run)
+		self.btThread.start()
+
+	def setupReady(self):
+		self.tagManager.setupReady()
+
+	def beginSetup(self):
+		self.tagManager.beginSetup()
+
+	def setupTag(self, ingredient, macAddress):
+		self.tagManager.setupTag(ingredient, macAddress)
+
+	def receivedNewInput(self):
+		return self.tagManager.newInput
+
+	def selection(self):
+		return self.tagManager.getSelection()
+
+	def resetSelection(self):
+		return self.tagManager.resetSelection()
+'''
+
+class BluetoothHandler(gatt.DeviceManager, threading.Thread):
+
+	def __init__(self):
+		
+		gatt.DeviceManager.__init__(self, adapter_name='hci0')
+		threading.Thread.__init__(self)
 
 		self.startupTime = time.time()
 		self.newInput = False
@@ -22,6 +50,7 @@ class TagManager(gatt.DeviceManager):
 
 		self.getTagPool()
 		self.start_discovery()
+
 
 	def getTags(self):
 		db = sqlite3.connect(self.dbPath)
@@ -102,27 +131,3 @@ class TagManager(gatt.DeviceManager):
 		db.commit()
 		print(self.getTags())
 
-class BluetoothHandler():
-
-	def __init__(self):
-		self.tagManager = TagManager()
-		self.btThread = threading.Thread(name='Bluetooththread', target=self.tagManager.run)
-		self.btThread.start()
-
-	def setupReady(self):
-		self.tagManager.setupReady()
-
-	def beginSetup(self):
-		self.tagManager.beginSetup()
-
-	def setupTag(self, ingredient, macAddress):
-		self.tagManager.setupTag(ingredient, macAddress)
-
-	def receivedNewInput(self):
-		return self.tagManager.newInput
-
-	def selection(self):
-		return self.tagManager.getSelection()
-
-	def resetSelection(self):
-		return self.tagManager.resetSelection()

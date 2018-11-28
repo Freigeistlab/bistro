@@ -31,6 +31,7 @@ class InputHandler(threading.Thread):
 		self.bluetoothHandler = False
 		if bluetooth:
 			self.bluetoothHandler = BluetoothHandler()
+			self.bluetoothHandler.start()
 		else:
 			print("No Bluetooth available");
 	
@@ -86,7 +87,8 @@ class InputHandler(threading.Thread):
 		while True:
 			
 			# for some reason keyboardInterrupts always reach bluetooththread first
-			if self.bluetoothHandler and self.bluetoothHandler.btThread.isAlive() == False:
+			print(self.bluetoothHandler.isAlive())
+			if self.bluetoothHandler and self.bluetoothHandler.isAlive() == False:
 				print("bluetooththread quit, exiting")
 				os._exit(1)
 
