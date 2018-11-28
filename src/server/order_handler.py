@@ -27,7 +27,15 @@ class OrderHandler(threading.Thread):
 		port = 9100 # as used by orderbird
 		self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # makes it easier to restart the program
-		self.socket.bind((host, port))
+
+		try:
+			self.socket.bind((host, port))
+		except OSError:
+			print("cannot bind to port", port)			
+			print("try running:")
+			print("sudo fuser -k", port, "/tcp")
+			os._exit(1)
+
 		self.socket.listen(1)
 
 	def nextDish(self):
