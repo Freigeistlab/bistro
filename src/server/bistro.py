@@ -66,12 +66,13 @@ class Bistro:
 
 	@asyncio.coroutine
 	def sendMessage(self, message):
-		
+		print("Send message")
 		if USERS:
 			print("Sending message to users ", message)
 			yield from asyncio.wait([user.send(message) for user in USERS])
 			print("message sent")
-			# send message to both dashboard and website
+			# send message to both dashboard, front and back projection
+
 
 	#TODO: do we still need that method?
 	"""@asyncio.coroutine
@@ -94,8 +95,18 @@ class Bistro:
 			if json_msg["action"]=="prepare_order":
 				print(json_msg["meal"])
 				self.inputHandler.orderHandler.addMealPreparation(json_msg["meal"], json_msg["amount"])
+			elif json_msg["action"]=="refresh":
+				print("refreshing projections...")
+				action = Action.REFRESH
+				response = {
+					"action": action.value
+				}
+				print("response")
+				print(response)
+				resp = str(response).replace("'",'"')
+				yield from self.sendMessage(resp)
 
-			# await websocket.send(message)
+		# await websocket.send(message)
 
 
 if __name__ == "__main__":

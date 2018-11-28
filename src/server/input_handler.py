@@ -250,7 +250,7 @@ class InputHandler(threading.Thread):
 				for i in self.recipeHandler.ingredients():
 					self.message["ingredients"][i] = "ready" #blinking
 				self.recipeHandler.selectRecipe("")
-				self.orderHandler.orderSQLInterface.recipeReady();
+				self.orderHandler.orderSQLInterface.recipeReady()
 				if self.bluetoothHandler:
 					self.bluetoothHandler.resetSelection()
 

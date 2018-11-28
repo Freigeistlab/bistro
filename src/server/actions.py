@@ -9,3 +9,4 @@ class Action(Enum):
 	RESTART = "restart"
 	BT_SETUP = "bt_setup"
 	BT_READY = "bt_ready"
+	REFRESH = "refresh"

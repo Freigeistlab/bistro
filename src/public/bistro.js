@@ -171,8 +171,12 @@ ws.onmessage = function (event) {
         window.location.reload();
       }, 5000);
       break;
+    case "refresh":
+      console.log("Refreshing")
+      window.location.reload();
+      break;
     default:
-        break;
+      break;
   }
 
   console.log(json)

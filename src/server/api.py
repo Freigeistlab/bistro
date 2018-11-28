@@ -21,15 +21,6 @@ class WebServer(threading.Thread):
 		def index():
 			return json.dumps({ "status": 200 })
 
-		@self.app.route('/refresh_front', methods=['GET'])
-		def refresh_front():
-			return json.dumps({ "status": 200 })
-
-		@self.app.route('/refresh_back', methods=['GET'])
-		def refresh_back():
-			return json.dumps({ "status": 200 })
-
-
 		@self.app.route('/orders', methods=['GET'])
 		def get_orders():
 			#return all orders
