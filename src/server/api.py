@@ -26,7 +26,7 @@ class WebServer(threading.Thread):
 			return json.dumps({ "status": 200 })
 
 		@self.app.route('/refresh_back', methods=['GET'])
-		def refresh_front():
+		def refresh_back():
 			return json.dumps({ "status": 200 })
 
 
