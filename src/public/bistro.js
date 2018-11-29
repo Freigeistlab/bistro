@@ -13,13 +13,15 @@ async function pingServer(){
     console.error('network error: ' + error);
     setTimeout(function(){
     window.location.reload();
-    }, 5000);
+    }, 10000);
   });
   if (response){
       if (response.status !== 200) {
         setTimeout(function(){
             window.location.reload();
-            }, 5000);
+            }, 10000);
+      } else {
+        stopDemo();
       }
   }
 }
@@ -58,6 +60,9 @@ const ingredientImages = {
   "Basilikumbutter": "../../images/ingredients/Basilikum.jpg",
 };
 
+function stopDemo(){
+    $("#demo").empty();
+}
 
 
 function demo() {
@@ -72,9 +77,23 @@ function demo() {
     },5000)
 
 
+    for (var l = 0; l < letterTimeouts.length;l++) {
+      clearTimeout(letterTimeouts[l]);
+    }
+    letterTimeouts = [];
+    if ($(".letter").length < 105) {
+      var ingredient = ".";
+      for (var l = 0; l < ingredient.length; l++) {
+        letterTimeouts.push(setTimeout(function(ingredient,l) {
+          var newLetter = $('<span class="letter" data-delay='+l+' data-letter="'+ingredient[l]+'">'+ingredient[l]+'</span>');
+          newLetter.css("animation-delay", -20+0.5*l+"s");
+          $("#demo").append(newLetter);
+        },l * 100, ingredient, l));
+      }
+    }
+
   }, 100);
 }
-
 $(document).ready(function() {
   demo();
 });
@@ -92,7 +111,7 @@ function drawBackgroundAnimation(json, diff){
         element.className = json.ingredients[ingredient] + " error";
     } else if (json.ingredients[ingredient] == "use") {
       var use = document.getElementById(ingredient);
-      $("#currentIngredient").empty();
+      $("#demo").empty();
       console.log("adding ingredients ");
 
       let imageSrc = ingredientImages[ingredient];
@@ -136,7 +155,7 @@ function drawBackgroundAnimation(json, diff){
         clearTimeout(letterTimeouts[l]);
       }
       letterTimeouts = [];
-      $("#currentIngredient").empty();
+      $("#demo").empty();
     } else {
       $("#countdown").removeClass("active")
     }

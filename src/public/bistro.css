@@ -401,7 +401,7 @@ td.error .error_bg {
 	display: block;
 }
 
-#currentIngredient {
+.bg_animation {
 	position: absolute;
 	top: 3%;
 	left: 2%;
@@ -432,4 +432,100 @@ td.error .error_bg {
 	position:absolute;
 	animation-iteration-count: infinite;
 	animation-timing-function: linear;
+}
+
+.letter{
+	display: inline-block;
+	font-weight: 900;
+	font-size: 10em;
+	margin: 0.05em;
+	text-transform: uppercase;
+	position: relative;
+	color: #291c2a;
+	transform-style: preserve-3d;
+	perspective: 400;
+	z-index: 1;
+	/*filter: blur(4px);*/
+}
+
+.letter:before, .letter:after{
+	position:absolute;
+	content: attr(data-letter);
+	transform-origin: top left;
+	top:0;
+	left:0;
+}
+
+.letter, .letter:before, .letter:after{
+	transition: all 0.3s ease-in-out;
+}
+
+@keyframes letter-before-animation {
+	0% {margin-top: 0;
+		color: #000;
+		transform:
+		rotateX(0deg)
+		rotateY(-15deg)
+		rotateZ(0deg);
+	}
+	50% {margin-top: 0px;
+		color: #0a0a0a;
+		transform:
+		translateY(-3px)
+		rotateX(0deg)
+		rotateY(-30deg)
+		rotateZ(0deg);
+	}
+	100% {
+		margin-top: 0;
+		color: wheat;
+		transform:
+		rotateX(0deg)
+		rotateY(-15deg)
+		rotateZ(0deg);
+	}
+}
+
+@keyframes letter-after-animation {
+	0% {transform:
+		scale(1.08,1)
+		rotateX(0deg)
+		rotateY(0deg)
+		rotateZ(0deg)
+		skew(0deg,1deg);
+	}
+	50% {transform:
+		scale(1.08,1)
+		rotateX(0deg)
+		rotateY(40deg)
+		rotateZ(0deg)
+		skew(0deg,22deg);
+	}
+	0% {transform:
+		scale(1.08,1)
+		rotateX(0deg)
+		rotateY(0deg)
+		rotateZ(0deg)
+		skew(0deg,1deg);
+	}
+}
+
+.letter:before{
+	color: #fff;
+	text-shadow:
+		-1px 0px 1px rgba(90,90,90,.8),
+		1px 0px 1px rgba(0,0,0,.8);
+	z-index: 3;
+	animation-name: letter-before-animation;
+	animation-iteration-count: infinite;
+	animation-duration: 3s;
+	animation-delay: inherit;
+}
+
+.letter:after{
+	color: rgba(0,0,0,.11);
+	z-index:2;
+	animation-name: letter-after-animation;
+	animation-iteration-count: infinite;
+	animation-duration: 3s;
 }
