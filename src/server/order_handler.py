@@ -83,7 +83,7 @@ class OrderHandler(threading.Thread):
 			"extras": self.recipeHandler.currentExtras(),
 			"preparation": self.recipeHandler.currentPreparation(),
 		"""
-		print("Dish ", dish)
+		#print("Dish ", dish)
 			
 
 		message = {
