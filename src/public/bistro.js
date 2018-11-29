@@ -112,6 +112,8 @@ function drawBackgroundAnimation(json, diff){
     } else if (json.ingredients[ingredient] == "use") {
       var use = document.getElementById(ingredient);
       $("#demo").empty();
+      $("#currentIngredient").empty();
+
       console.log("adding ingredients ");
 
       let imageSrc = ingredientImages[ingredient];
@@ -163,7 +165,24 @@ function drawBackgroundAnimation(json, diff){
 
 }
 
-
+function updateWaitingList(diff, waiting){
+  if (diff > 0) {
+    for (var i = 0; i < diff; i++) {
+      $("#waitingList").prepend("<span class='item new'/>");
+      setTimeout(function() {
+        $("#waitingList span.item.new").removeClass("new");
+      }, 10);
+    }
+  } else if (diff < 0) {
+    timeout = 250;
+    for (var i = waiting; i > waiting + diff; i--) {
+      $($("#waitingList span.item")[i-1]).addClass("old");
+      setTimeout(function() {
+        $("#waitingList span.item.old").remove();
+      }, 500);
+    }
+  }
+}
 
 // wait for messages incoming
 ws.onmessage = function (event) {
@@ -181,32 +200,25 @@ ws.onmessage = function (event) {
       console.log("Refreshing")
       window.location.reload();
       break;
+    case "new_order":
+      var waiting = $("#waitingList span.item").length;
+      updateWaitingList(1, waiting);
+      return;
+    case "clear_queue":
+      var waiting = $("#waitingList span.item").length;
+      updateWaitingList(-waiting, waiting);
+      return;
     default:
       break;
   }
 
   console.log(json)
-  var timeout = 0;
+  let timeout = 0;
 
 // add items to waiting list
-  var waiting = $("#waitingList span.item").length;
-  var diff = waiting - json["waiting"];
-  if (diff < 0) {
-    for (var i = waiting; i < json["waiting"]; i++) {
-      $("#waitingList").prepend("<span class='item new'/>");
-      setTimeout(function() {
-        $("#waitingList span.item.new").removeClass("new");
-      }, 10);
-    }
-  } else if (diff > 0) {
-    timeout = 250;
-    for (var i = waiting; i > json["waiting"]; i--) {
-      $($("#waitingList span.item")[i-1]).addClass("old");
-      setTimeout(function() {
-        $("#waitingList span.item.old").remove();
-      }, 500);
-    }
-  }
+  waiting = $("#waitingList span.item").length;
+  const diff = json["waiting"] - waiting;
+  updateWaitingList(diff, waiting)
 
 
 
