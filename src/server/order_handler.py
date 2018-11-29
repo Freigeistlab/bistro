@@ -31,9 +31,9 @@ class OrderHandler(threading.Thread):
 		try:
 			self.socket.bind((host, port))
 		except OSError:
-			print("cannot bind to port", port)			
-			print("try running:")
-			print("sudo fuser -k", port, "/tcp")
+			#print("cannot bind to port", port)			
+			#print("try running:")
+			#print("sudo fuser -k", port, "/tcp")
 			os._exit(1)
 
 		self.socket.listen(1)
@@ -41,7 +41,7 @@ class OrderHandler(threading.Thread):
 	def nextDish(self):
 		# returns the next dish in the waitinglist
 		# and removes it from there
-		print("order handler next dish")
+		#print("order handler next dish")
 		return self.orderSQLInterface.getNextWaitingDish()
 
 	def waiting(self):
@@ -64,10 +64,10 @@ class OrderHandler(threading.Thread):
 	
 	#this function deals with meals that are added by the dashboard
 	def addMealPreparation(self, meal, amount):
-		print("adding meal to prepare")
+		#print("adding meal to prepare")
 		dish = self.recipeHandler.constructRecipe(meal.split(" "), meal)
 		for i in range(0,amount):
-			print("Appending to order queue")
+			#print("Appending to order queue")
 			self.orderSQLInterface.appendToOrderQueue(dish, False)
 			self.sendNewOrderToClients(dish, False)
 	
@@ -83,7 +83,7 @@ class OrderHandler(threading.Thread):
 			"extras": self.recipeHandler.currentExtras(),
 			"preparation": self.recipeHandler.currentPreparation(),
 		"""
-		#print("Dish ", dish)
+		##print("Dish ", dish)
 			
 
 		message = {
@@ -95,15 +95,15 @@ class OrderHandler(threading.Thread):
 		message = str(message).replace("'",'"')
 		#task = loop.create_task(self.websocket.sendMessage(message))
 		#loop.run_until_complete(task)
-		#print("is send message co routine ? ", self.websocket.sendMessage)
+		##print("is send message co routine ? ", self.websocket.sendMessage)
 		#asyncio.run_coroutine_threadsafe(self.websocket.sendMessage, message)
 		asyncio.run_coroutine_threadsafe(self.websocket.sendMessage(message), self.loop)
 		
 		
 
 	def run(self):
-		print("Set up your orderbird printer to IP", self.getIpAddress())
-		print("Waiting for orders...")
+		#print("Set up your orderbird #printer to IP", self.getIpAddress())
+		#print("Waiting for orders...")
 		
 		#needed for async events (like sending via websocket) that don't need to be awaited
 		#asyncio.set_event_loop(asyncio.new_event_loop())
@@ -112,7 +112,7 @@ class OrderHandler(threading.Thread):
 			try:
 				# accept connections (probably from orderbird or order dashboard)
 				conn, addr = self.socket.accept()
-				print("\n  Connection from: " + str(addr))
+				#print("\n  Connection from: " + str(addr))
 
 				while True:
 					data = conn.recv(8192).decode("cp1252")
@@ -125,7 +125,7 @@ class OrderHandler(threading.Thread):
 						conn.send(bytes([22, 18, 18, 18]))
 
 					else:
-						print("  Processing data...")
+						#print("  Processing data...")
 						liste = [55, 34] + [ord(i) for i in data[-8:-4:]] + [0]
 						conn.send(bytes(liste))
 
@@ -195,15 +195,15 @@ class OrderHandler(threading.Thread):
 # ------------------------------------------
 # """
 
-						print("  New order:")
+						#print("  New order:")
 						if self.verbose:
-							print(data)
+							#print(data)
 
 						orders = re.compile("(?<=-{42}\s\x1ba\x00\x1d!\x11)[\s\S]+?(?=\x1d!\x00\n\x1ba\x00\s+\(\d+,\d{2}\)\s\d+,\d{2})").findall(data)
 						#orders = re.compile("(?<=-{42}\s)[\w\s-]+").findall(data)
 
 						if self.verbose:
-							print("    Orders: ", [o.strip() for o in orders])
+							#print("    Orders: ", [o.strip() for o in orders])
 
 						for order in orders:
 							# remove unnecessary whitespaces
@@ -225,12 +225,12 @@ class OrderHandler(threading.Thread):
 								items[index] = items[index].strip()
 
 							if self.verbose:
-								print("    Items: ", items)
+								#print("    Items: ", items)
 							
 							
 							dish = self.recipeHandler.constructRecipe(items, order)
 							for i in range(0,amount):
-								print("Appending to order queue")
+								#print("Appending to order queue")
 								self.orderSQLInterface.appendToOrderQueue(dish, True)
 
 							self.sendNewOrderToClients(dish, True)
