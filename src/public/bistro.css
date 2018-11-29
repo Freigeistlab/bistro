@@ -35,7 +35,7 @@ body {
 	padding: 0;
 	width: 1280px;
 	height: 800px;
-	background: wheat;
+	background: black;
 	display: block;
 	position: absolute;
 	z-index: -1;
@@ -48,7 +48,7 @@ body {
 	height: 80px;
 	top: 510px;
 	left: 0px;
-	background: wheat;
+	background: black;
 	display: block;
 	position: absolute;
 	z-index: -1;
@@ -86,7 +86,7 @@ table {
 	display: inline-block;
 	position: absolute;
 	text-align: center;
-	background: wheat;
+	background: black;
 	border-collapse: collapse;
 }
 
@@ -164,7 +164,7 @@ td {
 	text-align: center;
 	vertical-align: middle;
 	border: none;
-	background: wheat;
+	background: black;
 	position: relative;
 }
 
