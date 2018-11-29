@@ -40,9 +40,10 @@ var letterTimeouts = [];
 const ingredientImages = {
   "Tomaten": "../../images/ingredients/Basilikum.jpg",
   "Hackfleisch": "../../images/ingredients/Kuh.jpg",
+  "Chili": "../../images/ingredients/Chili.jpg",
   "Basilikum": "../../images/ingredients/Basilikum.jpg",
   "Knoblauch": "../../images/ingredients/Knoblauch.jpg",
-  "KaeseMix": "../../images/ingredients/Kaese.jpg",
+  "KäseMix": "../../images/ingredients/Kaese.jpg",
   "marinierteKraeuter": "../../images/ingredients/Kraeuter.jpg",
   "Zwiebeln": "../../images/ingredients/Zwiebel.jpg",
   "gehacktePetersilie": "../../images/ingredients/Petersilie.jpg",
@@ -50,8 +51,9 @@ const ingredientImages = {
   "getrockneteTomaten": "../../images/ingredients/GetrockneteTomaten.jpg",
   "Salbeibutter": "../../images/ingredients/Salbei.jpg",
   "Gorgonzola": "../../images/ingredients/Gorgonzola.jpg",
+  "Speck": "../../images/ingredients/Schwein.jpg",
   "Rucola": "../../images/ingredients/Rucola.jpg",
-  "Olivenöl": "../../images/ingredients/Olivenoel.jpg",
+  "Olivenoel": "../../images/ingredients/Olivenoel.jpg",
   "Bulgur": "../../images/ingredients/Bulgur.jpg",
   "Basilikumbutter": "../../images/ingredients/Basilikum.jpg",
 };
@@ -69,21 +71,6 @@ function demo() {
       current.removeClass("show");
     },5000)
 
-
-    for (var l = 0; l < letterTimeouts.length;l++) {
-      clearTimeout(letterTimeouts[l]);
-    }
-    letterTimeouts = [];
-    if ($(".letter").length < 105) {
-      var ingredient = ".";
-      for (var l = 0; l < ingredient.length; l++) {
-        letterTimeouts.push(setTimeout(function(ingredient,l) {
-          var newLetter = $('<span class="letter" data-delay='+l+' data-letter="'+ingredient[l]+'">'+ingredient[l]+'</span>');
-          newLetter.css("animation-delay", -20+0.5*l+"s");
-          $("#currentIngredient").append(newLetter);
-        },l * 100, ingredient, l));
-      }
-    }
 
   }, 100);
 }

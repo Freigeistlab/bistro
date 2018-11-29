@@ -197,12 +197,14 @@ class OrderHandler(threading.Thread):
 
 						#print("  New order:")
 						if self.verbose:
+							pass
 							#print(data)
 
 						orders = re.compile("(?<=-{42}\s\x1ba\x00\x1d!\x11)[\s\S]+?(?=\x1d!\x00\n\x1ba\x00\s+\(\d+,\d{2}\)\s\d+,\d{2})").findall(data)
 						#orders = re.compile("(?<=-{42}\s)[\w\s-]+").findall(data)
 
 						if self.verbose:
+							pass
 							#print("    Orders: ", [o.strip() for o in orders])
 
 						for order in orders:
@@ -225,6 +227,7 @@ class OrderHandler(threading.Thread):
 								items[index] = items[index].strip()
 
 							if self.verbose:
+								pass
 								#print("    Items: ", items)
 							
 							

@@ -22,8 +22,12 @@ body {
 	font-size: 20px;
 	font-family: "Roboto", sans-serif;
 	background: black;
-	color: white;
+	color: wheat;
 	overflow: hidden;
+}
+
+.back {
+    background: white;
 }
 
 #area {
@@ -31,7 +35,7 @@ body {
 	padding: 0;
 	width: 1280px;
 	height: 800px;
-	background: black;
+	background: wheat;
 	display: block;
 	position: absolute;
 	z-index: -1;
@@ -44,7 +48,7 @@ body {
 	height: 80px;
 	top: 510px;
 	left: 0px;
-	background: black;
+	background: wheat;
 	display: block;
 	position: absolute;
 	z-index: -1;
@@ -82,7 +86,7 @@ table {
 	display: inline-block;
 	position: absolute;
 	text-align: center;
-	background: black;
+	background: wheat;
 	border-collapse: collapse;
 }
 
@@ -160,7 +164,7 @@ td {
 	text-align: center;
 	vertical-align: middle;
 	border: none;
-	background: black;
+	background: wheat;
 	position: relative;
 }
 
@@ -309,18 +313,13 @@ td.error .error_bg {
 	left: 150px;
 }
 
-.yeah {
-	font-size: 20px;
-	margin: 0;
-	opacity: 0;
-}
 
 #current.back {
 	width: 600px;
-	height: 120px;
+	height: 50px;
 	top: 300px;
+	background: transparent;
 	left: 250px;
-	z-index: 20000;
 }
 
 #current.back #preparation {
@@ -328,7 +327,6 @@ td.error .error_bg {
 	position: relative;
 	top: -1em;
 	left: -1em;
-	background: #000;
 	width: auto;
 	display: inline-block;
 	padding: 1em;
@@ -372,8 +370,6 @@ td.error .error_bg {
 	margin: 0;
 }
 
-
-
 @keyframes countdown-animation {
 	0%   {height: 30px; width: 30px; margin-top: 0; margin-left: 0;}
 	20%  {height: 200px; width: 200px; margin-top: -85px; margin-left: -85px;}
@@ -401,12 +397,9 @@ td.error .error_bg {
 	left: 625px;
 }
 
-
 #countdown.active {
 	display: block;
 }
-
-
 
 #currentIngredient {
 	position: absolute;
@@ -418,98 +411,25 @@ td.error .error_bg {
 	line-height: 5.9em;
 }
 
-.letter{
-	display: inline-block;
-	font-weight: 900;
-	font-size: 10em;
-	margin: 0.05em;
-	text-transform: uppercase;
-	position: relative;
-	color: #ffffff;
-	transform-style: preserve-3d;
-	perspective: 400;
-	z-index: 1;
-	/*filter: blur(4px);*/
-}
-
-.letter:before, .letter:after{
+.ingredientImage {
+	animation-name: ingredient-animation;
+	animation-duration: 4s;
+	height: 100px;
+	width: 100px;
 	position:absolute;
-	content: attr(data-letter);
-	transform-origin: top left;
-	top:0;
-	left:0;
-}
-
-.letter, .letter:before, .letter:after{
-	transition: all 0.3s ease-in-out;
-}
-
-@keyframes letter-before-animation {
-	0% {margin-top: 0;
-		color: #000;
-		transform:
-		rotateX(0deg)
-		rotateY(-15deg)
-		rotateZ(0deg);
-	}
-	50% {margin-top: 0px;
-		color: #0a0a0a;
-		transform:
-		translateY(-3px)
-		rotateX(0deg)
-		rotateY(-30deg)
-		rotateZ(0deg);
-	}
-	100% {
-		margin-top: 0;
-		color: #000;
-		transform:
-		rotateX(0deg)
-		rotateY(-15deg)
-		rotateZ(0deg);
-	}
-} 
-
-@keyframes letter-after-animation {
-	0% {transform:
-		scale(1.08,1)
-		rotateX(0deg)
-		rotateY(0deg)
-		rotateZ(0deg)
-		skew(0deg,1deg);
-	}
-	50% {transform:
-		scale(1.08,1)
-		rotateX(0deg)
-		rotateY(40deg)
-		rotateZ(0deg)
-		skew(0deg,22deg);		
-	}
-	0% {transform:
-		scale(1.08,1)
-		rotateX(0deg)
-		rotateY(0deg)
-		rotateZ(0deg)
-		skew(0deg,1deg);
-	}
-}
-
-.letter:before{
-	color: #fff;
-	text-shadow: 
-		-1px 0px 1px rgba(90,90,90,.8),
-		1px 0px 1px rgba(0,0,0,.8);
-	z-index: 3;
-	animation-name: letter-before-animation;
 	animation-iteration-count: infinite;
-	animation-duration: 3s;
-	animation-delay: inherit;
+	animation-timing-function: linear;
 }
 
-.letter:after{
-	color: rgba(0,0,0,.11);
-	z-index:2;
-	animation-name: letter-after-animation;
+@keyframes ingredient-animation {
+	from { left: -50%;}
+	to{ left : 100%;}
+}
+
+.ingredientText {
+	font-size: 26px;
+	animation-name: ingredient-animation;
+	position:absolute;
 	animation-iteration-count: infinite;
-	animation-duration: 3s;
+	animation-timing-function: linear;
 }
