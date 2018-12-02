@@ -93,7 +93,7 @@ class Bistro:
 			json_msg = json.loads(message)
 			# print(json_msg.action, " " , json_msg.meal, " ", json_msg.amount)
 			if json_msg["action"]=="prepare_order":
-				print(json_msg["meal"])
+				print(json_msg["meal"].encode("utf-8"))
 				self.inputHandler.orderHandler.addMealPreparation(json_msg["meal"], json_msg["amount"])
 			elif json_msg["action"]=="refresh":
 				print("refreshing projections...")
@@ -102,7 +102,7 @@ class Bistro:
 					"action": action.value
 				}
 				print("response")
-				print(response)
+				print(str(response).encode("utf-8"))
 				resp = str(response).replace("'",'"')
 				yield from self.sendMessage(resp)
 
