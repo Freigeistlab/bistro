@@ -13,13 +13,15 @@ async function pingServer(){
     console.error('network error: ' + error);
     setTimeout(function(){
     window.location.reload();
-    }, 5000);
+    }, 10000);
   });
   if (response){
       if (response.status !== 200) {
         setTimeout(function(){
             window.location.reload();
-            }, 5000);
+            }, 10000);
+      } else {
+        stopDemo();
       }
   }
 }
@@ -58,6 +60,9 @@ const ingredientImages = {
   "Basilikumbutter": "../../images/ingredients/Basilikum.jpg",
 };
 
+function stopDemo(){
+    $("#demo").empty();
+}
 
 
 function demo() {
@@ -72,9 +77,23 @@ function demo() {
     },5000)
 
 
+    for (var l = 0; l < letterTimeouts.length;l++) {
+      clearTimeout(letterTimeouts[l]);
+    }
+    letterTimeouts = [];
+    if ($(".letter").length < 105) {
+      var ingredient = ".";
+      for (var l = 0; l < ingredient.length; l++) {
+        letterTimeouts.push(setTimeout(function(ingredient,l) {
+          var newLetter = $('<span class="letter" data-delay='+l+' data-letter="'+ingredient[l]+'">'+ingredient[l]+'</span>');
+          newLetter.css("animation-delay", -20+0.5*l+"s");
+          $("#demo").append(newLetter);
+        },l * 100, ingredient, l));
+      }
+    }
+
   }, 100);
 }
-
 $(document).ready(function() {
   demo();
 });
@@ -92,7 +111,9 @@ function drawBackgroundAnimation(json, diff){
         element.className = json.ingredients[ingredient] + " error";
     } else if (json.ingredients[ingredient] == "use") {
       var use = document.getElementById(ingredient);
+      $("#demo").empty();
       $("#currentIngredient").empty();
+
       console.log("adding ingredients ");
 
       let imageSrc = ingredientImages[ingredient];
@@ -136,7 +157,7 @@ function drawBackgroundAnimation(json, diff){
         clearTimeout(letterTimeouts[l]);
       }
       letterTimeouts = [];
-      $("#currentIngredient").empty();
+      $("#demo").empty();
     } else {
       $("#countdown").removeClass("active")
     }
@@ -144,7 +165,24 @@ function drawBackgroundAnimation(json, diff){
 
 }
 
-
+function updateWaitingList(diff, waiting){
+  if (diff > 0) {
+    for (var i = 0; i < diff; i++) {
+      $("#waitingList").prepend("<span class='item new'/>");
+      setTimeout(function() {
+        $("#waitingList span.item.new").removeClass("new");
+      }, 10);
+    }
+  } else if (diff < 0) {
+    timeout = 250;
+    for (var i = waiting; i > waiting + diff; i--) {
+      $($("#waitingList span.item")[i-1]).addClass("old");
+      setTimeout(function() {
+        $("#waitingList span.item.old").remove();
+      }, 500);
+    }
+  }
+}
 
 // wait for messages incoming
 ws.onmessage = function (event) {
@@ -162,32 +200,25 @@ ws.onmessage = function (event) {
       console.log("Refreshing")
       window.location.reload();
       break;
+    case "new_order":
+      var waiting = $("#waitingList span.item").length;
+      updateWaitingList(1, waiting);
+      return;
+    case "clear_queue":
+      var waiting = $("#waitingList span.item").length;
+      updateWaitingList(-waiting, waiting);
+      return;
     default:
       break;
   }
 
   console.log(json)
-  var timeout = 0;
+  let timeout = 0;
 
 // add items to waiting list
-  var waiting = $("#waitingList span.item").length;
-  var diff = waiting - json["waiting"];
-  if (diff < 0) {
-    for (var i = waiting; i < json["waiting"]; i++) {
-      $("#waitingList").prepend("<span class='item new'/>");
-      setTimeout(function() {
-        $("#waitingList span.item.new").removeClass("new");
-      }, 10);
-    }
-  } else if (diff > 0) {
-    timeout = 250;
-    for (var i = waiting; i > json["waiting"]; i--) {
-      $($("#waitingList span.item")[i-1]).addClass("old");
-      setTimeout(function() {
-        $("#waitingList span.item.old").remove();
-      }, 500);
-    }
-  }
+  waiting = $("#waitingList span.item").length;
+  const diff = json["waiting"] - waiting;
+  updateWaitingList(diff, waiting)
 
 
 
