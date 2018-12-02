@@ -7,4 +7,4 @@
 
 git pull origin master
 python3 -m http.server 8000 &
-python3 -e PYTHONIOENCODING=utf-8 src/server/bistro.py
+python3 src/server/bistro.py
