@@ -215,7 +215,7 @@ class RecipeHandler:
 
 	def getNextIngredients(self):
 		
-		print("ingredient ", str(self.__ingredients.keys()).encode("utf-8"))
+		print("ingredient ", self.__ingredients.keys())
 		for i in self.__ingredients.keys():
 			
 			if self.__ingredients[i] == "use":
@@ -252,7 +252,7 @@ class RecipeHandler:
 
 	def constructRecipe(self, items, order):
 
-		print(str(items).encode("utf-8"))
+		print(items)
 
 		#checks if we have an order from orderbird (with pasta, that is ignored) or a prepared order without pasta
 		if not self.isPasta(items[0]):
@@ -261,7 +261,7 @@ class RecipeHandler:
 			sauceName = items[0]
 			items = items[1:]
 			if not self.isSauce(sauceName):
-				print("Error: Ich kenne keine Sauce namens", sauceName.encode("utf-8"), ". Vielleicht in der recipe_handler.py eintragen?")
+				print("Error: Ich kenne keine Sauce namens", sauceName, ". Vielleicht in der recipe_handler.py eintragen?")
 			else:
 				sauce = self.getRecipe(sauceName)
 		else:
@@ -270,7 +270,7 @@ class RecipeHandler:
 			sauceName = items[1]
 			items = items[2:]
 			if not self.isSauce(sauceName):
-				print("Error: Ich kenne keine Sauce namens", sauceName.encode("utf-8"), ". Vielleicht in der recipe_handler.py eintragen?")
+				print("Error: Ich kenne keine Sauce namens", sauceName, ". Vielleicht in der recipe_handler.py eintragen?")
 			else:
 				sauce = self.getRecipe(sauceName)
 
@@ -291,7 +291,7 @@ class RecipeHandler:
 						ingredient.remove(item)
 						extras += " – " + item
 			elif not self.isTopping(item):
-				print(item.encode("utf-8"),"ist kein Topping. Vielleicht ein Getränk. Ansonsten vielleicht in der recipe_handler.py eintragen?")
+				print(item,"ist kein Topping. Vielleicht ein Getränk. Ansonsten vielleicht in der recipe_handler.py eintragen?")
 			else:
 				toppings.append(item)
 				extras += " + " + item

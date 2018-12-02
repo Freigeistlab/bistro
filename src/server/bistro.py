@@ -68,7 +68,7 @@ class Bistro:
 	def sendMessage(self, message):
 		print("Send message")
 		if USERS:
-			print("Sending message to users ", message.encode("utf-8"))
+			print("Sending message to users ", message)
 			yield from asyncio.wait([user.send(message) for user in USERS])
 			print("message sent")
 			# send message to both dashboard, front and back projection
@@ -93,7 +93,7 @@ class Bistro:
 			json_msg = json.loads(message)
 			# print(json_msg.action, " " , json_msg.meal, " ", json_msg.amount)
 			if json_msg["action"]=="prepare_order":
-				print(json_msg["meal"].encode("utf-8"))
+				print(json_msg["meal"])
 				self.inputHandler.orderHandler.addMealPreparation(json_msg["meal"], json_msg["amount"])
 			elif json_msg["action"]=="refresh":
 				print("refreshing projections...")
@@ -102,7 +102,7 @@ class Bistro:
 					"action": action.value
 				}
 				print("response")
-				print(str(response).encode("utf-8"))
+				print(response)
 				resp = str(response).replace("'",'"')
 				yield from self.sendMessage(resp)
 
