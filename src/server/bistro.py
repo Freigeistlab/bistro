@@ -68,7 +68,7 @@ class Bistro:
 	def sendMessage(self, message):
 		print("Send message")
 		if USERS:
-			print("Sending message to users ", message.encode("utf-8").decode("ascii"))
+			print("Sending message to users ", message.encode("utf-8"))
 			yield from asyncio.wait([user.send(message) for user in USERS])
 			print("message sent")
 			# send message to both dashboard, front and back projection
