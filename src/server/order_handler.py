@@ -31,7 +31,7 @@ class OrderHandler(threading.Thread):
 		try:
 			self.socket.bind((host, port))
 		except OSError:
-			#print("cannot bind to port", port)			
+			print("cannot bind to port", port)
 			#print("try running:")
 			#print("sudo fuser -k", port, "/tcp")
 			os._exit(1)
@@ -41,7 +41,7 @@ class OrderHandler(threading.Thread):
 	def nextDish(self):
 		# returns the next dish in the waitinglist
 		# and removes it from there
-		#print("order handler next dish")
+		print("order handler next dish")
 		return self.orderSQLInterface.getNextWaitingDish()
 
 	def waiting(self):
@@ -64,10 +64,10 @@ class OrderHandler(threading.Thread):
 	
 	#this function deals with meals that are added by the dashboard
 	def addMealPreparation(self, meal, amount):
-		#print("adding meal to prepare")
+		print("adding meal to prepare")
 		dish = self.recipeHandler.constructRecipe(meal.split(" "), meal)
 		for i in range(0,amount):
-			#print("Appending to order queue")
+			print("Appending to order queue")
 			self.orderSQLInterface.appendToOrderQueue(dish, False)
 			self.sendNewOrderToClients(dish, False)
 	
@@ -83,7 +83,7 @@ class OrderHandler(threading.Thread):
 			"extras": self.recipeHandler.currentExtras(),
 			"preparation": self.recipeHandler.currentPreparation(),
 		"""
-		##print("Dish ", dish)
+		print("Dish ", dish)
 			
 
 		message = {
@@ -103,7 +103,7 @@ class OrderHandler(threading.Thread):
 
 	def run(self):
 		#print("Set up your orderbird #printer to IP", self.getIpAddress())
-		#print("Waiting for orders...")
+		print("Waiting for orders...")
 		
 		#needed for async events (like sending via websocket) that don't need to be awaited
 		#asyncio.set_event_loop(asyncio.new_event_loop())
@@ -197,8 +197,8 @@ class OrderHandler(threading.Thread):
 
 						#print("  New order:")
 						if self.verbose:
-							pass
-							#print(data)
+							print(data)
+							#pass
 
 						orders = re.compile("(?<=-{42}\s\x1ba\x00\x1d!\x11)[\s\S]+?(?=\x1d!\x00\n\x1ba\x00\s+\(\d+,\d{2}\)\s\d+,\d{2})").findall(data)
 						#orders = re.compile("(?<=-{42}\s)[\w\s-]+").findall(data)
