@@ -201,12 +201,13 @@ class InputHandler(threading.Thread):
 			# entered a valid ingredient
 			print("- ", selected)
 			self.recipeHandler.useIngredient(selected)
-			self.assembleMessage(Action.NEXT_INGREDIENT)
+			#self.assembleMessage(Action.NEXT_INGREDIENT)
 
 		else:
 			# everything else
 			print("Unbekannte Eingabe: " + selected)
-
+		
+		self.sendMessage(Action.NEXT_INGREDIENT)
 		print("")
 		# wait for 100ms to save resources
 		time.sleep(.1)
