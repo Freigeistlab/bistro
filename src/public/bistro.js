@@ -189,7 +189,11 @@ ws.onmessage = function (event) {
   clearInterval(interval);
   clearTimeout(demoStart);
 // convert the string we get into a JSON object
+  console.log("new message received")
+  
+  console.log(event.data)
   var json = JSON.parse(event.data);
+  
   switch(json.action){
     case "restart":
       setTimeout(function() {
