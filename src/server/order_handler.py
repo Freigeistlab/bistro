@@ -87,7 +87,7 @@ class OrderHandler(threading.Thread):
 			
 
 		message = {
-			"name": dish["order"],
+			"name": dish["name"],
 			"realOrder": realOrderBool,
 			"action": Action.NEW_ORDER.value
 		}
