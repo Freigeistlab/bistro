@@ -97,7 +97,7 @@ class WebServer(threading.Thread):
 
 	def run(self):
 		#for debug mode the flask server must run on the main thread
-		self.app.run(debug=False)
+		self.app.run(debug=False, host='0.0.0.0')
 		
 
 
