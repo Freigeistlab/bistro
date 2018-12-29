@@ -81,7 +81,6 @@ class Bistro:
 			return self.inputHandler.getMessage()
 		else:
 			return """
-
 	@asyncio.coroutine
 	def bistro(self, websocket, path):
 		# in case there's a new message coming from the input handler

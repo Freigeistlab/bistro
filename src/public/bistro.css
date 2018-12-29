@@ -81,7 +81,7 @@ table {
 	top: 60px;
 	left: 31px;
 	padding: 0;
-	width: 885px;
+	width: 1205;
 	height: 470px;
 	display: inline-block;
 	position: absolute;
@@ -154,22 +154,15 @@ tr {
 	vertical-align: middle;
 }
 
-
 td {
 	display: inline-block;
 	padding: 0;
 	margin: 0;
-	width: 147.5px;
-	height: 160px;
 	text-align: center;
 	vertical-align: middle;
 	border: none;
 	background: black;
 	position: relative;
-}
-
-table.large td {
-	height: 470px;
 }
 
 td .background,
@@ -179,15 +172,53 @@ td .error_bg {
 	vertical-align: bottom;
 	position: relative;
 	display: inline-block;
-	width: 140px;
-	height: 153px;
 	border-radius: 35px;
 	background: #131f16;
 	transition: 300ms;
 }
 
+td.drittel {
+	width: 295px;
+	height: 160px;
+}
+
+td.sechstel {
+	width: 147.5px;
+	height: 160px;
+}
+
+td.neuntel {
+	width: 98.3px;
+	height: 160px;
+}
+
+td.drittel .background,
+td.drittel .error_bg {
+	width: 287.5px;
+	height: 153px;
+}
+
+td.sechstel .background,
+td.sechstel .error_bg {
+	width: 140px;
+	height: 153px;
+}
+
+td.neuntel .background,
+td.neuntel .error_bg {
+	width: 91.8px;
+	height: 153px;
+}
+
+
+table.large td {
+	width: 320px;
+	height: 480px;
+}
+
 table.large td .background,
 table.large td .error_bg {
+	width: 312.5px;
 	height: 472px;
 }
 
