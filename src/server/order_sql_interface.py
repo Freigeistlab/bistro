@@ -10,7 +10,7 @@ class OrderSQLInterface():
 		dbc = db.cursor()
 		queue = dbc.execute('SELECT dish, realOrder FROM WaitingList').fetchall()
 		
-		orders = [dict([("realOrder",o[1]),("name",eval(o[0])["order"])]) for o in queue]
+		orders = [dict([("realOrder",o[1]),("name",eval(o[0])["name"])]) for o in queue]
 
 		return orders
 
