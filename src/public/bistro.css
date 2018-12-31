@@ -79,9 +79,9 @@ header a {
 table {
 	margin: 0;
 	top: 60px;
-	left: 31px;
+	left: 0px;
 	padding: 0;
-	width: 1205;
+	width: 885px;
 	height: 470px;
 	display: inline-block;
 	position: absolute;
@@ -92,7 +92,7 @@ table {
 
 table.large {
 	width: 320px;
-	left: 915px;
+	left: 885px;
 }
 
 #scales {

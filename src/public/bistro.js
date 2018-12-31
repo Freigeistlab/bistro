@@ -1,10 +1,3 @@
-/*import axios from "axios";
-
-const API = axios.create({
-  baseURL: "http://localhost:5000"
-});
-*/
-
 // on start check if server is up and running -- otherwise restart after 5 secs
 
 async function pingServer(){
