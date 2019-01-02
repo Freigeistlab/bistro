@@ -255,7 +255,7 @@ class InputHandler(threading.Thread):
 				if self.bluetoothHandler:
 					self.bluetoothHandler.resetSelection()
 
-				time.sleep(5)
+				#time.sleep(5)
 			else:
 				self.message["ingredients"] = self.recipeHandler.getIngredientStatus()
 				self.message["error"] = self.recipeHandler.getError()

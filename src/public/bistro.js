@@ -13,8 +13,6 @@ async function pingServer(){
         setTimeout(function(){
             window.location.reload();
             }, 10000);
-      } else {
-        stopDemo();
       }
   }
 }
@@ -39,7 +37,7 @@ const ingredientImages = {
   "Basilikum": "../../images/ingredients/Basilikum.jpg",
   "Knoblauch": "../../images/ingredients/Knoblauch.jpg",
   "KäseMix": "../../images/ingredients/Kaese.jpg",
-  "marinierteKraeuter": "../../images/ingredients/Kraeuter.jpg",
+  "marinierteKräuter": "../../images/ingredients/Kraeuter.jpg",
   "Zwiebeln": "../../images/ingredients/Zwiebel.jpg",
   "gehacktePetersilie": "../../images/ingredients/Petersilie.jpg",
   "Sonnenblumenkerne": "../../images/ingredients/Sonnenblume.jpg",
@@ -48,21 +46,16 @@ const ingredientImages = {
   "Gorgonzola": "../../images/ingredients/Gorgonzola.jpg",
   "Speck": "../../images/ingredients/Schwein.jpg",
   "Rucola": "../../images/ingredients/Rucola.jpg",
-  "Olivenoel": "../../images/ingredients/Olivenoel.jpg",
+  "Olivenöl": "../../images/ingredients/Olivenoel.jpg",
   "Bulgur": "../../images/ingredients/Bulgur.jpg",
   "Basilikumbutter": "../../images/ingredients/Basilikum.jpg",
 };
 
-function stopDemo(){
-    $("#demo").empty();
-}
-
 
 function demo() {
-  if ($(".waiting").length > 0 || $(".use").length > 0)
-    return;
-
   interval = setInterval(function() {
+    if ($(".waiting").length > 0 || $(".use").length > 0)
+      return;
     var current = $($("td")[Math.floor(Math.random() * 20)]);
     current.addClass("show");
     setTimeout(function(){
@@ -101,7 +94,7 @@ function drawBackgroundAnimation(json, diff){
     if ($("#"+ingredient).hasClass("error")) {
       var element = document.getElementById(ingredient.replace(" ","_"));
       if (element)
-        element.className = json.ingredients[ingredient] + " error";
+        element.className = getSizeCssClass(element) + json.ingredients[ingredient] + " error";
     } else if (json.ingredients[ingredient] == "use") {
       var use = document.getElementById(ingredient);
       $("#demo").empty();
@@ -128,20 +121,23 @@ function drawBackgroundAnimation(json, diff){
 
       if (diff < 0) {
         if (use) {
-          use.className = "use";
+          use.className = getSizeCssClass(use) + "use";
         }
       } else {
         if (use) {
-          use.className = "waiting toUse";
+          use.className = getSizeCssClass(use) + "waiting toUse";
           setTimeout(function() {
             $(".toUse").removeClass("waiting").removeClass("toUse").addClass("use");
           },1000);
+        } else {
+            console.log("not found", ingredient)
         }
       }
     } else {
       var element = document.getElementById(ingredient.replace(" ","_"));
-      if (element)
-        element.className = json.ingredients[ingredient];
+      if (element) {
+        element.className = getSizeCssClass(element) + json.ingredients[ingredient];
+      }
     }
 
     if (json.ingredients[ingredient] == "ready") {
@@ -155,7 +151,16 @@ function drawBackgroundAnimation(json, diff){
       $("#countdown").removeClass("active")
     }
   }
+}
 
+function getSizeCssClass(element){
+    if (element.classList.contains("neuntel")){
+        return "neuntel ";
+    } else if (element.classList.contains("sechstel")){
+        return "sechstel ";
+    } else if (element.classList.contains("drittel")){
+        return "drittel ";
+    }
 }
 
 function updateWaitingList(diff, waiting){
@@ -182,9 +187,7 @@ ws.onmessage = function (event) {
   clearInterval(interval);
   clearTimeout(demoStart);
 // convert the string we get into a JSON object
-  console.log("new message received")
-  
-  console.log(event.data)
+
   var json = JSON.parse(event.data);
   
   switch(json.action){
@@ -209,7 +212,6 @@ ws.onmessage = function (event) {
       break;
   }
 
-  console.log(json)
   let timeout = 0;
 
 // add items to waiting list
@@ -218,12 +220,11 @@ ws.onmessage = function (event) {
   updateWaitingList(diff, waiting)
 
 
-
   setTimeout(function() {
-// show name of current recipe
-    var currentRecipe = document.getElementById("currentRecipe");
-    if (currentRecipe)
-      currentRecipe.innerText = json["recipe"];
+  // show name of current recipe
+  var currentRecipe = document.getElementById("currentRecipe");
+  if (currentRecipe)
+    currentRecipe.innerText = json["recipe"];
 
     var extras = document.getElementById("extras");
     if (extras)
@@ -242,6 +243,8 @@ ws.onmessage = function (event) {
       $("#waiting").css("display","block");
       $("#current").css("display","block");
     }
+
+
 
     $("#scales .circles span").removeClass("red").removeClass("yellow").removeClass("green");
     for (var i = 0; i < 13; i++){
@@ -263,7 +266,6 @@ ws.onmessage = function (event) {
         demo();
         $("#countdown").removeClass("active");
       }, 6000);
-
     }
 
     drawBackgroundAnimation(json, diff);
