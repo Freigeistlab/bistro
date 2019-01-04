@@ -1,4 +1,4 @@
-// on start check if server is up and running -- otherwise restart after 5 secs
+// on start check if server is up and running -- otherwise restart after 10 secs
 
 async function pingServer(){
 

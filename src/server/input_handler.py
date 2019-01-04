@@ -285,5 +285,5 @@ class InputHandler(threading.Thread):
 		asyncio.set_event_loop(asyncio.new_event_loop())
 		# notify the frontends to restart in 10 s and then so long until the server is back again
 		self.sendMessage(Action.RESTART)
-		#os.system('reboot')
-		os.execv(sys.executable, ['python'] + sys.argv)
+		os.system('reboot')
+		#os.execv(sys.executable, ['python'] + sys.argv)
