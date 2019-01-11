@@ -1,187 +1,181 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>WebSocket Bistro</title>
-		<link rel="stylesheet" href="../public/bistro.css">
-		<script src="../../lib/jquery-3.2.1.min.js"></script>
-		<script src="../public/bistro.js"></script>
-	</head>
-	<body>
-		<div id="area"></div>
-		<div id="textarea"></div>
-		<table class="large">
-			<tr>
-				<td id="Hausmacher">
+<head>
+	<title>WebSocket Bistro</title>
+	<link rel="stylesheet" href="../public/bistro.css">
+	<script src="../../lib/jquery-3.2.1.min.js"></script>
+	<script src="../public/bistro.js"></script>
+</head>
+<body>
+<div id="area"></div>
+<div id="textarea"></div>
+<table class="large">
+	<tr>
+		<td id="Hausmacher" class="eintel">
 					<span class="background">
 						<span class="error_bg"></span>
 					</span>
-					<p>Hausmacher</p>
-				</td>
-			</tr>
-		</table>
-		<table>
-			<tr>
-				<td id="SpinatHaselnuss" class="sechstel">
+			<p>Hausmacher</p>
+		</td>
+	</tr>
+</table>
+<table>
+	<tr>
+		<td id="Knoblauch" class="sechstel">
 					<span class="background">
 						<span class="error_bg"></span>
 					</span>
-					<p>Spinat Haselnuss</p>
-				</td>
-				<td id="Bulgur" class="sechstel">
+			<p>Knoblauch</p>
+		</td>
+		<td id="Butter" class="sechstel">
 					<span class="background">
 						<span class="error_bg"></span>
 					</span>
-					<p>Bulgur</p>
-				</td>
-				<td id="getrockneteTomaten" class="sechstel">
+			<p>Butter</p>
+		</td>
+		<td id="getrockneteTomaten" class="sechstel">
 					<span class="background">
 						<span class="error_bg"></span>
 					</span>
-					<p>Getrocknete Tomaten</p>
-				</td>
-				<td id="Petersilie" class="sechstel">
+			<p>getrockneteTomaten</p>
+		</td>
+		<td id="Hackfleisch" class="sechstel">
 					<span class="background">
 						<span class="error_bg"></span>
 					</span>
-					<p>Petersilie</p>
-				</td>
-				<td id="Chili" class="neuntel">
+			<p>Hackfleisch</p>
+		</td>
+		<td id="Bulgur" class="sechstel">
 					<span class="background">
 						<span class="error_bg"></span>
 					</span>
-					<p>Chili</p>
-				</td>
-				<td id="Knoblauch" class="neuntel">
+			<p>Bulgur</p>
+		</td>
+		<td id="Chili" class="sechstel">
 					<span class="background">
 						<span class="error_bg"></span>
 					</span>
-					<p>Knoblauch</p>
-				</td>
-				<td id="Butter" class="neuntel">
+			<p>Chili</p>
+		</td>
+	</tr>
+	<tr>
+		<td id="Zwiebeln" class="sechstel">
 					<span class="background">
 						<span class="error_bg"></span>
 					</span>
-					<p>Butter</p>
-				</td>
-			</tr>
-			<tr>
-				<td id="Sonnenblumenkerne" class="sechstel">
+			<p>Zwiebeln</p>
+		</td>
+		<td id="marinierteKräuter" class="sechstel">
 					<span class="background">
 						<span class="error_bg"></span>
 					</span>
-					<p>Sonnenblumenkerne</p>
-				</td>
-				<td id="Gorgonzola" class="sechstel">
+			<p>marinierteKräuter</p>
+		</td>
+		<td id="Olivenöl" class="sechstel">
 					<span class="background">
 						<span class="error_bg"></span>
 					</span>
-					<p>Gorgonzola</p>
-				</td>
-				<td id="Olivenöl" class="sechstel">
+			<p>Olivenöl</p>
+		</td>
+		<td id="Basilikumbutter" class="sechstel">
 					<span class="background">
 						<span class="error_bg"></span>
 					</span>
-					<p>Olivenöl</p>
-				</td>
-				<td id="Basilikum" class="sechstel">
+			<p>Basilikumbutter</p>
+		</td>
+		<td id="Gorgonzola" class="sechstel">
 					<span class="background">
 						<span class="error_bg"></span>
 					</span>
-					<p>Basilikum</p>
-				</td>
-				<td id="marinierteKräuter" class="neuntel">
+			<p>Gorgonzola</p>
+		</td>
+		<td id="Salbeibutter" class="sechstel">
 					<span class="background">
 						<span class="error_bg"></span>
 					</span>
-					<p>Marinierte Kräuter</p>
-				</td>
-				<td id="Basilikumbutter" class="neuntel">
+			<p>Salbeibutter</p>
+		</td>
+	</tr>
+	<tr>
+		<td id="Rucola" class="sechstel">
 					<span class="background">
 						<span class="error_bg"></span>
 					</span>
-					<p>Basilikumbutter</p>
-				</td>
-				<td id="Salbeiöl" class="neuntel">
+			<p>Rucola</p>
+		</td>
+		<td id="Speck" class="sechstel">
 					<span class="background">
 						<span class="error_bg"></span>
 					</span>
-					<p>Salbeiöl</p>
-				</td>
-			</tr>
-			<tr>
-				<td id="Hackfleisch" class="sechstel">
+			<p>Speck</p>
+		</td>
+		<td id="Sonnenblumenkerne" class="sechstel">
 					<span class="background">
 						<span class="error_bg"></span>
 					</span>
-					<p>Hackfleisch</p>
-				</td>
-				<td id="Speck" class="sechstel">
+			<p>Sonnenblumenkerne</p>
+		</td>
+		<td id="KäseMix" class="sechstel">
 					<span class="background">
 						<span class="error_bg"></span>
 					</span>
-					<p>Speck</p>
-				</td>
-				<td id="Zwiebeln" class="sechstel">
+			<p>KäseMix</p>
+		</td>
+		<td id="Basilikum" class="sechstel">
 					<span class="background">
 						<span class="error_bg"></span>
 					</span>
-					<p>Zwiebeln</p>
-				</td>
-				<td id="Rucola" class="sechstel">
+			<p>Basilikum</p>
+		</td>
+		<td id="gehacktePetersilie" class="sechstel">
 					<span class="background">
 						<span class="error_bg"></span>
 					</span>
-					<p>Rucola</p>
-				</td>
-				<td id="KäseMix" class="drittel">
-					<span class="background">
-						<span class="error_bg"></span>
-					</span>
-					<p>Käse</p>
-				</td>
-			</tr>
-		</table>
-		<div id="scales">
-			<div class="circles">
-				<span></span>
-				<span></span>
-				<span></span>
-				<span></span>
-				<span></span>
-				<span></span>
-				<span></span>
-				<span></span>
-				<span></span>
-				<span></span>
-				<span></span>
-				<span></span>
-				<span></span>
-			</div>
-			<div class="lines">
-				<span></span>
-				<span></span>
-				<span></span>
-				<span></span>
-				<span></span>
-				<span></span>
-				<span></span>
-			</div>
-			
-		</div>
-		<div id="waiting">
-			<p class="heading">Warteliste</p>
-			<p id="waitingList"></p>
-		</div>
-		<div id=current>
-			<p class="heading">Aktuell</p>
-			<p id="currentRecipe"></p>
-			<p id="extras"></p>
-			<p id="preparation"></p>
-		</div>
-		<div id="countdown">
-		</div>
-		<div id="setup">
-			<p>Setup — Bitte den Löffel der angezeigten Zutat bewegen, um die Verbindung herzustellen</p>
-		</div>
-	</body>
+			<p>gehacktePetersilie</p>
+		</td>
+	</tr>
+</table>
+<div id="scales">
+	<div class="circles">
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+	</div>
+	<div class="lines">
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+	</div>
+
+</div>
+<div id="waiting">
+	<p class="heading">Warteliste</p>
+	<p id="waitingList"></p>
+</div>
+<div id=current>
+	<p class="heading">Aktuell</p>
+	<p id="currentRecipe"></p>
+	<p id="extras"></p>
+	<p id="preparation"></p>
+</div>
+<div id="countdown">
+</div>
+<div id="setup">
+	<p>Setup — Bitte den Löffel der angezeigten Zutat bewegen, um die Verbindung herzustellen</p>
+</div>
+</body>
 </html>
