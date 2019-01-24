@@ -13,12 +13,12 @@ import copy, time
 # To add new ingredients there, see bistro.html file
 
 RECIPES = {
-	"Bolognese Rind": {
+	"Bolognese_Rind": {
 		"recipe": ["Basilikumbutter", "Olivenöl", "Zwiebeln", "Hackfleisch"],
 		"decoration": ["gehacktePetersilie"],
 		"preparation": "T2 Rühren"
 	},
-	"Bolognese Bulgur": {
+	"Bolognese_Bulgur": {
 		"recipe": ["Basilikumbutter", "Olivenöl", "Zwiebeln", "Bulgur"],
 		"decoration": ["gehacktePetersilie"],
 		"preparation": "T2 Rühren"
@@ -38,7 +38,7 @@ RECIPES = {
 		"decoration": [],
 		"preparation": "T2 Rühren"
 	},
-	"Pesto Verde": {
+	"Pesto_Verde": {
 		"recipe": ["Basilikumbutter", "KäseMix", "Rucola", "gehacktePetersilie", "marinierteKräuter"],
 		"decoration": ["Sonnenblumenkerne"],
 		"preparation": "W2 Mixen"
@@ -48,17 +48,17 @@ RECIPES = {
 		"decoration": ["gehacktePetersilie"],
 		"preparation": "S1 Rühren"
 	},
-	"Gorgonzola Sauce": {
+	"Gorgonzola_Sauce": {
 		"recipe": ["Gorgonzola", "Zwiebeln", "Knoblauch"],
 		"decoration": ["gehacktePetersilie"],
 		"preparation": "W2 S1 Mixen"
 	},
-	"Salbei Symphonie": {
+	"Salbei_Symphonie": {
 		"recipe": ["Salbeibutter", "KäseMix", "Butter"],
 		"decoration": [],
 		"preparation": "W2 S1 Mixen"
 	},
-	"Königsberger Art": {
+	"Königsberger_Art": {
 		"recipe": ["Zwiebeln", "Knoblauch", "Hackfleisch", "gehacktePetersilie", "Kapern"],
 		"decoration": [],
 		"preparation": "W2 S1 Mixen"
