@@ -337,8 +337,8 @@ td.error .error_bg {
 #current.back #preparation {
 	font-size: 50px;
 	position: relative;
-	top: -1em;
-	left: -1em;
+	top: -3em;
+	left: 18em;
 	width: auto;
 	display: inline-block;
 	padding: 1em;
