@@ -21,9 +21,12 @@ body {
 	height: 10vh;
 	font-size: 20px;
 	font-family: "Roboto", sans-serif;
-	background: black;
 	color: wheat;
 	overflow: hidden;
+}
+
+.front {
+		background: black;
 }
 
 .back {
