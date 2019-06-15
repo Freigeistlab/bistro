@@ -1,27 +1,5 @@
 @font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Roboto'), local('Roboto-Regular'), url("../../fonts/Roboto.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
-}
-
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 100;
-  src: local('Roboto Thin'), local('Roboto-Thin'), url("../../fonts/Roboto-Thin.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
-}
-
-body {
-	margin: 0;
-	padding: 0;
-	width: 10vw;
-	height: 10vh;
-	font-size: 20px;
-	font-family: "Roboto", sans-serif;
-	color: wheat;
+  font-family: 'Roboto'; font-style: normal; font-weight: 400; src: local('Roboto'), local('Roboto-Regular'), url("../../fonts/Roboto.woff2") format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215; } @font-face { font-family: 'Roboto'; font-style: normal; font-weight: 100; src: local('Roboto Thin'), local('Roboto-Thin'), url("../../fonts/Roboto-Thin.woff2") format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215; } body { margin: 0; padding: 0; width: 10vw; height: 10vh; font-size: 20px; font-family: "Roboto", sans-serif; color: wheat;
 	overflow: hidden;
 }
 
@@ -30,7 +8,7 @@ body {
 }
 
 .back {
-    background: white;
+    background: black;
 }
 
 #area {
