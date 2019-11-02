@@ -8,6 +8,8 @@ Besides that a second projector displays the current ingredients on the back of 
 
 Also the users have access to a custom built button panel with multiple control commands like skipping an ingredient, advancing to the next recipe or clearing the current recipe queue.
 
+More information can be found [here](https://www.freigeist-lab.com/).
+
 ![](https://image.jimcdn.com/app/cms/image/transf/dimension=2048x2048:format=jpg/path/sd8b97cdde9183367/image/iea7bcd9967290d1e/version/1545065056/image.jpg)
 
 ![](https://image.jimcdn.com/app/cms/image/transf/dimension=2048x2048:format=jpg/path/sd8b97cdde9183367/image/idfe4b3de31db087f/version/1545065056/image.jpg 'Bistro Überlingen')
