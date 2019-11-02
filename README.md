@@ -1,5 +1,3 @@
-**Freigeist: digital prothesises for cognitively impaired people**
-
 *Our projects aim at integrating cognitively impaired people into the work life using digital assistants*
 
 **Winner of German Gastro Founder's Price 2018**
