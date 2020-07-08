@@ -2,7 +2,7 @@
 
 async function pingServer(){
 
-  const response = await fetch("http://0.0.0.0:5000/").catch((error) => {
+  const response = await fetch("http://localhost:5000/").catch((error) => {
     console.error('network error: ' + error);
     setTimeout(function(){
     window.location.reload();
@@ -17,13 +17,13 @@ async function pingServer(){
   }
 }
 
-setInterval(pingServer, 3000);
+// setInterval(pingServer, 3000);
 
 
 
 
 // connect to the websocket of our app
-var ws = new WebSocket("ws://0.0.0.0:5678/");
+var ws = new WebSocket("ws://localhost:5678/");
 
 
 var interval;
@@ -105,14 +105,11 @@ function drawBackgroundAnimation(json, diff){
       let imageSrc = ingredientImages[ingredient];
 
       let image = $('<img id="img1" class="ingredientImage" src="' + imageSrc + '" alt="Ingredient">');
-      let ingredientText = $('<span class="ingredientText" >'+ingredient+'</span>').css({animationDuration: "10s", top: 50});
+      let ingredientText = $('<span class="ingredientText" >'+ingredient+'</span>').css({animationDuration: "10s", top: 100});
       let image1 = $('<img id="img3" class="ingredientImage" src="' + imageSrc + '" alt="Ingredient">').css({animationDuration: "8s", top: 200});
-      let ingredientText1 = $('<span class="ingredientText" >'+ingredient+'</span>').css({animationDuration: "8s", top: 150})
+      let ingredientText1 = $('<span class="ingredientText" >'+ingredient+'</span>').css({animationDuration: "6s", top: 300})
       let image2 = $('<img id="img3" class="ingredientImage" src="' + imageSrc + '"  alt="Ingredient">').css({animationDuration: "11s", top: 400});
-      let ingredientText2 = $('<span class="ingredientText" >'+ingredient+'</span>').css({animationDuration: "12s", top: 250})
-      let ingredientText3 = $('<span class="ingredientText" >'+ingredient+'</span>').css({animationDuration: "5s", top: 350})
-      let ingredientText4 = $('<span class="ingredientText" >'+ingredient+'</span>').css({animationDuration: "6s", top: 450})
-      let ingredientText5 = $('<span class="ingredientText" >'+ingredient+'</span>').css({animationDuration: "9s", top: 550})
+      let ingredientText2 = $('<span class="ingredientText" >'+ingredient+'</span>').css({animationDuration: "5s", top: 500})
 
       $("#currentIngredient").append(image);
       $("#currentIngredient").append(image1);
@@ -120,9 +117,7 @@ function drawBackgroundAnimation(json, diff){
       $("#currentIngredient").append(ingredientText);
       $("#currentIngredient").append(ingredientText1);
       $("#currentIngredient").append(ingredientText2);
-      $("#currentIngredient").append(ingredientText3);
-      $("#currentIngredient").append(ingredientText4);
-      $("#currentIngredient").append(ingredientText5);
+
 
       if (diff < 0) {
         if (use) {

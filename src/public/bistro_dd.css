@@ -1,14 +1,33 @@
 @font-face {
-  font-family: 'Roboto'; font-style: normal; font-weight: 400; src: local('Roboto'), local('Roboto-Regular'), url("../../fonts/Roboto.woff2") format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215; } @font-face { font-family: 'Roboto'; font-style: normal; font-weight: 100; src: local('Roboto Thin'), local('Roboto-Thin'), url("../../fonts/Roboto-Thin.woff2") format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215; } body { margin: 0; padding: 0; width: 10vw; height: 10vh; font-size: 20px; font-family: "Roboto", sans-serif; color: wheat;
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto'), local('Roboto-Regular'), url("../../fonts/Roboto.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 100;
+  src: local('Roboto Thin'), local('Roboto-Thin'), url("../../fonts/Roboto-Thin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	width: 10vw;
+	height: 10vh;
+	font-size: 20px;
+	font-family: "Roboto", sans-serif;
+	background: black;
+	color: wheat;
 	overflow: hidden;
 }
 
-.front {
-		background: black;
-}
-
 .back {
-    background: black;
+    background: white;
 }
 
 #area {
@@ -59,8 +78,8 @@ header a {
 
 table {
 	margin: 0;
-	top: 30px;
-	left: 0px;
+	top: 100px;
+	left: 40px;
 	padding: 0;
 	width: 885px;
 	height: 470px;
@@ -73,7 +92,7 @@ table {
 
 table.large {
 	width: 320px;
-	left: 885px;
+	left: 925px;
 }
 
 #scales {
@@ -148,7 +167,7 @@ td {
 
 td .background,
 td .error_bg {
-	margin-top: 0px;
+	margin-top: 1px;
 	text-align: center;
 	vertical-align: bottom;
 	position: relative;
@@ -160,35 +179,35 @@ td .error_bg {
 
 td.drittel {
 	width: 295px;
-	height: 175px;
+	height: 170px;
 }
 
 td.sechstel {
 	width: 147.5px;
-	height: 160px;
+	height: 170px;
 }
 
 td.neuntel {
 	width: 98.3px;
-	height: 175px;
+	height: 170px;
 }
 
 td.drittel .background,
 td.drittel .error_bg {
 	width: 287.5px;
-	height: 173px;
+	height: 153px;
 }
 
 td.sechstel .background,
 td.sechstel .error_bg {
 	width: 140px;
-	height: 173px;
+	height: 153px;
 }
 
 td.neuntel .background,
 td.neuntel .error_bg {
 	width: 91.8px;
-	height: 173px;
+	height: 153px;
 }
 
 
@@ -200,7 +219,7 @@ table.large td {
 table.large td .background,
 table.large td .error_bg {
 	width: 312.5px;
-	height: 525px;
+	height: 492px;
 }
 
 td p {
@@ -267,7 +286,7 @@ td .error_bg {
 }
 
 td.error .error_bg {
- 	background-color: #FF0000;
+ 	background-color: #FF000;
  	animation-name: blink-animation;
  	animation-duration: 1.2s;
 	animation-iteration-count: infinite;
@@ -291,7 +310,7 @@ td.error .error_bg {
 	position: absolute;
 	width: 390px;
 	height: 120px;
-	top: 580px;
+	top: 640px;
 	font-size: 20px;
 	font-weight: 400;
 	margin: 0;
@@ -335,13 +354,13 @@ td.error .error_bg {
 }
 
 #current.back #preparation {
-	font-size: 30px;
+	font-size: 50px;
 	position: relative;
-	top: 50px;
-	left: 0px;
+	top: -1em;
+	left: -1em;
 	width: auto;
 	display: inline-block;
-	padding: 0;
+	padding: 1em;
 }
 
 #extras {
@@ -366,7 +385,7 @@ td.error .error_bg {
 	margin-right: 2px;
 	left: 0;
 	top: 0;
-	transition: all 500ms;
+	transition: all 1000ms;
 }
 
 #waiting .item.new {
@@ -426,8 +445,8 @@ td.error .error_bg {
 .ingredientImage {
 	animation-name: ingredient-animation;
 	animation-duration: 4s;
-	height: 0px;
-	width: 0px;
+	height: 100px;
+	width: 100px;
 	position:absolute;
 	animation-iteration-count: infinite;
 	animation-timing-function: linear;

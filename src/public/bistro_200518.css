@@ -59,7 +59,7 @@ header a {
 
 table {
 	margin: 0;
-	top: 30px;
+	top: 60px;
 	left: 0px;
 	padding: 0;
 	width: 885px;
@@ -148,7 +148,7 @@ td {
 
 td .background,
 td .error_bg {
-	margin-top: 0px;
+	margin-top: 1px;
 	text-align: center;
 	vertical-align: bottom;
 	position: relative;
@@ -160,7 +160,7 @@ td .error_bg {
 
 td.drittel {
 	width: 295px;
-	height: 175px;
+	height: 160px;
 }
 
 td.sechstel {
@@ -170,25 +170,25 @@ td.sechstel {
 
 td.neuntel {
 	width: 98.3px;
-	height: 175px;
+	height: 160px;
 }
 
 td.drittel .background,
 td.drittel .error_bg {
 	width: 287.5px;
-	height: 173px;
+	height: 153px;
 }
 
 td.sechstel .background,
 td.sechstel .error_bg {
 	width: 140px;
-	height: 173px;
+	height: 153px;
 }
 
 td.neuntel .background,
 td.neuntel .error_bg {
 	width: 91.8px;
-	height: 173px;
+	height: 153px;
 }
 
 
@@ -200,7 +200,7 @@ table.large td {
 table.large td .background,
 table.large td .error_bg {
 	width: 312.5px;
-	height: 525px;
+	height: 472px;
 }
 
 td p {
@@ -291,7 +291,7 @@ td.error .error_bg {
 	position: absolute;
 	width: 390px;
 	height: 120px;
-	top: 580px;
+	top: 540px;
 	font-size: 20px;
 	font-weight: 400;
 	margin: 0;

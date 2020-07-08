@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>WebSocket Bistro</title>
+	<link rel="stylesheet" href="../public/bistro.css">
+	<script src="../../lib/jquery-3.2.1.min.js"></script>
+	<script src="../public/bistro.js"></script>
+	<META charset="UTF-8">
+</head>
+<body>
+<div id="area"></div>
+<div id="textarea"></div>
+<table class="large">
+	<tr>
+		<td id="Fusilli" class="eintel">
+					<span class="background">
+						<span class="error_bg"></span>
+					</span>
+			<p>Fusilli</p>
+		</td>
+	</tr>
+</table>
+<table>
+	<tr>
+		<td id="Knoblauch" class="sechstel">
+					<span class="background">
+						<span class="error_bg"></span>
+					</span>
+			<p>Knoblauch</p>
+		</td>
+		<td id="Butter" class="sechstel">
+					<span class="background">
+						<span class="error_bg"></span>
+					</span>
+			<p>Butter</p>
+		</td>
+		<td id="getrockneteTomaten" class="sechstel">
+					<span class="background">
+						<span class="error_bg"></span>
+					</span>
+			<p>getrockneteTomaten</p>
+		</td>
+		<td id="Hackfleisch" class="sechstel">
+					<span class="background">
+						<span class="error_bg"></span>
+					</span>
+			<p>Hackfleisch</p>
+		</td>
+		<td id="Tomaten" class="sechstel">
+					<span class="background">
+						<span class="error_bg"></span>
+					</span>
+			<p>Tomaten</p>
+		</td>
+		<td id="Chili" class="sechstel">
+					<span class="background">
+						<span class="error_bg"></span>
+					</span>
+			<p>Chili</p>
+		</td>
+	</tr>
+	<tr>
+		<td id="Zwiebeln" class="sechstel">
+					<span class="background">
+						<span class="error_bg"></span>
+					</span>
+			<p>Zwiebeln</p>
+		</td>
+		<td id="Thunfisch" class="sechstel">
+					<span class="background">
+						<span class="error_bg"></span>
+					</span>
+			<p>Thunfisch</p>
+		</td>
+		<td id="Olivenöl" class="sechstel">
+					<span class="background">
+						<span class="error_bg"></span>
+					</span>
+			<p>OlivenÖl</p>
+		</td>
+		<td id="Basilikum" class="sechstel">
+					<span class="background">
+						<span class="error_bg"></span>
+					</span>
+			<p>Basilikum</p>
+		</td>
+		<td id="Basilikumbutter" class="sechstel">
+					<span class="background">
+						<span class="error_bg"></span>
+					</span>
+			<p>Basilikumbutter</p>
+		</td>
+		<td id="Salbei" class="sechstel">
+					<span class="background">
+						<span class="error_bg"></span>
+					</span>
+			<p>Salbei</p>
+		</td>
+	</tr>
+	<tr>
+		<td id="Rucola" class="sechstel">
+					<span class="background">
+						<span class="error_bg"></span>
+					</span>
+			<p>Rucola</p>
+		</td>
+		<td id="Speck" class="sechstel">
+					<span class="background">
+						<span class="error_bg"></span>
+					</span>
+			<p>Speck</p>
+		</td>
+		<td id="Sonnenblumenkerne" class="sechstel">
+					<span class="background">
+						<span class="error_bg"></span>
+					</span>
+			<p>Sonnenblumenkerne</p>
+		</td>
+		<td id="KäseMix" class="sechstel">
+					<span class="background">
+						<span class="error_bg"></span>
+					</span>
+			<p>KäseMix</p>
+		</td>
+		<td id="Kapern" class="sechstel">
+					<span class="background">
+						<span class="error_bg"></span>
+					</span>
+			<p>Kapern</p>
+		</td>
+		<td id="gehacktePetersilie" class="sechstel">
+					<span class="background">
+						<span class="error_bg"></span>
+					</span>
+			<p>gehacktePetersilie</p>
+		</td>
+	</tr>
+</table>
+<div id="scales">
+	<div class="circles">
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+	</div>
+	<div class="lines">
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+	</div>
+
+</div>
+<div id="waiting">
+	<p class="heading">Warteliste</p>
+	<p id="waitingList"></p>
+</div>
+<div id=current>
+	<p class="heading">Aktuell</p>
+	<p id="currentRecipe"></p>
+	<p id="extras"></p>
+	<p id="preparation"></p>
+</div>
+<div id="countdown">
+</div>
+<div id="setup">
+	<p>Setup — Bitte den Löffel der angezeigten Zutat bewegen, um die Verbindung herzustellen</p>
+</div>
+</body>
+</html>

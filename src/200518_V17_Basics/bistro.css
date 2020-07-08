@@ -1,14 +1,33 @@
 @font-face {
-  font-family: 'Roboto'; font-style: normal; font-weight: 400; src: local('Roboto'), local('Roboto-Regular'), url("../../fonts/Roboto.woff2") format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215; } @font-face { font-family: 'Roboto'; font-style: normal; font-weight: 100; src: local('Roboto Thin'), local('Roboto-Thin'), url("../../fonts/Roboto-Thin.woff2") format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215; } body { margin: 0; padding: 0; width: 10vw; height: 10vh; font-size: 20px; font-family: "Roboto", sans-serif; color: wheat;
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto'), local('Roboto-Regular'), url("../../fonts/Roboto.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 100;
+  src: local('Roboto Thin'), local('Roboto-Thin'), url("../../fonts/Roboto-Thin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	width: 10vw;
+	height: 10vh;
+	font-size: 20px;
+	font-family: "Roboto", sans-serif;
+	background: black;
+	color: wheat;
 	overflow: hidden;
 }
 
-.front {
-		background: black;
-}
-
 .back {
-    background: black;
+    background: white;
 }
 
 #area {
@@ -165,7 +184,7 @@ td.drittel {
 
 td.sechstel {
 	width: 147.5px;
-	height: 160px;
+	height: 175px;
 }
 
 td.neuntel {
@@ -335,13 +354,13 @@ td.error .error_bg {
 }
 
 #current.back #preparation {
-	font-size: 30px;
+	font-size: 50px;
 	position: relative;
-	top: 50px;
-	left: 0px;
+	top: -1em;
+	left: -1em;
 	width: auto;
 	display: inline-block;
-	padding: 0;
+	padding: 1em;
 }
 
 #extras {
@@ -426,8 +445,8 @@ td.error .error_bg {
 .ingredientImage {
 	animation-name: ingredient-animation;
 	animation-duration: 4s;
-	height: 0px;
-	width: 0px;
+	height: 100px;
+	width: 100px;
 	position:absolute;
 	animation-iteration-count: infinite;
 	animation-timing-function: linear;

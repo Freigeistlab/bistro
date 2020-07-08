@@ -13,85 +13,45 @@ import copy, time
 # To add new ingredients there, see bistro.html file
 
 RECIPES = {
-	"Bolognese Rind": {
-		"recipe": ["Basilikumbutter", "Olivenöl", "Zwiebeln", "Hackfleisch"],
-		"decoration": ["gehacktePetersilie"],
-		"preparation": "T2 Rühren"
-	},
-	"Bolognese Bulgur": {
-		"recipe": ["Basilikumbutter", "Olivenöl", "Zwiebeln", "Bulgur"],
-		"decoration": ["gehacktePetersilie"],
-		"preparation": "T2 Rühren"
-	},
-	"Carbonara": {
-		"recipe": ["KäseMix", "Zwiebeln", "Rucola", "Speck"],
+	"Bolognese": {
+		"recipe": ["Olivenöl", "Hackfleisch"],
 		"decoration": [],
-		"preparation": "S3 Rühren"
-	},
-	"Carbonara ohne Speck": {
-		"recipe": ["KäseMix", "Zwiebeln", "Rucola"],
-		"decoration": [],
-		"preparation": "S3 Rühren"
+		"preparation": "T2 Rühren"
 	},
 	"Napoli": {
-		"recipe": ["Basilikumbutter", "Olivenöl", "Zwiebeln"],
-		"decoration": ["gehacktePetersilie"],
+		"recipe": ["Tomaten", "Olivenöl", "Zwiebeln", "getrockneteTomaten"],
+		"decoration": [],
 		"preparation": "T2 Rühren"
 	},
-	"Emmas Spezial": {
-		"recipe": ["EmmasSpezial"],
-		"decoration": [],
-		"preparation": ""
-	},
 	"Arrabbiata": {
-		"recipe": ["Basilikumbutter", "Olivenöl", "Zwiebeln", "GetrockneteTomaten", "Chili"],
+		"recipe": ["Chili", "Zwiebeln", "Tomaten", "getrockneteTomaten"],
 		"decoration": [],
 		"preparation": "T2 Rühren"
 	},
 	"Pesto Verde": {
-		"recipe": ["Basilikumbutter", "KäseMix", "Rucola", "gehacktePetersilie"],
+		"recipe": ["Basilikumbutter", "KäseMix", "Rucola"],
 		"decoration": ["Sonnenblumenkerne"],
-		"preparation": "W1 Mixen"
-	},
-	"Pesto Rosso": {
-		"recipe": ["KäseMix", "Knoblauch", "rotesPesto"],
-		"decoration": [],
-		"preparation": "T2 Mixen"
+		"preparation": "W2 Mixen"
 	},
 	"Aioli": {
-		"recipe": ["Knoblauch", "KäseMix", "Zwiebeln"],
-		"decoration": ["gehacktePetersilie"],
+		"recipe": ["Knoblauch", "KäseMix", "getrockneteTomaten"],
+		"decoration": [],
 		"preparation": "S1 Rühren"
 	},
-	"Gorgonzola Sauce": {
-		"recipe": ["Gorgonzola", "Zwiebeln", "Knoblauch"],
-		"decoration": ["gehacktePetersilie"],
-		"preparation": "W2 S1 Mixen"
+	"Tonno": {
+		"recipe": ["Thunfisch", "KäseMix", "Kapern"],
+		"decoration": [],
+		"preparation": "S1 Rühren"
 	},
 	"Salbei Symphonie": {
-		"recipe": ["Salbeibutter", "KäseMix", "Alsan"],
+		"recipe": ["Salbei", "KäseMix", "Butter"],
 		"decoration": [],
 		"preparation": "W2 S1 Mixen"
 	},
-	"Königsberger Art": {
-		"recipe": ["Zwiebeln", "Knoblauch", "Hackfleisch", "gehacktePetersilie", "Kapern"],
-		"decoration": [],
-		"preparation": "W2 S1 Mixen"
-	},
-	"Ohne Sauce": {
-		"recipe": ["Hausmacher"],
-		"decoration": [],
-		"preparation": ""
-	},
-	"Königsberger Art vege": {
-		"recipe": ["Zwiebeln", "rotesPesto", "Knoblauch", "Bulgur", "gehacktePetersilie", "Kapern"],
-		"decoration": [],
-		"preparation": "W2 S1 Mixen"
-	}
 }
 
 PASTA = [
-	"Hausmacher", "Hausmacher1"
+	"Fusilli"
 ]
 
 # our sauces: Tomaten, Gemüsebrühe, Weißwein and Sahne.
@@ -99,7 +59,7 @@ PASTA = [
 SAUCES = ["T1", "T2", "T3", "W2_S1", "W1", "W2", "W3", "S1", "S2", "S3"]
 
 TOPPINGS = [
-        "Kapern", "KäseMix", "EmmasSpezial", "Knoblauch", "DoppeltKäse", "ExtraSoße", "Zwiebeln", "Chili", "Gorgonzola", "Erbsen", "GetrockneteTomaten", "Hackfleisch", "Rucola", "Salbeibutter", "Bulgur", "Speck"
+	"Kapern", "Olivenöl", "Speck", "KäseMix", "Knoblauch",  "Zwiebeln", "Chili", "getrockneteTomaten", "Hackfleisch", "Rucola", "Salbeibutter"
 ]
 
 DECORATION = [

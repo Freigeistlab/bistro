@@ -197,9 +197,6 @@ class InputHandler(threading.Thread):
 	def handleBluetoothInput(self):
 		selected = self.bluetoothHandler.selection()
 
-		if selected in self.recipeHandler.currentIngredients():
-			self.sendMessage(Action.NEXT_INGREDIENT)
-
 		if selected in self.recipeHandler.ingredients():
 			# entered a valid ingredient
 			print("- ", selected)
@@ -214,6 +211,8 @@ class InputHandler(threading.Thread):
 		print("")
 		# wait for 100ms to save resources
 		time.sleep(.1)
+		self.sendMessage(Action.NEXT_INGREDIENT)
+
 
 	def printStatus(self):
 		print("\n> Current Recipe: ",
