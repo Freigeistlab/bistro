@@ -1,0 +1,22 @@
+Set up your orderbird printer to IP 192.168.42.133
+Waiting for orders...
+Could not find scales at given port /dev/ttyUSB0. Maybe change port in serial_handler.py?
+
+> Current Recipe:  !!Hausmacher Bolognese Rind {'Hausmacher'} /// 14 in waiting list
+
+
+  Connection from: ('192.168.42.79', 49317)
+  Processing data...
+  New order:
+Getrocknete Tomaten ist kein Topping. Vielleicht ein Getränk. Ansonsten vielleicht in der recipe_handler.py eintragen?
+ff:ca:80:e2:9a:85
+-  gehacktePetersilie
+
+
+{'name': '!\x00\x1d!\x11Hausmacher Bolognese Rind', 'recipe': ['Hausmacher', 'Basilikumbutter', 'Hackfleisch', 'Basilikum'], 'sauce': 'Bolognese Rind', 'extras': '', 'preparation': 'T2 Rühren'}
+
+{'extras': '+ Knoblauch', 'name': 'Hausmacher Bolognese Rind', 'preparation': 'T2 Rühren', 'sauce': 'Bolognese Rind', 'recipe': ['Hausmacher', 'Basilikumbutter', 'Hackfleisch', 'Knoblauch', 'Basilikum']}
+
+{'extras': '', 'preparation': 'T2 Rühren', 'time': '09/17/18 09:08:47 UTC', 'sauce': 'Bolognese Rind', 'name': 'Hausmacher Bolognese Rind', 'recipe': ['Hausmacher', 'Basilikumbutter', 'Hackfleisch', 'Basilikum'], 'order': 'Hausmacher\x1d!\x00\n\x1d!\x11   Bolognese Rind\x1d!\x00\n\x1d!\x11   Ohne Toppings\x1d!\x00\n\x1d!\x11   Ohne Getränk *'}
+
+{'extras': '+ Speck', 'order': 'Hausmacher\x1d!\x00\n\x1d!\x11   Aioli\x1d!\x00\n\x1d!\x11   Speck\x1d!\x00\n\x1d!\x11   Ohne Getränk *', 'preparation': 'W2 S1 Rühren', 'sauce': 'Aioli', 'name': 'Hausmacher Aioli', 'recipe': ['Hausmacher', 'Knoblauch', 'KäseMix', 'marinierteKräuter', 'getrockneteTomaten', 'Speck', 'gehacktePetersilie'], 'time': '09/18/18 09:21:12 UTC'}

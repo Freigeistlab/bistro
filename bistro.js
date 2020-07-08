@@ -17,7 +17,7 @@ async function pingServer(){
   }
 }
 
-setInterval(pingServer, 3000);
+// setInterval(pingServer, 3000);
 
 
 

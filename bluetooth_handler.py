@@ -18,7 +18,7 @@ class TagManager(gatt.DeviceManager):
 		self.setup = False
 		self.latestSelections = []
 		self.latestDiscoveries = []
-		self.dbPath = os.getcwd()+'/database/tags.db'
+		self.dbPath = os.path.dirname(os.path.abspath(__file__))+'/tags.db'
 
 		self.getTagPool()
 		self.start_discovery()
@@ -53,7 +53,7 @@ class TagManager(gatt.DeviceManager):
 		tags = self.getTags()
 
 		# is it a distinct device, did it send enough signals, is it not selected already or has been selected long enough ago?
-		if len(counter) == 1 and list(counter.values())[0] >= SIGNAL_THRESHOLD and (tags[list(counter.keys())[0]] != self.selection or time.time() - self.selectionTime > 5):
+		if len(counter) == 1 and list(counter.values())[0] >= SIGNAL_THRESHOLD and (tags[list(counter.keys())[0]] != self.selection or time.time() - self.selectionTime > 3):
 				self.selection = tags[list(counter.keys())[0]]
 				self.selectionTime = time.time()
 				self.newInput = True
@@ -106,8 +106,8 @@ class BluetoothHandler():
 
 	def __init__(self):
 		self.tagManager = TagManager()
-		self.btThread = threading.Thread(name='Bluetooththread', target=self.tagManager.run)
-		self.btThread.start()
+		btThread = threading.Thread(name='Bluetooththread', target=self.tagManager.run)
+		btThread.start()
 
 	def setupReady(self):
 		self.tagManager.setupReady()

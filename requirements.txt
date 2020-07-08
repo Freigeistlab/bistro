@@ -1,6 +1,0 @@
-websockets
-gatt
-pathlib
-flask-restful
-flask-cors
-pyserial

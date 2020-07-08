@@ -1,0 +1,1 @@
+/usr/bin/python3.5 /home/pi/Documents/V17_freigeist-lab-bistro-981727852b02/bistro.py

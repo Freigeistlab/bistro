@@ -21,12 +21,15 @@ class SerialHandler(threading.Thread):
 
     def run(self):
         while self.connected:
-            line = self.__serial.readline().decode("utf-8")
+            try:
+                line = self.__serial.readline().decode("utf-8")
             
-            if(line != '') and ('start' not in line):
-                self.newInput = True
-                self.buttonEvent = (line[0],line[1])
-
+                if(line != '') and ('start' not in line):
+                    self.newInput = True
+                    self.buttonEvent = (line[0],line[1])
+            except:
+                print("Could not read serial input")
+            
             time.sleep(.01)
 
     def getButtonEvent(self):
