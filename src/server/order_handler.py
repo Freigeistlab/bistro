@@ -41,10 +41,9 @@ class OrderHandler(threading.Thread):
 	def nextDish(self):
 		# returns the next dish in the waitinglist
 		# and removes it from there
-		print("order handler next dish")
 		return self.orderSQLInterface.getNextWaitingDish()
 
-	def waiting(self):
+	def getQueueLength(self):
 		return len(self.orderSQLInterface.getOrderQueue())
 
 	def getIpAddress(self):
@@ -61,6 +60,8 @@ class OrderHandler(threading.Thread):
 		message = str(message).replace("'",'"')
 		asyncio.run_coroutine_threadsafe(self.websocket.sendMessage(message), self.loop)
 
+	def recipeReady(self):
+		self.orderSQLInterface.recipeReady()
 	
 	#this function deals with meals that are added by the dashboard
 	def addMealPreparation(self, meal, amount):

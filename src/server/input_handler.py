@@ -107,7 +107,7 @@ class InputHandler(threading.Thread):
 			time.sleep(.1)
 
 	def nextRecipe(self):
-		if (self.orderHandler.waiting() or self.afterStartup):
+		if (self.orderHandler.getQueueLength() != 0 or self.afterStartup):
 			print("next recipe")
 			self.afterStartup = False
 			self.recipeHandler.selectRecipe(self.orderHandler.nextDish())
@@ -122,23 +122,39 @@ class InputHandler(threading.Thread):
 	def nextIngredients(self):
 		self.recipeHandler.getNextIngredients()
 		self.printStatus()
-		self.sendMessage(Action.NEXT_INGREDIENT)
+		if(self.recipeHandler.isReady()):
+			self.sendMessage(Action.NEXT_ORDER)
+			time.sleep(3)
+			return
 
+		self.sendMessage(Action.NEXT_INGREDIENT)
 
 	def handleOrderInput(self):
 		self.assembleMessage(Action.NEXT_ORDER)
 
-	def handleSerialInput(self):
-		self.serialHandler.resetInputFlag()
-		event = self.serialHandler.getButtonEvent()
-		print("Received button event: " + str(event))
+	def handleSerialInput(self, test=None):
+
+		event = []
+		if(test == None):
+			self.serialHandler.resetInputFlag()
+			event = self.serialHandler.getButtonEvent()
+			print("Received button event: " + str(event))
+
+		else:
+			print("Received button event: " + test)
+			event.append(test)
+			event.append("D")
 
 		if(event[0] == "0" and event[1] == "D"):
 			self.nextIngredients()
 		if(event[0] == "1" and event[1] == "D"):
+			self.orderHandler.recipeReady()
 			self.nextRecipe()
 		if(event[0] == "2" and event[1] == "D"):
+			self.orderHandler.recipeReady()
 			self.orderHandler.reset()
+			self.recipeHandler.reset()
+			self.nextIngredients() #TODO remove this hack
 		if(event[0] == "3" and event[1] == "D"):
 			pass
 		if(event[0] == "4" and event[1] == "D"):
@@ -149,6 +165,9 @@ class InputHandler(threading.Thread):
 	def handleKeyboardInput(self):
 		userInput = self.keyboardHandler.getInput()
 
+		if userInput == "":
+			return
+
 		if userInput in self.recipeHandler.ingredients():
 			# entered a valid ingredient
 			print("- ", userInput)
@@ -157,19 +176,13 @@ class InputHandler(threading.Thread):
 
 		elif userInput in self.recipeHandler.dishes():
 			# entered a valid dish
-			self.orderHandler.appendToOrderQueue({
-				"sauce": userInput,
-				"name": userInput,
-				"extras": ["+ Parmesan"],
-				"recipe": self.recipeHandler.getRecipe(userInput) + ["Parmesan"] + self.recipeHandler.getDecorationFor(userInput),
-				"preparation": self.recipeHandler.getPreparationFor(userInput)
-			})
+			self.orderHandler.addMealPreparation(userInput,1)
 
-			self.sendMessage(Action.NEW_ORDER)
+			#self.sendMessage(Action.NEW_ORDER)
 
-		elif userInput == "+":
-			# go to next recipe
-			self.nextRecipe()
+		elif userInput[0] == '#':
+			# mock button press
+			self.handleSerialInput(userInput[1])
 
 		elif userInput == "status":
 			self.printStatus()
@@ -197,9 +210,6 @@ class InputHandler(threading.Thread):
 	def handleBluetoothInput(self):
 		selected = self.bluetoothHandler.selection()
 
-		if selected in self.recipeHandler.currentIngredients():
-			self.sendMessage(Action.NEXT_INGREDIENT)
-
 		if selected in self.recipeHandler.ingredients():
 			# entered a valid ingredient
 			print("- ", selected)
@@ -214,12 +224,14 @@ class InputHandler(threading.Thread):
 		print("")
 		# wait for 100ms to save resources
 		time.sleep(.1)
+		self.sendMessage(Action.NEXT_INGREDIENT)
+
 
 	def printStatus(self):
 		print("\n> Current Recipe: ",
 			self.recipeHandler.currentRecipe(),
 			self.recipeHandler.currentIngredients(),
-			"///", self.orderHandler.waiting(),
+			"///", self.orderHandler.getQueueLength(),
 			"in waiting list\n")
 
 	def assembleMessage(self, action):
@@ -241,7 +253,7 @@ class InputHandler(threading.Thread):
 				"recipe": self.recipeHandler.currentRecipe(),
 				"extras": self.recipeHandler.currentExtras(),
 				"preparation": self.recipeHandler.currentPreparation(),
-				"waiting": self.orderHandler.waiting(),
+				"waiting": self.orderHandler.getQueueLength(),
 				"ingredients": {},
 				"action": action.value
 			}
