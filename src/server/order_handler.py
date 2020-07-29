@@ -205,8 +205,7 @@ class OrderHandler(threading.Thread):
 						#orders = re.compile("(?<=-{42}\s)[\w\s-]+").findall(data)
 
 						if self.verbose:
-							pass
-							#print("    Orders: ", [o.strip() for o in orders])
+							print("    Orders: ", [o.strip() for o in orders])
 
 						for order in orders:
 							# remove unnecessary whitespaces
@@ -221,7 +220,9 @@ class OrderHandler(threading.Thread):
 							else:
 								amount = 1
 
-							items = re.split('\x1d!\x00\n\x1d!\x11', order)
+							items = re.split('\x1d!\x00\n\x1d!\x11|\x1d!\x00\x1d!\x11', order)
+							if '' in items: 
+								items.remove('')
 
 							for index, item in enumerate(items):
 								# remove unnecessary whitespaces and control strings
@@ -231,15 +232,11 @@ class OrderHandler(threading.Thread):
 								pass
 								#print("    Items: ", items)
 							
-							
 							dish = self.recipeHandler.constructRecipe(items, order)
 							for i in range(0,amount):
-								#print("Appending to order queue")
+								#print("Appending to order queue " + str(amount))
 								self.orderSQLInterface.appendToOrderQueue(dish, True)
-
-							self.sendNewOrderToClients(dish, True)
-							
-
+								self.sendNewOrderToClients(dish, True)
 
 			except:
 				print("exception: ", sys.exc_info()[0])
