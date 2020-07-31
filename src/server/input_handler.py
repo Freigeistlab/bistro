@@ -26,6 +26,7 @@ class InputHandler(threading.Thread):
 		# nothing to send yet
 		self.message = ""
 		self.afterStartup = True
+		self.ignoreInputs = False
 
 		self.setupTags = setupTags
 		self.bluetoothHandler = False
@@ -107,6 +108,7 @@ class InputHandler(threading.Thread):
 			time.sleep(.1)
 
 	def nextRecipe(self):
+		self.ignoreInputs = False
 		if (self.orderHandler.getQueueLength() != 0 or self.afterStartup):
 			print("next recipe")
 			self.afterStartup = False
@@ -123,8 +125,9 @@ class InputHandler(threading.Thread):
 		self.recipeHandler.getNextIngredients()
 		self.printStatus()
 		if(self.recipeHandler.isReady()):
+			self.ignoreInputs = True
 			self.sendMessage(Action.NEXT_ORDER)
-			time.sleep(3)
+			time.sleep(5) #blinking animation
 			return
 
 		self.sendMessage(Action.NEXT_INGREDIENT)
@@ -160,6 +163,7 @@ class InputHandler(threading.Thread):
 		if(event[0] == "4" and event[1] == "D"):
 			pass
 		if(event[0] == "5" and event[1] == "D"):
+			self.reboot()
 			pass
 
 	def handleKeyboardInput(self):
@@ -170,8 +174,18 @@ class InputHandler(threading.Thread):
 
 		if userInput in self.recipeHandler.ingredients():
 			# entered a valid ingredient
+			
+			if(self.ignoreInputs): 
+				print("ignoring")
+				return
+
 			print("- ", userInput)
 			self.recipeHandler.useIngredient(userInput)
+			if self.recipeHandler.isReady():
+				self.ignoreInputs = True
+				self.sendMessage(Action.NEXT_INGREDIENT)
+				time.sleep(5)
+				return
 			self.sendMessage(Action.NEXT_INGREDIENT)
 
 		elif userInput in self.recipeHandler.dishes():
@@ -208,12 +222,22 @@ class InputHandler(threading.Thread):
 
 
 	def handleBluetoothInput(self):
+
+		#need to get selected even if we ignore it to reset flag
 		selected = self.bluetoothHandler.selection()
+
+		if(self.ignoreInputs): 
+			return
 
 		if selected in self.recipeHandler.ingredients():
 			# entered a valid ingredient
 			print("- ", selected)
 			self.recipeHandler.useIngredient(selected)
+			if self.recipeHandler.isReady():
+				self.ignoreInputs = True;
+				self.sendMessage(Action.NEXT_INGREDIENT)
+				time.sleep(5)
+				return
 
 			#self.assembleMessage(Action.NEXT_INGREDIENT)
 
